@@ -1,7 +1,8 @@
 import './App.css';
+import Game from './game/game.tsx';
 
 function App() {
-    return <div>Maze!</div>;
+    return <Game />;
 }
 
 export default App;

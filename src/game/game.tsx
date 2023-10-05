@@ -2,6 +2,7 @@ import React from 'react';
 import { Cell, MazeType, PlayerId, PlayerPosition, Players } from './types.ts';
 import { createRevealedMaze } from '../utils';
 import Maze from '../components/maze.tsx';
+import { updateRevealed } from '../utils/update-revealed.ts';
 
 const maze: MazeType = [
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
@@ -26,13 +27,11 @@ const Game = () => {
     const togglePlayer = () => {
         setCurrentPlayer(prev => (prev === players.player1 ? players.player2 : players.player1));
     };
-    console.log('revealed: ', revealed);
 
     const handleKeyPress = (event: KeyboardEvent) => {
         const currentPlayerPosition = currentPlayer === players.player1 ? player1 : player2;
         let newX = currentPlayerPosition.x;
         let newY = currentPlayerPosition.y;
-
         switch (event.key) {
             case 'ArrowUp':
                 newY -= 1;
@@ -56,10 +55,10 @@ const Game = () => {
             } else {
                 setPlayer2({ x: newX, y: newY });
             }
-            togglePlayer();
         } else {
-            //make wall visible
+            setRevealed(updateRevealed(revealed, newX, newY));
         }
+        togglePlayer();
     };
 
     React.useEffect(() => {
@@ -68,11 +67,13 @@ const Game = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyPress);
         };
-    }, []);
+    }, [player1, player2, currentPlayer]);
 
     return (
         <div>
-            <div>Now its your turn: {currentPlayer}</div>
+            <div style={currentPlayer === players.player1 ? { backgroundColor: 'blue' } : { backgroundColor: 'red' }}>
+                Now its your turn: {currentPlayer}
+            </div>
             <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} />
         </div>
     );
