@@ -1,6 +1,7 @@
-import { Cell, MazeType, PlayerPosition } from '../game';
+import { MazeType, PlayerPosition } from '../game';
 import './maze.css';
 import { chooseImage } from '../utils';
+import { chooseClassName } from '../utils/choose-class-name.ts';
 
 interface MazeProps {
     maze: MazeType;
@@ -19,17 +20,7 @@ const Maze = (props: MazeProps) => {
                         <div
                             key={cellIndex}
                             style={chooseImage(player1, cellIndex, player2, rowIndex)}
-                            className={`maze-cell ${
-                                cell === Cell.WALL
-                                    ? revealed[rowIndex][cellIndex]
-                                        ? 'wall'
-                                        : 'hidden'
-                                    : cell === Cell.PATH
-                                    ? 'path'
-                                    : 'exit'
-                            } ${player1.x === cellIndex && player1.y === rowIndex ? 'player1' : ''} ${
-                                player2.x === cellIndex && player2.y === rowIndex ? 'player2' : ''
-                            }`}
+                            className={chooseClassName(cell, revealed, player1, player2, rowIndex, cellIndex)}
                         />
                     ))}
                 </div>
