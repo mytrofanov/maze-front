@@ -1,0 +1,13 @@
+
+.text {
+    width: 900px;
+    height: 200px; /* Ваші стилі для textarea */
+}
+
+.highlightedText {
+    margin-top: 10px;
+}
+
+.highlighted {
+    background-color: yellow;
+}
