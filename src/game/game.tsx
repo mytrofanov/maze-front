@@ -25,7 +25,7 @@ const Game = () => {
     const [player1, setPlayer1] = React.useState<PlayerPosition>({ x: 1, y: 1 });
     const [player2, setPlayer2] = React.useState<PlayerPosition>({ x: 1, y: 8 });
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerId>(players.player1);
-    const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze));
+    const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze, player1, player2));
     const togglePlayer = () => {
         setCurrentPlayer(prev => (prev === players.player1 ? players.player2 : players.player1));
     };
@@ -57,9 +57,8 @@ const Game = () => {
             } else {
                 setPlayer2({ x: newX, y: newY });
             }
-        } else {
-            setRevealed(updateRevealed(revealed, newX, newY));
         }
+        setRevealed(updateRevealed(revealed, newX, newY));
         togglePlayer();
     };
 

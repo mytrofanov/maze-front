@@ -1,4 +1,4 @@
-import { player1Image, player2Image, wallImage } from '../variables/variables.ts';
+import { animalPrints, player1Image, player2Image, wallImage } from '../variables/variables.ts';
 import { Cell, PlayerPosition } from '../game';
 
 export const chooseImage = (
@@ -17,6 +17,9 @@ export const chooseImage = (
     }
     if (cell === Cell.WALL && revealed[rowIndex][cellIndex]) {
         return { backgroundImage: `url(${wallImage})` };
+    }
+    if (cell === Cell.PATH && revealed[rowIndex][cellIndex]) {
+        return { backgroundImage: `url(${animalPrints})` };
     }
     return {};
 };

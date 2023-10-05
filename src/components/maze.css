@@ -24,6 +24,9 @@
 
 .path, .exit {
     background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .player1 {
