@@ -1,6 +1,6 @@
 import { Cell, MazeType, PlayerPosition } from '../game';
 import './maze.css';
-import { Player1Image, Player2Image } from '../variables/variables.ts';
+import { chooseImage } from '../utils';
 
 interface MazeProps {
     maze: MazeType;
@@ -18,13 +18,7 @@ const Maze = (props: MazeProps) => {
                     {row.map((cell, cellIndex) => (
                         <div
                             key={cellIndex}
-                            style={
-                                player1.x === cellIndex && player1.y === rowIndex
-                                    ? { backgroundImage: `url(${Player1Image})` }
-                                    : player2.x === cellIndex && player2.y === rowIndex
-                                    ? { backgroundImage: `url(${Player2Image})` }
-                                    : {}
-                            }
+                            style={chooseImage(player1, cellIndex, player2, rowIndex)}
                             className={`maze-cell ${
                                 cell === Cell.WALL
                                     ? revealed[rowIndex][cellIndex]
