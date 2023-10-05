@@ -20,7 +20,7 @@ const Game = () => {
     const [player1, setPlayer1] = React.useState({ x: 1, y: 1 });
     const [player2, setPlayer2] = React.useState({ x: 1, y: 8 });
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerId>(players.player1);
-
+    const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze));
     const togglePlayer = () => {
         setCurrentPlayer(prev => (prev === players.player1 ? players.player2 : players.player1));
     };
@@ -47,7 +47,6 @@ const Game = () => {
                 return;
         }
 
-        // Тут можна додати перевірку на те, чи є стіна на новій позиції. Якщо немає - оновити позицію гравця
         if (maze[newY][newX] !== Cell.WALL) {
             if (currentPlayer === players.player1) {
                 setPlayer1({ x: newX, y: newY });
@@ -66,15 +65,11 @@ const Game = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyPress);
         };
-    }, [currentPlayer]);
+    }, []);
 
     return (
         <div>
-            {/* Render the maze here */}
-            <button onClick={() => handleMove('up')}>Move Up</button>
-            <button onClick={() => handleMove('down')}>Move Down</button>
-            <button onClick={() => handleMove('left')}>Move Left</button>
-            <button onClick={() => handleMove('right')}>Move Right</button>
+            <div>Now its your turn: {currentPlayer}</div>
         </div>
     );
 };
