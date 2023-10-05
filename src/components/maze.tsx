@@ -20,7 +20,7 @@ const Maze = (props: MazeProps) => {
                     {row.map((cell, cellIndex) => (
                         <div
                             key={cellIndex}
-                            style={chooseImage(player1, cellIndex, player2, rowIndex)}
+                            style={chooseImage(cell, player1, cellIndex, player2, rowIndex, revealed)}
                             className={chooseClassName(cell, revealed, player1, player2, rowIndex, cellIndex)}
                         />
                     ))}
