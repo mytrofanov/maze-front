@@ -1,5 +1,6 @@
 import React from 'react';
-import { Cell, Maze, PlayerId, Players } from './types.ts';
+import { Cell, Maze, PlayerId, PlayerPosition, Players } from './types.ts';
+import { createRevealedMaze } from '../utils';
 
 const maze: Maze = [
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
@@ -17,13 +18,14 @@ const maze: Maze = [
 const players: Players = { player1: 1, player2: 2 };
 
 const Game = () => {
-    const [player1, setPlayer1] = React.useState({ x: 1, y: 1 });
-    const [player2, setPlayer2] = React.useState({ x: 1, y: 8 });
+    const [player1, setPlayer1] = React.useState<PlayerPosition>({ x: 1, y: 1 });
+    const [player2, setPlayer2] = React.useState<PlayerPosition>({ x: 1, y: 8 });
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerId>(players.player1);
     const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze));
     const togglePlayer = () => {
         setCurrentPlayer(prev => (prev === players.player1 ? players.player2 : players.player1));
     };
+    console.log('revealed: ', revealed);
 
     const handleKeyPress = (event: KeyboardEvent) => {
         const currentPlayerPosition = currentPlayer === players.player1 ? player1 : player2;

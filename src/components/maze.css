@@ -1,0 +1,33 @@
+.maze {
+    display: flex;
+    flex-direction: column;
+}
+
+.maze-row {
+    display: flex;
+}
+
+.maze-cell {
+    width: 20px;
+    height: 20px;
+}
+
+.wall {
+    background-color: black;
+}
+
+.hidden {
+    background-color: gray;
+}
+
+.path, .exit {
+    background-color: white;
+}
+
+.player1 {
+    background-color: blue;
+}
+
+.player2 {
+    background-color: red;
+}

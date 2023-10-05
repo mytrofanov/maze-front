@@ -15,3 +15,8 @@ export type Players = {
     player1: PlayerId.PLAYER1;
     player2: PlayerId.PLAYER2;
 };
+
+export type PlayerPosition = {
+    x: number;
+    y: number;
+};
