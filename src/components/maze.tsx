@@ -1,9 +1,9 @@
-import { Cell, Maze, PlayerPosition } from '../game';
+import { Cell, MazeType, PlayerPosition } from '../game';
 import './maze.css';
 
 interface MazeProps {
-    maze: Maze;
-    revealed: Maze;
+    maze: MazeType;
+    revealed: boolean[][];
     player1: PlayerPosition;
     player2: PlayerPosition;
 }

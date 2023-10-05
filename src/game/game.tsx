@@ -1,8 +1,9 @@
 import React from 'react';
-import { Cell, Maze, PlayerId, PlayerPosition, Players } from './types.ts';
+import { Cell, MazeType, PlayerId, PlayerPosition, Players } from './types.ts';
 import { createRevealedMaze } from '../utils';
+import Maze from '../components/maze.tsx';
 
-const maze: Maze = [
+const maze: MazeType = [
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
     [Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL],
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
@@ -72,6 +73,7 @@ const Game = () => {
     return (
         <div>
             <div>Now its your turn: {currentPlayer}</div>
+            <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} />
         </div>
     );
 };

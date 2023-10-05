@@ -4,7 +4,7 @@ export enum Cell {
     EXIT = -1,
 }
 
-export type Maze = Cell[][];
+export type MazeType = Cell[][];
 
 export enum PlayerId {
     PLAYER1 = 1,
