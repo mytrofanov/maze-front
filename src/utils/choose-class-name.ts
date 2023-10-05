@@ -28,6 +28,6 @@ export const chooseClassName = (
     if (player2.x === cellIndex && player2.y === rowIndex) {
         className = className + ' ' + 'player2';
     }
-    console.log('className: ', className);
+
     return className;
 };
