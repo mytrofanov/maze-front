@@ -3,6 +3,8 @@ import { Cell, MazeType, PlayerId, PlayerPosition, Players } from './types.ts';
 import { createRevealedMaze } from '../utils';
 import Maze from '../components/maze.tsx';
 import { updateRevealed } from '../utils/update-revealed.ts';
+import { Player1Image, Player2Image } from '../variables/variables.ts';
+import './game.css';
 
 const maze: MazeType = [
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
@@ -71,8 +73,16 @@ const Game = () => {
 
     return (
         <div>
-            <div style={currentPlayer === players.player1 ? { backgroundColor: 'blue' } : { backgroundColor: 'red' }}>
-                Now its your turn: {currentPlayer}
+            <div className="player-info-block">
+                Now its your turn:{' '}
+                <div
+                    className="player-name"
+                    style={
+                        currentPlayer === players.player1
+                            ? { backgroundImage: `url(${Player1Image})` }
+                            : { backgroundImage: `url(${Player2Image})` }
+                    }
+                />
             </div>
             <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} />
         </div>

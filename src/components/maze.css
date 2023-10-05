@@ -25,9 +25,11 @@
 }
 
 .player1 {
-    background-color: blue;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .player2 {
-    background-color: red;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
