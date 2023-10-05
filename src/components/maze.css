@@ -17,11 +17,11 @@
 }
 
 .hidden {
-    background-color: white;
+    background-color: transparent;
 }
 
 .path, .exit {
-    background-color: white;
+    background-color: transparent;
 }
 
 .player1 {

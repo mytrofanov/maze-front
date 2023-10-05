@@ -2,6 +2,7 @@ import { MazeType, PlayerPosition } from '../game';
 import './maze.css';
 import { chooseImage } from '../utils';
 import { chooseClassName } from '../utils/choose-class-name.ts';
+import { gameBackground } from '../variables/variables.ts';
 
 interface MazeProps {
     maze: MazeType;
@@ -13,7 +14,7 @@ interface MazeProps {
 const Maze = (props: MazeProps) => {
     const { maze, revealed, player1, player2 } = props;
     return (
-        <div className="maze">
+        <div className="maze" style={{ backgroundImage: `url(${gameBackground})` }}>
             {maze.map((row, rowIndex) => (
                 <div key={rowIndex} className="maze-row">
                     {row.map((cell, cellIndex) => (

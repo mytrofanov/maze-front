@@ -2,8 +2,8 @@ import React from 'react';
 import { Cell, MazeType, PlayerId, PlayerPosition, Players } from './types.ts';
 import { createRevealedMaze } from '../utils';
 import Maze from '../components/maze.tsx';
-import { updateRevealed } from '../utils/update-revealed.ts';
-import { Player1Image, Player2Image } from '../variables/variables.ts';
+import { updateRevealed } from '../utils';
+import { player1Image, player2Image } from '../variables/variables.ts';
 import './game.css';
 
 const maze: MazeType = [
@@ -79,8 +79,8 @@ const Game = () => {
                     className="player-name"
                     style={
                         currentPlayer === players.player1
-                            ? { backgroundImage: `url(${Player1Image})` }
-                            : { backgroundImage: `url(${Player2Image})` }
+                            ? { backgroundImage: `url(${player1Image})` }
+                            : { backgroundImage: `url(${player2Image})` }
                     }
                 />
             </div>

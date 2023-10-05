@@ -1,5 +1,7 @@
 import Minion from '../assets/minion.png';
 import Penguin from '../assets/penguin.png';
+import MazeBackground from '../assets/grass_.jpg';
 
-export const Player1Image = Minion;
-export const Player2Image = Penguin;
+export const player1Image = Minion;
+export const player2Image = Penguin;
+export const gameBackground = MazeBackground;
