@@ -5,3 +5,13 @@ export enum Cell {
 }
 
 export type Maze = Cell[][];
+
+export enum PlayerId {
+    PLAYER1 = 1,
+    PLAYER2 = 2,
+}
+
+export type Players = {
+    player1: PlayerId.PLAYER1;
+    player2: PlayerId.PLAYER2;
+};
