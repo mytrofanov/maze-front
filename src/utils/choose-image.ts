@@ -10,10 +10,22 @@ export const chooseImage = (
     revealed: boolean[][],
     directions: DirectionMap,
 ) => {
-    if (player1.position.x === cellIndex && player1.position.y === rowIndex) {
+    const isPlayer1Here = player1.position.x === cellIndex && player1.position.y === rowIndex;
+    const isPlayer2Here = player2.position.x === cellIndex && player2.position.y === rowIndex;
+
+    if (isPlayer1Here && isPlayer2Here) {
+        return {
+            backgroundImage: `url(${player2Image}), url(${player1Image})`,
+            backgroundSize: '50% 100%, 50% 100%',
+            backgroundRepeat: 'no-repeat, no-repeat',
+            backgroundPosition: 'left, right',
+        };
+    }
+
+    if (isPlayer1Here) {
         return { backgroundImage: `url(${player1Image})` };
     }
-    if (player2.position.x === cellIndex && player2.position.y === rowIndex) {
+    if (isPlayer2Here) {
         return { backgroundImage: `url(${player2Image})` };
     }
     if (cell === Cell.WALL && revealed[rowIndex][cellIndex]) {
