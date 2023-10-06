@@ -1,6 +1,6 @@
 import React from 'react';
-import { Cell, GameLogs, MazeType, PlayerId, PlayerPosition, Players } from './types.ts';
-import { createRevealedMaze } from '../utils';
+import { Cell, Direction, GameLogs, MazeType, Players, PlayerPosition, DirectionMap } from './types.ts';
+import { directionsMap, createRevealedMaze, updateDirectionMap } from '../utils';
 import { Maze } from '../components';
 import { updateRevealed } from '../utils';
 import { player1Image, player2Image } from '../variables/variables.ts';
@@ -20,73 +20,82 @@ const maze: MazeType = [
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
 ];
 
-const players: Players = { player1: 1, player2: 2 };
-
 const Game = () => {
     const [player1, setPlayer1] = React.useState<PlayerPosition>({ x: 1, y: 1 });
     const [player2, setPlayer2] = React.useState<PlayerPosition>({ x: 1, y: 8 });
-    const [currentPlayer, setCurrentPlayer] = React.useState<PlayerId>(players.player1);
+    const [currentPlayer, setCurrentPlayer] = React.useState<Players>(Players.PLAYER1);
     const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze, player1, player2));
-    const [vinner, setVinner] = React.useState<PlayerId | null>();
+    const [vinner, setVinner] = React.useState<Players | null>();
     const [showModal, setShowModal] = React.useState<boolean>(false);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
+    const [directions, setDirections] = React.useState<DirectionMap>(directionsMap(maze));
 
     const togglePlayer = () => {
-        setCurrentPlayer(prev => (prev === players.player1 ? players.player2 : players.player1));
+        setCurrentPlayer(prev => (prev === Players.PLAYER1 ? Players.PLAYER2 : Players.PLAYER1));
     };
 
-    const saveLogs = (currentPlayer: PlayerId, direction: string) => {
-        const playerId = currentPlayer === players.player1 ? 'Player 1' : 'Player 2';
+    const saveLogs = (
+        currentPlayer: Players,
+        direction: Direction,
+        newX: number,
+        newY: number,
+        prevX: number,
+        prevY: number,
+    ) => {
+        const playerId = currentPlayer === Players.PLAYER1 ? Players.PLAYER1 : Players.PLAYER2;
         const newLog = {
             playerId,
             direction,
+            prevPosition: { x: prevX, y: prevY },
+            nextPosition: { x: newX, y: newY },
             message: `${playerId} going ${direction} at ${new Date().toLocaleTimeString()}`,
         };
         setGameLogs(prevLogs => [...prevLogs, newLog]);
     };
 
     const handleKeyPress = (event: KeyboardEvent) => {
-        const currentPlayerPosition = currentPlayer === players.player1 ? player1 : player2;
+        const currentPlayerPosition = currentPlayer === Players.PLAYER1 ? player1 : player2;
         let newX = currentPlayerPosition.x;
         let newY = currentPlayerPosition.y;
-        let direction;
+        let direction: Direction;
         switch (event.key) {
             case 'ArrowUp':
                 newY -= 1;
-                direction = '/up';
+                direction = Direction.UP;
                 break;
             case 'ArrowDown':
                 newY += 1;
-                direction = '/down';
+                direction = Direction.DOWN;
                 break;
             case 'ArrowLeft':
                 newX -= 1;
-                direction = '/left';
+                direction = Direction.LEFT;
                 break;
             case 'ArrowRight':
                 newX += 1;
-                direction = '/right';
+                direction = Direction.RIGHT;
                 break;
             default:
                 return;
         }
 
-        saveLogs(currentPlayer, direction);
+        saveLogs(currentPlayer, direction, newX, newY, currentPlayerPosition.x, currentPlayerPosition.y);
 
         if (maze[newY][newX] !== Cell.WALL) {
-            if (currentPlayer === players.player1) {
+            if (currentPlayer === Players.PLAYER1) {
                 setPlayer1({ x: newX, y: newY });
                 if (maze[newY][newX] === Cell.EXIT) {
-                    setVinner(players.player1);
+                    setVinner(Players.PLAYER1);
                     setShowModal(true);
                 }
             } else {
                 setPlayer2({ x: newX, y: newY });
                 if (maze[newY][newX] === Cell.EXIT) {
-                    setVinner(players.player2);
+                    setVinner(Players.PLAYER2);
                     setShowModal(true);
                 }
             }
+            setDirections(prevDirections => updateDirectionMap(prevDirections, currentPlayerPosition, direction));
         }
         setRevealed(updateRevealed(revealed, newX, newY));
         togglePlayer();
@@ -117,13 +126,13 @@ const Game = () => {
                 <div
                     className="player-name"
                     style={
-                        currentPlayer === players.player1
+                        currentPlayer === Players.PLAYER1
                             ? { backgroundImage: `url(${player1Image})` }
                             : { backgroundImage: `url(${player2Image})` }
                     }
                 />
             </div>
-            <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} />
+            <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} directions={directions} />
             {vinner ? (
                 <CustomModal
                     modalOpen={showModal}
@@ -131,7 +140,7 @@ const Game = () => {
                     title="Vinner"
                     content={`Player ${vinner} vins!`}
                     onCancel={handleModalCancel}
-                    image={vinner === players.player1 ? player1Image : player2Image}
+                    image={vinner === Players.PLAYER1 ? player1Image : player2Image}
                     width={180}
                 />
             ) : null}

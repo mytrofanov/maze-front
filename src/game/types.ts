@@ -6,25 +6,31 @@ export enum Cell {
 
 export type MazeType = Cell[][];
 
-export enum PlayerId {
-    PLAYER1 = 1,
-    PLAYER2 = 2,
+export enum Players {
+    PLAYER1 = 'player1',
+    PLAYER2 = 'player2',
 }
-
-export type Players = {
-    player1: PlayerId.PLAYER1;
-    player2: PlayerId.PLAYER2;
-};
 
 export type PlayerPosition = {
     x: number;
     y: number;
 };
 
+export enum Direction {
+    UP = '/up',
+    DOWN = '/down',
+    LEFT = '/left',
+    RIGHT = '/right',
+}
+
+export type DirectionMap = (Direction | null)[][];
+
 export interface GameLog {
-    playerId: string;
-    direction: string;
+    playerId: Players;
+    direction: Direction;
     message: string;
+    prevPosition: { x: number; y: number };
+    nextPosition: { x: number; y: number };
 }
 
 export type GameLogs = GameLog[];

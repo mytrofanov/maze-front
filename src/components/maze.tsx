@@ -1,7 +1,6 @@
-import { MazeType, PlayerPosition } from '../game';
+import { DirectionMap, MazeType, PlayerPosition } from '../game';
 import './maze.css';
-import { chooseImage } from '../utils';
-import { chooseClassName } from '../utils/choose-class-name.ts';
+import { chooseImage, chooseClassName } from '../utils';
 import { gameBackground } from '../variables/variables.ts';
 
 interface MazeProps {
@@ -9,10 +8,11 @@ interface MazeProps {
     revealed: boolean[][];
     player1: PlayerPosition;
     player2: PlayerPosition;
+    directions: DirectionMap;
 }
 
 const Maze = (props: MazeProps) => {
-    const { maze, revealed, player1, player2 } = props;
+    const { maze, revealed, player1, player2, directions } = props;
     return (
         <div className="maze" style={{ backgroundImage: `url(${gameBackground})` }}>
             {maze.map((row, rowIndex) => (
@@ -20,7 +20,7 @@ const Maze = (props: MazeProps) => {
                     {row.map((cell, cellIndex) => (
                         <div
                             key={cellIndex}
-                            style={chooseImage(cell, player1, cellIndex, player2, rowIndex, revealed)}
+                            style={chooseImage(cell, player1, cellIndex, player2, rowIndex, revealed, directions)}
                             className={chooseClassName(cell, revealed, player1, player2, rowIndex, cellIndex)}
                         />
                     ))}
