@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cell, MazeType, PlayerId, PlayerPosition, Players } from './types.ts';
+import { Cell, GameLogs, MazeType, PlayerId, PlayerPosition, Players } from './types.ts';
 import { createRevealedMaze } from '../utils';
 import { Maze } from '../components';
 import { updateRevealed } from '../utils';
@@ -29,31 +29,49 @@ const Game = () => {
     const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze, player1, player2));
     const [vinner, setVinner] = React.useState<PlayerId | null>();
     const [showModal, setShowModal] = React.useState<boolean>(false);
+    const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
 
     const togglePlayer = () => {
         setCurrentPlayer(prev => (prev === players.player1 ? players.player2 : players.player1));
+    };
+
+    const saveLogs = (currentPlayer: PlayerId, direction: string) => {
+        const playerId = currentPlayer === players.player1 ? 'Player 1' : 'Player 2';
+        const newLog = {
+            playerId,
+            direction,
+            message: `${playerId} going ${direction} at ${new Date().toLocaleTimeString()}`,
+        };
+        setGameLogs(prevLogs => [...prevLogs, newLog]);
     };
 
     const handleKeyPress = (event: KeyboardEvent) => {
         const currentPlayerPosition = currentPlayer === players.player1 ? player1 : player2;
         let newX = currentPlayerPosition.x;
         let newY = currentPlayerPosition.y;
+        let direction;
         switch (event.key) {
             case 'ArrowUp':
                 newY -= 1;
+                direction = '/up';
                 break;
             case 'ArrowDown':
                 newY += 1;
+                direction = '/down';
                 break;
             case 'ArrowLeft':
                 newX -= 1;
+                direction = '/left';
                 break;
             case 'ArrowRight':
                 newX += 1;
+                direction = '/right';
                 break;
             default:
                 return;
         }
+
+        saveLogs(currentPlayer, direction);
 
         if (maze[newY][newX] !== Cell.WALL) {
             if (currentPlayer === players.player1) {

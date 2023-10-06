@@ -19,7 +19,7 @@ export const chooseImage = (
         return { backgroundImage: `url(${wallImage})` };
     }
     if (cell === Cell.PATH && revealed[rowIndex][cellIndex]) {
-        return { backgroundImage: `url(${animalPrints})` };
+        return { backgroundImage: `url(${animalPrints})`, transform: rotation };
     }
     return {};
 };

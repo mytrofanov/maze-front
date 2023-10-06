@@ -20,3 +20,11 @@ export type PlayerPosition = {
     x: number;
     y: number;
 };
+
+export interface GameLog {
+    playerId: string;
+    direction: string;
+    message: string;
+}
+
+export type GameLogs = GameLog[];
