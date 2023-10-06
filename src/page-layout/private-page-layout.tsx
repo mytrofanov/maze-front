@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Col, Image, Layout, Menu, Row } from 'antd';
 import './private-page-layout.styles.css';
 import { AppstoreOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Players } from '../game';
@@ -16,20 +16,15 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
     const { currentPlayer, children, footerContent, userInfo } = props;
     return (
         <Layout className="private-layout">
-            <Layout.Header className="header" style={{ backgroundColor: backgroundColor }}>
-                <div className="userInfo">{userInfo}</div>
-                <div className="player-info-block">
-                    <div
-                        className="player-icon"
-                        style={
-                            currentPlayer === Players.PLAYER1
-                                ? { backgroundImage: `url(${player1Image})` }
-                                : { backgroundImage: `url(${player2Image})` }
-                        }
-                    />
-                    {'  '}
-                    Now its my turn!
-                </div>
+            <Layout.Header style={{ backgroundColor: backgroundColor }}>
+                <Row className="header">
+                    <Col>{userInfo}</Col>
+                    <Col className="player-info-block">
+                        <Image width={64} src={currentPlayer === Players.PLAYER1 ? player1Image : player2Image} />
+                        {'  '}
+                        Now its my turn!
+                    </Col>
+                </Row>
             </Layout.Header>
             <Layout hasSider>
                 <Layout.Sider style={{ backgroundColor: backgroundColor }}>

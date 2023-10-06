@@ -66,6 +66,7 @@ const Game = () => {
     };
 
     const handleKeyPress = (event: KeyboardEvent) => {
+        // event.preventDefault();
         const currentPlayerPosition = currentPlayer === Players.PLAYER1 ? player1 : player2;
         let newX = currentPlayerPosition.x;
         let newY = currentPlayerPosition.y;
