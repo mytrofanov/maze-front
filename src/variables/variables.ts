@@ -11,4 +11,5 @@ export const wallImage = WhiteRock;
 export const animalPrints = PowPrints;
 export const localStorageUserName = 'MazeUsername';
 
-export const backgroundColor = '#bfbfbf';
+// export const backgroundColor = '#bfbfbf';
+export const backgroundColor = '#325600';
