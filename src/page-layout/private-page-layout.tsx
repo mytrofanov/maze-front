@@ -1,7 +1,6 @@
 import React, { ChangeEvent } from 'react';
-import { Col, Image, Input, Layout, Menu, Row } from 'antd';
+import { Col, Image, Input, Layout, Row } from 'antd';
 import './private-page-layout.styles.css';
-import { AppstoreOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { GameLogs, Players } from '../game';
 import { backgroundColor, player1Image, player2Image } from '../variables/variables.ts';
 import { ChatList } from '../components';
@@ -26,37 +25,17 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                         Hello {userName ? userName : Players.PLAYER1}! Your avatar is:
                         <Image width={64} src={player1Image} />
                     </Col>
-                    <Col className="player-info-block">
-                        <Image width={64} src={currentPlayer === Players.PLAYER1 ? player1Image : player2Image} />
-                        {'  '}
-                        Now its my turn!
-                    </Col>
+                    {gameLogs.length > 0 ? (
+                        <Col className="player-info-block">
+                            <Image width={64} src={currentPlayer === Players.PLAYER1 ? player1Image : player2Image} />
+                            {'  '}
+                            Now its my turn!
+                        </Col>
+                    ) : null}
                 </Row>
             </Layout.Header>
             <Layout hasSider>
                 <Layout.Sider style={{ backgroundColor: backgroundColor }} className="sider" width={360}>
-                    <Menu
-                        style={{ backgroundColor: backgroundColor }}
-                        mode="inline"
-                        selectedKeys={[location.pathname]}
-                        items={[
-                            {
-                                key: 'categories',
-                                icon: <AppstoreOutlined />,
-                                label: <span>Categories</span>,
-                            },
-                            {
-                                key: 'games',
-                                icon: <VideoCameraOutlined />,
-                                label: <span>Games</span>,
-                            },
-                            {
-                                key: 'users',
-                                icon: <UserOutlined />,
-                                label: <span>Users</span>,
-                            },
-                        ]}
-                    />
                     <div className="chat-block">
                         <Input
                             autoFocus={false}
@@ -65,7 +44,7 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                             onKeyDown={onKeyPress}
                             placeholder="Type action or message..."
                         />
-                        <ChatList chat={gameLogs} />
+                        {gameLogs.length > 0 ? <ChatList chat={gameLogs} /> : null}
                     </div>
                 </Layout.Sider>
                 <Layout.Content className="content" style={{ backgroundColor: backgroundColor }}>
