@@ -10,3 +10,5 @@ export const gameBackground = MazeBackground;
 export const wallImage = WhiteRock;
 export const animalPrints = PowPrints;
 export const localStorageUserName = 'MazeUsername';
+
+export const backgroundColor = '#bfbfbf';

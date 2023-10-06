@@ -1,5 +1,5 @@
 import './App.css';
-import Game from './game/game.tsx';
+import { Game } from './game';
 
 function App() {
     return <Game />;

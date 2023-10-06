@@ -12,17 +12,10 @@
 .logo {
   height: 32px;
   margin: 16px;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.page-layout__content {
-  margin: 16px;
-  background-color: #fff;
 }
 
 .page-layout__footer {
   text-align: center;
-  background: #fff;
 }
 
 .userInfo{
@@ -37,9 +30,14 @@
 }
 
 .player-icon{
-  color: greenyellow;
   background-size: cover;
   background-repeat: no-repeat;
   height: 64px;
   width: 64px;
+}
+
+.content{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

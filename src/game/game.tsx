@@ -4,7 +4,6 @@ import { directionsMap, createRevealedMaze, updateDirectionMap } from '../utils'
 import { Maze } from '../components';
 import { updateRevealed } from '../utils';
 import { localStorageUserName, player1Image, player2Image } from '../variables/variables.ts';
-import './game.css';
 import CustomModal from '../components/modal.tsx';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PrivatePageLayout from '../page-layout/private-page-layout.tsx';

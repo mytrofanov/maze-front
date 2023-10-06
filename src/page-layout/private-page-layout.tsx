@@ -3,7 +3,7 @@ import { Layout, Menu } from 'antd';
 import './private-page-layout.styles.css';
 import { AppstoreOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Players } from '../game';
-import { player1Image, player2Image } from '../variables/variables.ts';
+import { backgroundColor, player1Image, player2Image } from '../variables/variables.ts';
 
 interface PublicPageLayoutProps {
     currentPlayer: Players;
@@ -16,7 +16,7 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
     const { currentPlayer, children, footerContent, userInfo } = props;
     return (
         <Layout className="private-layout">
-            <Layout.Header className="header">
+            <Layout.Header className="header" style={{ backgroundColor: backgroundColor }}>
                 <div className="userInfo">{userInfo}</div>
                 <div className="player-info-block">
                     <div
@@ -32,9 +32,10 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                 </div>
             </Layout.Header>
             <Layout hasSider>
-                <Layout.Sider>
+                <Layout.Sider style={{ backgroundColor: backgroundColor }}>
                     <Menu
-                        theme="dark"
+                        style={{ backgroundColor: backgroundColor }}
+                        className="sider-block"
                         mode="inline"
                         selectedKeys={[location.pathname]}
                         items={[
@@ -56,9 +57,13 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                         ]}
                     />
                 </Layout.Sider>
-                <Layout.Content>{children}</Layout.Content>
+                <Layout.Content className="content" style={{ backgroundColor: backgroundColor }}>
+                    {children}
+                </Layout.Content>
             </Layout>
-            <Layout.Footer className="activation-page__footer">{footerContent}</Layout.Footer>
+            <Layout.Footer className="page-layout__footer" style={{ backgroundColor: backgroundColor }}>
+                {footerContent}
+            </Layout.Footer>
         </Layout>
     );
 };
