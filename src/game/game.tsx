@@ -91,8 +91,16 @@ const Game = () => {
         if (maze[newY][newX] !== Cell.WALL) {
             if (currentPlayer === Players.PLAYER1) {
                 setPlayer1({ ...player1, position: { x: newX, y: newY } });
+                if (maze[newY][newX] === Cell.EXIT) {
+                    setVinner(Players.PLAYER1);
+                    setOpenWinnerModal(true);
+                }
             } else {
                 setPlayer2({ ...player2, position: { x: newX, y: newY } });
+                if (maze[newY][newX] === Cell.EXIT) {
+                    setVinner(Players.PLAYER2);
+                    setOpenWinnerModal(true);
+                }
             }
             setDirections(prevDirections => updateDirectionMap(prevDirections, currentPlayerPosition, direction));
         }
