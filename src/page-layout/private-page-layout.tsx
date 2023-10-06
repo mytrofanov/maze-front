@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Image, Layout, Menu, Row } from 'antd';
+import { Col, Image, Input, Layout, Menu, Row } from 'antd';
 import './private-page-layout.styles.css';
 import { AppstoreOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { GameLogs, Players } from '../game';
@@ -28,10 +28,9 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                 </Row>
             </Layout.Header>
             <Layout hasSider>
-                <Layout.Sider style={{ backgroundColor: backgroundColor }} width={320}>
+                <Layout.Sider style={{ backgroundColor: backgroundColor }} className="sider" width={360}>
                     <Menu
                         style={{ backgroundColor: backgroundColor }}
-                        className="sider-block"
                         mode="inline"
                         selectedKeys={[location.pathname]}
                         items={[
@@ -52,7 +51,10 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                             },
                         ]}
                     />
-                    <ChatList chat={gameLogs} />
+                    <div className="chat-block">
+                        <Input autoFocus={false} />
+                        <ChatList chat={gameLogs} />
+                    </div>
                 </Layout.Sider>
                 <Layout.Content className="content" style={{ backgroundColor: backgroundColor }}>
                     {children}

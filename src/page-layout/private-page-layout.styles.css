@@ -25,6 +25,10 @@
   align-items: center;
 }
 
+.chat-block {
+  padding: 16px;
+}
+
 .player-icon{
   background-size: cover;
   background-repeat: no-repeat;
