@@ -1,4 +1,4 @@
-import { Avatar, List } from 'antd';
+import { Avatar, List, Typography } from 'antd';
 import { GameLogs } from '../game';
 import './chat-list.css';
 
@@ -18,7 +18,11 @@ const ChatList = (props: ChatListProps) => {
                     <List.Item.Meta
                         key={item.created}
                         avatar={<Avatar src={item.playerAvatar} />}
-                        title={<a href="https://ant.design">{item.direction}</a>}
+                        title={
+                            <Typography.Text code className="chat-item-title">
+                                {item.direction}
+                            </Typography.Text>
+                        }
                         description={item.message}
                     />
                 </List.Item>

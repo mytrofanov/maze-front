@@ -174,8 +174,6 @@ const Game = () => {
 
     const handleInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            // const value = event.currentTarget.value.trim();
-
             if (Object.values(Direction).includes(currentMessage as Direction)) {
                 handleDirectionInput(currentMessage as Direction);
             } else {
@@ -186,7 +184,7 @@ const Game = () => {
 
     return (
         <PrivatePageLayout
-            userInfo={`Hello ${username}!`}
+            userName={username}
             currentPlayer={currentPlayer}
             gameLogs={gameLogs}
             currentMessage={currentMessage}

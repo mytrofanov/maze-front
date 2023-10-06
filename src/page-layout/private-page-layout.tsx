@@ -8,7 +8,7 @@ import { ChatList } from '../components';
 
 interface PublicPageLayoutProps {
     currentPlayer: Players;
-    userInfo: string;
+    userName: string | null;
     children: React.ReactNode;
     gameLogs: GameLogs;
     currentMessage: string;
@@ -17,12 +17,15 @@ interface PublicPageLayoutProps {
 }
 
 const PrivatePageLayout = (props: PublicPageLayoutProps) => {
-    const { currentPlayer, children, userInfo, gameLogs, currentMessage, onKeyPress, onMessageChange } = props;
+    const { currentPlayer, children, userName, gameLogs, currentMessage, onKeyPress, onMessageChange } = props;
     return (
         <Layout className="private-layout">
             <Layout.Header style={{ backgroundColor: backgroundColor }}>
                 <Row className="header">
-                    <Col>{userInfo}</Col>
+                    <Col>
+                        Hello {userName ? userName : Players.PLAYER1}! Your avatar is:
+                        <Image width={64} src={player1Image} />
+                    </Col>
                     <Col className="player-info-block">
                         <Image width={64} src={currentPlayer === Players.PLAYER1 ? player1Image : player2Image} />
                         {'  '}
