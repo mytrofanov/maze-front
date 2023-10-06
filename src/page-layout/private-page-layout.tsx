@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Col, Image, Input, Layout, Menu, Row } from 'antd';
 import './private-page-layout.styles.css';
 import { AppstoreOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
@@ -11,10 +11,13 @@ interface PublicPageLayoutProps {
     userInfo: string;
     children: React.ReactNode;
     gameLogs: GameLogs;
+    currentMessage: string;
+    onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const PrivatePageLayout = (props: PublicPageLayoutProps) => {
-    const { currentPlayer, children, userInfo, gameLogs } = props;
+    const { currentPlayer, children, userInfo, gameLogs, currentMessage, onKeyPress, onMessageChange } = props;
     return (
         <Layout className="private-layout">
             <Layout.Header style={{ backgroundColor: backgroundColor }}>
@@ -52,7 +55,13 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                         ]}
                     />
                     <div className="chat-block">
-                        <Input autoFocus={false} />
+                        <Input
+                            autoFocus={false}
+                            value={currentMessage}
+                            onChange={onMessageChange}
+                            onKeyDown={onKeyPress}
+                            placeholder="Type action or message..."
+                        />
                         <ChatList chat={gameLogs} />
                     </div>
                 </Layout.Sider>

@@ -28,12 +28,14 @@ export enum Direction {
 
 export type DirectionMap = (Direction | null)[][];
 
+type position = { x: number; y: number };
+
 export interface GameLog {
     playerId: Players;
     playerAvatar: string;
-    direction: Direction;
+    direction: Direction | null;
     message: string;
-    position: { x: number; y: number };
+    position: position | null;
     created: string;
 }
 
