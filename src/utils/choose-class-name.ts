@@ -1,10 +1,10 @@
-import { Cell, PlayerPosition } from '../game';
+import { Cell, Player } from '../game';
 
 export const chooseClassName = (
     cell: Cell,
     revealed: boolean[][],
-    player1: PlayerPosition,
-    player2: PlayerPosition,
+    player1: Player,
+    player2: Player,
     rowIndex: number,
     cellIndex: number,
 ) => {
@@ -22,10 +22,10 @@ export const chooseClassName = (
     if (cell === Cell.EXIT) {
         className = className + ' ' + 'exit';
     }
-    if (player1.x === cellIndex && player1.y === rowIndex) {
+    if (player1.position.x === cellIndex && player1.position.y === rowIndex) {
         className = className + ' ' + 'player1';
     }
-    if (player2.x === cellIndex && player2.y === rowIndex) {
+    if (player2.position.x === cellIndex && player2.position.y === rowIndex) {
         className = className + ' ' + 'player2';
     }
 

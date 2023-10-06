@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cell, Direction, GameLogs, MazeType, Players, PlayerPosition, DirectionMap } from './types.ts';
+import { Cell, Direction, GameLogs, MazeType, Players, DirectionMap, Player } from './types.ts';
 import { directionsMap, createRevealedMaze, updateDirectionMap } from '../utils';
 import { Maze } from '../components';
 import { updateRevealed } from '../utils';
@@ -22,8 +22,8 @@ const maze: MazeType = [
 ];
 
 const Game = () => {
-    const [player1, setPlayer1] = React.useState<PlayerPosition>({ x: 1, y: 1 });
-    const [player2, setPlayer2] = React.useState<PlayerPosition>({ x: 1, y: 8 });
+    const [player1, setPlayer1] = React.useState<Player>({ position: { x: 1, y: 1 }, avatar: player1Image });
+    const [player2, setPlayer2] = React.useState<Player>({ position: { x: 1, y: 8 }, avatar: player2Image });
     const [currentPlayer, setCurrentPlayer] = React.useState<Players>(Players.PLAYER1);
     const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze, player1, player2));
     const [vinner, setVinner] = React.useState<Players | null>();
@@ -46,28 +46,23 @@ const Game = () => {
         setCurrentPlayer(prev => (prev === Players.PLAYER1 ? Players.PLAYER2 : Players.PLAYER1));
     };
 
-    const saveLogs = (
-        currentPlayer: Players,
-        direction: Direction,
-        newX: number,
-        newY: number,
-        prevX: number,
-        prevY: number,
-    ) => {
+    const saveLogs = (currentPlayer: Players, direction: Direction, newX: number, newY: number) => {
         const playerId = currentPlayer === Players.PLAYER1 ? Players.PLAYER1 : Players.PLAYER2;
+        const created = new Date().toLocaleTimeString();
         const newLog = {
             playerId,
             direction,
-            prevPosition: { x: prevX, y: prevY },
-            nextPosition: { x: newX, y: newY },
-            message: `${playerId} going ${direction} at ${new Date().toLocaleTimeString()}`,
+            position: { x: newX, y: newY },
+            message: `${playerId} going ${direction} at ${created}`,
+            created,
+            playerAvatar: currentPlayer === Players.PLAYER1 ? player1.avatar : player2.avatar,
         };
         setGameLogs(prevLogs => [...prevLogs, newLog]);
     };
 
     const handleKeyPress = (event: KeyboardEvent) => {
         // event.preventDefault();
-        const currentPlayerPosition = currentPlayer === Players.PLAYER1 ? player1 : player2;
+        const currentPlayerPosition = currentPlayer === Players.PLAYER1 ? player1.position : player2.position;
         let newX = currentPlayerPosition.x;
         let newY = currentPlayerPosition.y;
         let direction: Direction;
@@ -92,17 +87,17 @@ const Game = () => {
                 return;
         }
 
-        saveLogs(currentPlayer, direction, newX, newY, currentPlayerPosition.x, currentPlayerPosition.y);
+        saveLogs(currentPlayer, direction, newX, newY);
 
         if (maze[newY][newX] !== Cell.WALL) {
             if (currentPlayer === Players.PLAYER1) {
-                setPlayer1({ x: newX, y: newY });
+                setPlayer1({ ...player1, position: { x: newX, y: newY } });
                 if (maze[newY][newX] === Cell.EXIT) {
                     setVinner(Players.PLAYER1);
                     setOpenWinnerModal(true);
                 }
             } else {
-                setPlayer2({ x: newX, y: newY });
+                setPlayer2({ ...player2, position: { x: newX, y: newY } });
                 if (maze[newY][newX] === Cell.EXIT) {
                     setVinner(Players.PLAYER2);
                     setOpenWinnerModal(true);

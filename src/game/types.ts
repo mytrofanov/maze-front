@@ -11,9 +11,12 @@ export enum Players {
     PLAYER2 = 'player2',
 }
 
-export type PlayerPosition = {
-    x: number;
-    y: number;
+export type Player = {
+    position: {
+        x: number;
+        y: number;
+    };
+    avatar: string;
 };
 
 export enum Direction {
@@ -27,10 +30,11 @@ export type DirectionMap = (Direction | null)[][];
 
 export interface GameLog {
     playerId: Players;
+    playerAvatar: string;
     direction: Direction;
     message: string;
-    prevPosition: { x: number; y: number };
-    nextPosition: { x: number; y: number };
+    position: { x: number; y: number };
+    created: string;
 }
 
 export type GameLogs = GameLog[];

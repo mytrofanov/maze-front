@@ -8,7 +8,7 @@ interface CreateUserModalProps {
     modalOpen: boolean;
 }
 
-const CreateSceneButton = (props: CreateUserModalProps) => {
+const CreateUserModal = (props: CreateUserModalProps) => {
     const { onCreate, onCancel, modalOpen } = props;
     const [form] = Form.useForm<CreateUserFormValues>();
 
@@ -74,4 +74,4 @@ const CreateSceneButton = (props: CreateUserModalProps) => {
 };
 
 export type { CreateUserFormValues, CreateUserModalProps };
-export default CreateSceneButton;
+export default CreateUserModal;
