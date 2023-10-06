@@ -26,9 +26,19 @@ const Game = () => {
     const [currentPlayer, setCurrentPlayer] = React.useState<Players>(Players.PLAYER1);
     const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze, player1, player2));
     const [vinner, setVinner] = React.useState<Players | null>();
-    const [showModal, setShowModal] = React.useState<boolean>(false);
+    const [showWinnerModal, setShowWinnerModal] = React.useState<boolean>(false);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     const [directions, setDirections] = React.useState<DirectionMap>(directionsMap(maze));
+    const [username, setUsername] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        const storedName = localStorage.getItem('MazeUsername');
+        if (storedName) {
+            setUsername(storedName);
+        } else {
+            setIsModalOpen(true);
+        }
+    }, []);
 
     const togglePlayer = () => {
         setCurrentPlayer(prev => (prev === Players.PLAYER1 ? Players.PLAYER2 : Players.PLAYER1));
@@ -86,13 +96,13 @@ const Game = () => {
                 setPlayer1({ x: newX, y: newY });
                 if (maze[newY][newX] === Cell.EXIT) {
                     setVinner(Players.PLAYER1);
-                    setShowModal(true);
+                    setShowWinnerModal(true);
                 }
             } else {
                 setPlayer2({ x: newX, y: newY });
                 if (maze[newY][newX] === Cell.EXIT) {
                     setVinner(Players.PLAYER2);
-                    setShowModal(true);
+                    setShowWinnerModal(true);
                 }
             }
             setDirections(prevDirections => updateDirectionMap(prevDirections, currentPlayerPosition, direction));
@@ -111,12 +121,12 @@ const Game = () => {
 
     const handleModalOk = () => {
         console.log('Winner is: ', vinner);
-        setShowModal(false);
+        setShowWinnerModal(false);
     };
 
     const handleModalCancel = () => {
         console.log('Winner is: ', vinner);
-        setShowModal(false);
+        setShowWinnerModal(false);
     };
 
     return (
@@ -136,7 +146,7 @@ const Game = () => {
             <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} directions={directions} />
             {vinner ? (
                 <CustomModal
-                    modalOpen={showModal}
+                    modalOpen={showWinnerModal}
                     onOk={handleModalOk}
                     title="Vinner"
                     content={`Player ${vinner} vins!`}
