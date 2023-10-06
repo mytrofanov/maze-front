@@ -3,9 +3,10 @@ import { Cell, Direction, GameLogs, MazeType, Players, PlayerPosition, Direction
 import { directionsMap, createRevealedMaze, updateDirectionMap } from '../utils';
 import { Maze } from '../components';
 import { updateRevealed } from '../utils';
-import { player1Image, player2Image } from '../variables/variables.ts';
+import { localStorageUserName, player1Image, player2Image } from '../variables/variables.ts';
 import './game.css';
 import CustomModal from '../components/modal.tsx';
+import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 
 const maze: MazeType = [
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
@@ -26,17 +27,18 @@ const Game = () => {
     const [currentPlayer, setCurrentPlayer] = React.useState<Players>(Players.PLAYER1);
     const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze, player1, player2));
     const [vinner, setVinner] = React.useState<Players | null>();
-    const [showWinnerModal, setShowWinnerModal] = React.useState<boolean>(false);
+    const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
+    const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     const [directions, setDirections] = React.useState<DirectionMap>(directionsMap(maze));
     const [username, setUsername] = React.useState<string | null>(null);
 
     React.useEffect(() => {
-        const storedName = localStorage.getItem('MazeUsername');
+        const storedName = localStorage.getItem(localStorageUserName);
         if (storedName) {
             setUsername(storedName);
         } else {
-            setIsModalOpen(true);
+            setOpenCreateUserModal(true);
         }
     }, []);
 
@@ -96,13 +98,13 @@ const Game = () => {
                 setPlayer1({ x: newX, y: newY });
                 if (maze[newY][newX] === Cell.EXIT) {
                     setVinner(Players.PLAYER1);
-                    setShowWinnerModal(true);
+                    setOpenWinnerModal(true);
                 }
             } else {
                 setPlayer2({ x: newX, y: newY });
                 if (maze[newY][newX] === Cell.EXIT) {
                     setVinner(Players.PLAYER2);
-                    setShowWinnerModal(true);
+                    setOpenWinnerModal(true);
                 }
             }
             setDirections(prevDirections => updateDirectionMap(prevDirections, currentPlayerPosition, direction));
@@ -119,18 +121,29 @@ const Game = () => {
         };
     }, [player1, player2, currentPlayer]);
 
-    const handleModalOk = () => {
+    const handleWinnerModalOk = () => {
         console.log('Winner is: ', vinner);
-        setShowWinnerModal(false);
+        setOpenWinnerModal(false);
     };
 
-    const handleModalCancel = () => {
+    const handleWinnerModalCancel = () => {
         console.log('Winner is: ', vinner);
-        setShowWinnerModal(false);
+        setOpenWinnerModal(false);
+    };
+
+    const handleCreateUser = (formValues: CreateUserFormValues) => {
+        localStorage.setItem(localStorageUserName, formValues.userName);
+        setUsername(formValues.userName);
+        setOpenCreateUserModal(false);
+    };
+
+    const handleCancelCreateUser = () => {
+        setOpenCreateUserModal(false);
     };
 
     return (
         <div>
+            <div>Hi! {username}</div>
             <div className="player-info-block">
                 <div
                     className="player-name"
@@ -144,17 +157,20 @@ const Game = () => {
                 Now its my turn!
             </div>
             <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} directions={directions} />
-            {vinner ? (
-                <CustomModal
-                    modalOpen={showWinnerModal}
-                    onOk={handleModalOk}
-                    title="Vinner"
-                    content={`Player ${vinner} vins!`}
-                    onCancel={handleModalCancel}
-                    image={vinner === Players.PLAYER1 ? player1Image : player2Image}
-                    width={180}
-                />
-            ) : null}
+            <CustomModal
+                modalOpen={openWinnerModal}
+                onOk={handleWinnerModalOk}
+                title="Vinner"
+                content={`Player ${vinner} vins!`}
+                onCancel={handleWinnerModalCancel}
+                image={vinner === Players.PLAYER1 ? player1Image : player2Image}
+                width={180}
+            />
+            <CreateUserModal
+                modalOpen={openCreateUserModal}
+                onCancel={handleCancelCreateUser}
+                onCreate={handleCreateUser}
+            />
         </div>
     );
 };

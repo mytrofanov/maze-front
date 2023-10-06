@@ -1,19 +1,16 @@
 import { Modal, Form, Input } from 'antd';
 import { nameValidator } from '../utils';
-
-interface CreateSceneFormValues {
-    userName: string;
-}
+import { CreateUserFormValues } from '../types';
 
 interface CreateUserModalProps {
-    onCreate?: (values: CreateSceneFormValues) => void;
+    onCreate?: (values: CreateUserFormValues) => void;
     onCancel?: () => void;
     modalOpen: boolean;
 }
 
 const CreateSceneButton = (props: CreateUserModalProps) => {
     const { onCreate, onCancel, modalOpen } = props;
-    const [form] = Form.useForm<CreateSceneFormValues>();
+    const [form] = Form.useForm<CreateUserFormValues>();
 
     const handleCancel = () => {
         if (onCancel) {
@@ -39,6 +36,7 @@ const CreateSceneButton = (props: CreateUserModalProps) => {
                 onOk={handleOk}
                 cancelText="Cancel"
                 okText="Ok"
+                centered
             >
                 <Form
                     preserve={false}
@@ -75,5 +73,5 @@ const CreateSceneButton = (props: CreateUserModalProps) => {
     );
 };
 
-export type { CreateSceneFormValues, CreateUserModalProps };
+export type { CreateUserFormValues, CreateUserModalProps };
 export default CreateSceneButton;
