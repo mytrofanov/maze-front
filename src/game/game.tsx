@@ -57,7 +57,7 @@ const Game = () => {
             created,
             playerAvatar: currentPlayer === Players.PLAYER1 ? player1.avatar : player2.avatar,
         };
-        setGameLogs(prevLogs => [...prevLogs, newLog]);
+        setGameLogs(prevLogs => [newLog, ...prevLogs]);
     };
 
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -138,11 +138,7 @@ const Game = () => {
     };
 
     return (
-        <PrivatePageLayout
-            userInfo={`Hello ${username}!`}
-            currentPlayer={currentPlayer}
-            footerContent={<div>More games here!</div>}
-        >
+        <PrivatePageLayout userInfo={`Hello ${username}!`} currentPlayer={currentPlayer} gameLogs={gameLogs}>
             <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} directions={directions} />
             <CustomModal
                 modalOpen={openWinnerModal}

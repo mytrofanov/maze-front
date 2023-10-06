@@ -2,18 +2,19 @@ import React from 'react';
 import { Col, Image, Layout, Menu, Row } from 'antd';
 import './private-page-layout.styles.css';
 import { AppstoreOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
-import { Players } from '../game';
+import { GameLogs, Players } from '../game';
 import { backgroundColor, player1Image, player2Image } from '../variables/variables.ts';
+import { ChatList } from '../components';
 
 interface PublicPageLayoutProps {
     currentPlayer: Players;
     userInfo: string;
     children: React.ReactNode;
-    footerContent: React.ReactNode;
+    gameLogs: GameLogs;
 }
 
 const PrivatePageLayout = (props: PublicPageLayoutProps) => {
-    const { currentPlayer, children, footerContent, userInfo } = props;
+    const { currentPlayer, children, userInfo, gameLogs } = props;
     return (
         <Layout className="private-layout">
             <Layout.Header style={{ backgroundColor: backgroundColor }}>
@@ -27,7 +28,7 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                 </Row>
             </Layout.Header>
             <Layout hasSider>
-                <Layout.Sider style={{ backgroundColor: backgroundColor }}>
+                <Layout.Sider style={{ backgroundColor: backgroundColor }} width={320}>
                     <Menu
                         style={{ backgroundColor: backgroundColor }}
                         className="sider-block"
@@ -51,13 +52,14 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                             },
                         ]}
                     />
+                    <ChatList chat={gameLogs} />
                 </Layout.Sider>
                 <Layout.Content className="content" style={{ backgroundColor: backgroundColor }}>
                     {children}
                 </Layout.Content>
             </Layout>
             <Layout.Footer className="page-layout__footer" style={{ backgroundColor: backgroundColor }}>
-                {footerContent}
+                MaxLab
             </Layout.Footer>
         </Layout>
     );

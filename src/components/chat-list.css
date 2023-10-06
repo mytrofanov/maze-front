@@ -1,0 +1,5 @@
+.chat-list{
+    padding: 16px;
+    height: 40vh;
+    overflow-y: auto;
+}
