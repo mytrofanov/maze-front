@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Col, Image, Input, Layout, Row } from 'antd';
+import { Button, Col, Image, Input, Layout, Row, Space } from 'antd';
 import './private-page-layout.styles.css';
 import { GameLogs, Players } from '../game';
 import { backgroundColor, player1Image, player2Image } from '../variables/variables.ts';
@@ -45,6 +45,12 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                             placeholder="Type action or message..."
                         />
                         {gameLogs.length > 0 ? <ChatList chat={gameLogs} /> : null}
+                        <Space wrap>
+                            <Button type="dashed">Give UP</Button>
+                            <Button type="dashed" disabled>
+                                Exit
+                            </Button>
+                        </Space>
                     </div>
                 </Layout.Sider>
                 <Layout.Content className="content" style={{ backgroundColor: backgroundColor }}>
