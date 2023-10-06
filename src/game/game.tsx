@@ -122,7 +122,6 @@ const Game = () => {
     return (
         <div>
             <div className="player-info-block">
-                Now its your turn:{' '}
                 <div
                     className="player-name"
                     style={
@@ -131,6 +130,8 @@ const Game = () => {
                             : { backgroundImage: `url(${player2Image})` }
                     }
                 />
+                {'  '}
+                Now its my turn!
             </div>
             <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} directions={directions} />
             {vinner ? (
