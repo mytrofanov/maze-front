@@ -1,0 +1,45 @@
+.private-layout {
+  min-height: 100vh;
+  min-width: 1024px;
+}
+
+.header {
+  color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.page-layout__content {
+  margin: 16px;
+  background-color: #fff;
+}
+
+.page-layout__footer {
+  text-align: center;
+  background: #fff;
+}
+
+.userInfo{
+  color: white;
+}
+
+.player-info-block {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+.player-icon{
+  color: greenyellow;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 64px;
+  width: 64px;
+}

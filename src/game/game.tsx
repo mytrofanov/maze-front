@@ -7,6 +7,7 @@ import { localStorageUserName, player1Image, player2Image } from '../variables/v
 import './game.css';
 import CustomModal from '../components/modal.tsx';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
+import PrivatePageLayout from '../page-layout/private-page-layout.tsx';
 
 const maze: MazeType = [
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
@@ -142,20 +143,11 @@ const Game = () => {
     };
 
     return (
-        <div>
-            <div>Hi! {username}</div>
-            <div className="player-info-block">
-                <div
-                    className="player-name"
-                    style={
-                        currentPlayer === Players.PLAYER1
-                            ? { backgroundImage: `url(${player1Image})` }
-                            : { backgroundImage: `url(${player2Image})` }
-                    }
-                />
-                {'  '}
-                Now its my turn!
-            </div>
+        <PrivatePageLayout
+            userInfo={`Hello ${username}!`}
+            currentPlayer={currentPlayer}
+            footerContent={<div>More games here!</div>}
+        >
             <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} directions={directions} />
             <CustomModal
                 modalOpen={openWinnerModal}
@@ -171,7 +163,7 @@ const Game = () => {
                 onCancel={handleCancelCreateUser}
                 onCreate={handleCreateUser}
             />
-        </div>
+        </PrivatePageLayout>
     );
 };
 
