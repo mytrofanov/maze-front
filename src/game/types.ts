@@ -25,8 +25,6 @@ export enum Direction {
     RIGHT = '/right',
 }
 
-export type DirectionMap = (Direction | null)[][];
-
 export type Position = { x: number; y: number };
 
 export interface GameLog {
