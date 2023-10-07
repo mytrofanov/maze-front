@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Cell, Direction, GameLogs, MazeCell, PlayerType, Position } from './types.ts';
+import { Cell, Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
 import { Maze } from '../components';
 import { localStorageUserName, player1Image, player2Image } from '../variables';
 import CustomModal from '../components/modal.tsx';
@@ -9,30 +9,12 @@ import { findPlayerPosition } from '../utils/find-player-position.ts';
 import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
 
-// const maze: MazeType = [
-//     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-//     [Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL],
-//     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
-//     [Cell.WALL, Cell.WALL, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
-//     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
-//     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
-//     [Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-//     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-//     [Cell.EXIT, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL],
-//     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-// ];
-
 const Game = () => {
-    //const [player1, setPlayer1] = React.useState<Player>({ position: { x: 1, y: 1 }, avatar: player1Image });
-    //const [player2, setPlayer2] = React.useState<Player>({ position: { x: 1, y: 8 }, avatar: player2Image });
-    //const [currentPlayer, setCurrentPlayer] = React.useState<Players>(Players.PLAYER1);
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
-    //const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze, player1, player2));
     const [vinner, setVinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
-    //const [directions, setDirections] = React.useState<DirectionMap>(directionsMap(maze));
     const [username, setUsername] = React.useState<string | null>(null);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][]>(newMaze);
@@ -73,7 +55,6 @@ const Game = () => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        console.log('handleDirectionInput');
         const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
         if (!startPosition) {
             console.log('Players are not found on maze');

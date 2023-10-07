@@ -2,18 +2,6 @@ import { animalPrints, player1Image, player2Image, wallImage } from '../variable
 import { Cell, Direction, MazeCell, PlayerType } from '../game';
 
 export const chooseImage = (cell: MazeCell) => {
-    // const isPlayer1Here = player1.position.x === cellIndex && player1.position.y === rowIndex;
-    // const isPlayer2Here = player2.position.x === cellIndex && player2.position.y === rowIndex;
-
-    // if (player1Position && player2Position) {
-    //     return {
-    //         backgroundImage: `url(${player2Image}), url(${player1Image})`,
-    //         backgroundSize: '50% 100%, 50% 100%',
-    //         backgroundRepeat: 'no-repeat, no-repeat',
-    //         backgroundPosition: 'left, right',
-    //     };
-    // }
-
     if (cell.player === PlayerType.PLAYER1) {
         return { backgroundImage: `url(${player1Image})` };
     }

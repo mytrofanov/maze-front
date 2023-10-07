@@ -17,20 +17,6 @@ export type MazeCell = {
 };
 
 export type MazeType = Cell[][];
-export type Maze = MazeCell[][];
-
-// export enum Players {
-//     PLAYER1 = 'player1',
-//     PLAYER2 = 'player2',
-// }
-
-// export type Player = {
-//     position: {
-//         x: number;
-//         y: number;
-//     };
-//     avatar: string;
-// };
 
 export enum Direction {
     UP = '/up',
