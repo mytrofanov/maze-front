@@ -47,3 +47,57 @@ export const newMaze: MazeCell[][] = [
     [exit, path, path, path, path, path, path, path, path, wall],
     [wall, wall, wall, wall, wall, wall, wall, wall, wall, wall],
 ];
+
+const newMazeA: MazeCell[][] = [
+    [wall, wall, wall, exit, wall, wall, wall, wall, wall, wall],
+    [wall, path, path, path, path, path, path, path, path, wall],
+    [wall, wall, wall, path, wall, wall, path, wall, wall, wall],
+    [wall, wall, path, path, wall, path, startSecond, path, path, wall],
+    [wall, wall, wall, path, path, path, path, wall, path, wall],
+    [wall, wall, wall, path, wall, wall, path, wall, path, wall],
+    [wall, path, path, path, wall, wall, wall, wall, path, wall],
+    [wall, wall, wall, path, wall, wall, wall, wall, path, wall],
+    [wall, startFirst, path, path, path, path, path, path, path, wall],
+    [wall, wall, wall, wall, wall, wall, wall, wall, wall, wall],
+];
+
+const newMazeB: MazeCell[][] = [
+    [wall, wall, wall, wall, wall, wall, wall, wall, wall, wall],
+    [wall, path, path, startFirst, path, path, path, path, path, wall],
+    [wall, wall, wall, path, wall, wall, path, wall, wall, wall],
+    [wall, wall, path, path, wall, path, path, path, path, wall],
+    [wall, wall, wall, path, path, path, path, wall, path, wall],
+    [wall, wall, wall, path, wall, wall, path, wall, path, exit],
+    [wall, path, path, path, wall, path, path, path, path, wall],
+    [wall, wall, wall, path, wall, path, wall, wall, wall, wall],
+    [wall, startSecond, path, path, path, path, path, path, path, wall],
+    [wall, wall, wall, wall, wall, wall, wall, wall, wall, wall],
+];
+
+const newMazeC: MazeCell[][] = [
+    [wall, wall, wall, wall, wall, wall, wall, wall, wall, wall],
+    [wall, path, path, startFirst, path, path, path, path, path, wall],
+    [wall, wall, wall, path, wall, wall, path, wall, wall, wall],
+    [wall, path, path, path, wall, path, path, startSecond, path, wall],
+    [wall, wall, wall, path, path, path, path, wall, path, wall],
+    [wall, wall, wall, path, wall, wall, wall, wall, path, wall],
+    [wall, path, path, path, wall, path, path, path, path, wall],
+    [wall, wall, wall, path, wall, path, wall, wall, wall, wall],
+    [wall, path, path, path, path, path, path, path, path, wall],
+    [wall, wall, wall, wall, wall, wall, exit, wall, wall, wall],
+];
+
+const newMazeD: MazeCell[][] = [
+    [wall, wall, wall, wall, wall, wall, wall, wall, wall, wall],
+    [wall, path, path, path, path, path, path, path, path, wall],
+    [wall, wall, wall, path, wall, wall, path, wall, wall, wall],
+    [exit, path, path, path, wall, path, path, startSecond, path, wall],
+    [wall, wall, wall, path, path, path, path, wall, path, wall],
+    [wall, wall, wall, path, wall, wall, wall, wall, path, wall],
+    [wall, path, path, path, wall, path, path, path, path, wall],
+    [wall, path, wall, wall, wall, path, wall, wall, wall, wall],
+    [wall, path, path, startFirst, path, path, path, path, path, wall],
+    [wall, wall, wall, wall, wall, wall, wall, wall, wall, wall],
+];
+
+const Mazes = [newMaze, newMazeA, newMazeB, newMazeC, newMazeD];
