@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react';
 import { Button, Col, Image, Input, Layout, Row, Space } from 'antd';
 import './private-page-layout.styles.css';
 import { GameLogs, Players } from '../game';
-import { backgroundColor, player1Image, player2Image } from '../variables/variables.ts';
+import { player1Image, player2Image } from '../variables/variables.ts';
 import { ChatList } from '../components';
 
 interface PublicPageLayoutProps {
@@ -19,7 +19,7 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
     const { currentPlayer, children, userName, gameLogs, currentMessage, onKeyPress, onMessageChange } = props;
     return (
         <Layout className="private-layout">
-            <Layout.Header style={{ backgroundColor: backgroundColor }}>
+            <Layout.Header>
                 <Row className="header">
                     <Col>
                         Hello {userName ? userName : Players.PLAYER1}! Your avatar is:
@@ -35,7 +35,7 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                 </Row>
             </Layout.Header>
             <Layout hasSider>
-                <Layout.Sider style={{ backgroundColor: backgroundColor }} className="sider" width={360}>
+                <Layout.Sider className="sider" width={360}>
                     <div className="chat-block">
                         <Input
                             autoFocus={false}
@@ -46,20 +46,16 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                         />
                         {gameLogs.length > 0 ? <ChatList chat={gameLogs} /> : null}
                         <Space wrap>
-                            <Button type="dashed">Give UP</Button>
-                            <Button type="dashed" disabled>
+                            <Button type="primary">Give UP</Button>
+                            <Button type="primary" disabled>
                                 Exit
                             </Button>
                         </Space>
                     </div>
                 </Layout.Sider>
-                <Layout.Content className="content" style={{ backgroundColor: backgroundColor }}>
-                    {children}
-                </Layout.Content>
+                <Layout.Content className="content">{children}</Layout.Content>
             </Layout>
-            <Layout.Footer className="page-layout__footer" style={{ backgroundColor: backgroundColor }}>
-                MaxLab
-            </Layout.Footer>
+            <Layout.Footer className="page-layout__footer">MaxLab</Layout.Footer>
         </Layout>
     );
 };
