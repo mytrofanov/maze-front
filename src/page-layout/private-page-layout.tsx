@@ -44,7 +44,7 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                             onKeyDown={onKeyPress}
                             placeholder="Type action or message..."
                         />
-                        {gameLogs.length > 0 ? <ChatList chat={gameLogs} /> : null}
+                        <ChatList chat={gameLogs} />
                         <Space wrap>
                             <Button type="primary">Give UP</Button>
                             <Button type="primary" disabled>
