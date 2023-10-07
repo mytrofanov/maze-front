@@ -25,6 +25,14 @@ export enum Direction {
     RIGHT = '/right',
 }
 
+export enum GameStage {
+    WAITING = 'WAITING',
+    NEW_GAME = 'NEW_GAME',
+    CONNECTING = 'CONNECTING',
+    CONNECTED = 'CONNECTED',
+    LOST_CONNECTION = 'LOST_CONNECTION',
+}
+
 export type Position = { x: number; y: number };
 
 export interface GameLog {

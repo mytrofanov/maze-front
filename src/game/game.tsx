@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Cell, Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
+import { Cell, Direction, GameLogs, GameStage, MazeCell, PlayerType } from './types.ts';
 import { Maze } from '../components';
 import { localStorageUserName, player1Image, player2Image } from '../variables';
 import CustomModal from '../components/modal.tsx';
@@ -9,7 +9,13 @@ import { findPlayerPosition } from '../utils/find-player-position.ts';
 import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
 
-const Game = () => {
+interface GameProps {
+    isConnected: boolean;
+    fooEvents: unknown[];
+}
+
+const Game = (props: GameProps) => {
+    const { isConnected, fooEvents } = props;
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
     const [vinner, setVinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
@@ -18,6 +24,7 @@ const Game = () => {
     const [username, setUsername] = React.useState<string | null>(null);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][]>(newMaze);
+    const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
 
     React.useEffect(() => {
         const storedName = localStorage.getItem(localStorageUserName);
@@ -182,16 +189,35 @@ const Game = () => {
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
         >
-            <Maze maze={newMazeArr} />
-            <CustomModal
-                modalOpen={openWinnerModal}
-                onOk={handleWinnerModalOk}
-                title="Vinner"
-                content={`Player ${vinner} vins!`}
-                onCancel={handleWinnerModalCancel}
-                image={vinner === PlayerType.PLAYER1 ? player1Image : player2Image}
-                width={180}
-            />
+            {gameStage === GameStage.WAITING ? (
+                <>
+                    <Maze maze={newMazeArr} />
+                    <CustomModal
+                        modalOpen={openWinnerModal}
+                        onOk={handleWinnerModalOk}
+                        title="Vinner"
+                        content={`Player ${vinner} vins!`}
+                        onCancel={handleWinnerModalCancel}
+                        image={vinner === PlayerType.PLAYER1 ? player1Image : player2Image}
+                        width={180}
+                    />
+                </>
+            ) : null}
+
+            {gameStage === GameStage.NEW_GAME || gameStage === GameStage.CONNECTED ? (
+                <>
+                    <Maze maze={newMazeArr} />
+                    <CustomModal
+                        modalOpen={openWinnerModal}
+                        onOk={handleWinnerModalOk}
+                        title="Vinner"
+                        content={`Player ${vinner} vins!`}
+                        onCancel={handleWinnerModalCancel}
+                        image={vinner === PlayerType.PLAYER1 ? player1Image : player2Image}
+                        width={180}
+                    />
+                </>
+            ) : null}
             <CreateUserModal
                 modalOpen={openCreateUserModal}
                 onCancel={handleCancelCreateUser}
