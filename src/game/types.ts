@@ -5,8 +5,8 @@ export enum Cell {
 }
 
 export enum PlayerType {
-    PLAYER1,
-    PLAYER2,
+    PLAYER1 = 1,
+    PLAYER2 = 2,
 }
 
 export type MazeCell = {
@@ -17,20 +17,6 @@ export type MazeCell = {
 };
 
 export type MazeType = Cell[][];
-export type Maze = MazeCell[][];
-
-export enum Players {
-    PLAYER1 = 'player1',
-    PLAYER2 = 'player2',
-}
-
-export type Player = {
-    position: {
-        x: number;
-        y: number;
-    };
-    avatar: string;
-};
 
 export enum Direction {
     UP = '/up',
@@ -44,7 +30,7 @@ export type DirectionMap = (Direction | null)[][];
 export type Position = { x: number; y: number };
 
 export interface GameLog {
-    playerId: Players;
+    playerId: PlayerType;
     playerAvatar: string;
     direction: Direction | null;
     message: string;

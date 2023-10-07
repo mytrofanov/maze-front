@@ -1,37 +1,23 @@
 import React, { ChangeEvent } from 'react';
-import { Cell, Direction, DirectionMap, GameLogs, MazeCell, MazeType, Player, Players } from './types.ts';
-import { createRevealedMaze, directionsMap, updateDirectionMap, updateRevealed } from '../utils';
+import { Cell, Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
 import { Maze } from '../components';
-import { localStorageUserName, player1Image, player2Image } from '../variables/variables.ts';
+import { localStorageUserName, player1Image, player2Image } from '../variables';
 import CustomModal from '../components/modal.tsx';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PrivatePageLayout from '../page-layout/private-page-layout.tsx';
-
-const maze: MazeType = [
-    [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-    [Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL],
-    [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
-    [Cell.WALL, Cell.WALL, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
-    [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
-    [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL],
-    [Cell.WALL, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-    [Cell.WALL, Cell.WALL, Cell.WALL, Cell.PATH, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-    [Cell.EXIT, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.PATH, Cell.WALL],
-    [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-];
+import { findPlayerPosition } from '../utils/find-player-position.ts';
+import { newMaze } from '../variables';
+import { updateMazeCell } from '../utils/update-maze.ts';
 
 const Game = () => {
-    const [player1, setPlayer1] = React.useState<Player>({ position: { x: 1, y: 1 }, avatar: player1Image });
-    const [player2, setPlayer2] = React.useState<Player>({ position: { x: 1, y: 8 }, avatar: player2Image });
-    const [currentPlayer, setCurrentPlayer] = React.useState<Players>(Players.PLAYER1);
-    const [revealed, setRevealed] = React.useState<boolean[][]>(createRevealedMaze(maze, player1, player2));
-    const [vinner, setVinner] = React.useState<Players | null>();
+    const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
+    const [vinner, setVinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
-    const [directions, setDirections] = React.useState<DirectionMap>(directionsMap(maze));
     const [username, setUsername] = React.useState<string | null>(null);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
+    const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][]>(newMaze);
 
     React.useEffect(() => {
         const storedName = localStorage.getItem(localStorageUserName);
@@ -43,17 +29,17 @@ const Game = () => {
     }, []);
 
     const togglePlayer = () => {
-        setCurrentPlayer(prev => (prev === Players.PLAYER1 ? Players.PLAYER2 : Players.PLAYER1));
+        setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
     };
 
     const saveLogs = (
-        currentPlayer: Players,
+        currentPlayer: PlayerType,
         direction?: Direction,
         newX?: number,
         newY?: number,
         message?: string,
     ) => {
-        const playerId = currentPlayer === Players.PLAYER1 ? Players.PLAYER1 : Players.PLAYER2;
+        const playerId = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         const created = new Date().toLocaleTimeString();
         const newLog = {
             playerId,
@@ -63,15 +49,20 @@ const Game = () => {
                 ? `${playerId} message: ${message} at ${created}`
                 : `${playerId} going ${direction} at ${created}`,
             created,
-            playerAvatar: currentPlayer === Players.PLAYER1 ? player1.avatar : player2.avatar,
+            playerAvatar: currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image,
         };
         setGameLogs(prevLogs => [newLog, ...prevLogs]);
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        const currentPlayerPosition = currentPlayer === Players.PLAYER1 ? player1.position : player2.position;
-        let newX = currentPlayerPosition.x;
-        let newY = currentPlayerPosition.y;
+        const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
+        if (!startPosition) {
+            console.log('Players are not found on maze');
+            return;
+        }
+
+        let newX = startPosition.x;
+        let newY = startPosition.y;
 
         if (direction === Direction.UP) {
             newY -= 1;
@@ -88,23 +79,23 @@ const Game = () => {
 
         saveLogs(currentPlayer, direction, newX, newY);
 
-        if (maze[newY][newX] !== Cell.WALL) {
-            if (currentPlayer === Players.PLAYER1) {
-                setPlayer1({ ...player1, position: { x: newX, y: newY } });
-                if (maze[newY][newX] === Cell.EXIT) {
-                    setVinner(Players.PLAYER1);
+        if (newMazeArr[newY][newX].type !== Cell.WALL) {
+            if (currentPlayer === PlayerType.PLAYER1) {
+                if (newMazeArr[newY][newX].type === Cell.EXIT) {
+                    setVinner(PlayerType.PLAYER1);
                     setOpenWinnerModal(true);
                 }
             } else {
-                setPlayer2({ ...player2, position: { x: newX, y: newY } });
-                if (maze[newY][newX] === Cell.EXIT) {
-                    setVinner(Players.PLAYER2);
+                if (newMazeArr[newY][newX].type === Cell.EXIT) {
+                    setVinner(PlayerType.PLAYER2);
                     setOpenWinnerModal(true);
                 }
             }
-            setDirections(prevDirections => updateDirectionMap(prevDirections, currentPlayerPosition, direction));
+            setNewMazeArr(prev =>
+                updateMazeCell(prev, { x: newX, y: newY }, true, startPosition, direction, currentPlayer),
+            );
         }
-        setRevealed(updateRevealed(revealed, newX, newY));
+        setNewMazeArr(prev => updateMazeCell(prev, { x: newX, y: newY }, true, undefined, undefined, undefined));
         togglePlayer();
     };
 
@@ -146,7 +137,7 @@ const Game = () => {
         return () => {
             window.removeEventListener('keydown', handleGlobalKeyPress);
         };
-    }, [player1, player2, currentPlayer]);
+    }, [currentPlayer]);
 
     const handleWinnerModalOk = () => {
         console.log('Winner is: ', vinner);
@@ -191,14 +182,14 @@ const Game = () => {
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
         >
-            <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} directions={directions} />
+            <Maze maze={newMazeArr} />
             <CustomModal
                 modalOpen={openWinnerModal}
                 onOk={handleWinnerModalOk}
                 title="Vinner"
                 content={`Player ${vinner} vins!`}
                 onCancel={handleWinnerModalCancel}
-                image={vinner === Players.PLAYER1 ? player1Image : player2Image}
+                image={vinner === PlayerType.PLAYER1 ? player1Image : player2Image}
                 width={180}
             />
             <CreateUserModal

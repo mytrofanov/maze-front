@@ -23,19 +23,19 @@ const exit: MazeCell = {
 
 const startFirst: MazeCell = {
     type: Cell.PATH,
-    revealed: false,
+    revealed: true,
     direction: undefined,
     player: PlayerType.PLAYER1,
 };
 
 const startSecond: MazeCell = {
     type: Cell.PATH,
-    revealed: false,
+    revealed: true,
     direction: undefined,
     player: PlayerType.PLAYER2,
 };
 
-export const mazeArr: MazeCell = [
+export const newMaze: MazeCell[][] = [
     [wall, wall, wall, wall, wall, wall, wall, wall, wall, wall],
     [wall, startFirst, path, path, wall, startSecond, path, path, path, wall],
     [wall, wall, wall, path, wall, wall, path, wall, wall, wall],
