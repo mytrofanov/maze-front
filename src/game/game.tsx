@@ -113,7 +113,8 @@ const Game = () => {
             //setDirections(prevDirections => updateDirectionMap(prevDirections, currentPlayerPosition, direction));
         }
 
-        updateMazeCell(newMazeArr, { x: newX, y: newY }, startPosition, true, direction, currentPlayer);
+        setNewMazeArr(updateMazeCell(newMazeArr, { x: newX, y: newY }, startPosition, true, direction, currentPlayer));
+
         //setRevealed(updateRevealed(revealed, newX, newY));
         togglePlayer();
     };
@@ -156,7 +157,7 @@ const Game = () => {
         return () => {
             window.removeEventListener('keydown', handleGlobalKeyPress);
         };
-    }, [player1, player2, currentPlayer]);
+    }, [currentPlayer]);
 
     const handleWinnerModalOk = () => {
         console.log('Winner is: ', vinner);
@@ -201,7 +202,7 @@ const Game = () => {
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
         >
-            <Maze maze={maze} player1={player1} player2={player2} revealed={revealed} directions={directions} />
+            <Maze maze={newMazeArr} />
             <CustomModal
                 modalOpen={openWinnerModal}
                 onOk={handleWinnerModalOk}

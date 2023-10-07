@@ -1,31 +1,24 @@
-import { Cell, Player } from '../game';
+import { Cell, MazeCell, PlayerType } from '../game';
 
-export const chooseClassName = (
-    cell: Cell,
-    revealed: boolean[][],
-    player1: Player,
-    player2: Player,
-    rowIndex: number,
-    cellIndex: number,
-) => {
+export const chooseClassName = (cell: MazeCell) => {
     let className = 'maze-cell';
-    if (cell === Cell.WALL) {
-        if (revealed[rowIndex][cellIndex]) {
+    if (cell.type === Cell.WALL) {
+        if (cell.revealed) {
             className = className + ' ' + 'wall';
         } else {
             className = className + ' ' + 'hidden';
         }
     }
-    if (cell === Cell.PATH) {
+    if (cell.type === Cell.PATH) {
         className = className + ' ' + 'path';
     }
-    if (cell === Cell.EXIT) {
+    if (cell.type === Cell.EXIT) {
         className = className + ' ' + 'exit';
     }
-    if (player1.position.x === cellIndex && player1.position.y === rowIndex) {
+    if (cell.player === PlayerType.PLAYER1) {
         className = className + ' ' + 'player1';
     }
-    if (player2.position.x === cellIndex && player2.position.y === rowIndex) {
+    if (cell.player === PlayerType.PLAYER2) {
         className = className + ' ' + 'player2';
     }
 

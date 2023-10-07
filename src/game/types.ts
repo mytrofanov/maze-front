@@ -24,13 +24,13 @@ export type Maze = MazeCell[][];
 //     PLAYER2 = 'player2',
 // }
 
-export type Player = {
-    position: {
-        x: number;
-        y: number;
-    };
-    avatar: string;
-};
+// export type Player = {
+//     position: {
+//         x: number;
+//         y: number;
+//     };
+//     avatar: string;
+// };
 
 export enum Direction {
     UP = '/up',
@@ -44,7 +44,7 @@ export type DirectionMap = (Direction | null)[][];
 export type Position = { x: number; y: number };
 
 export interface GameLog {
-    playerId: Players;
+    playerId: PlayerType;
     playerAvatar: string;
     direction: Direction | null;
     message: string;
