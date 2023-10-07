@@ -1,12 +1,12 @@
 import React, { ChangeEvent } from 'react';
 import { Button, Col, Image, Input, Layout, Row, Space } from 'antd';
 import './private-page-layout.styles.css';
-import { GameLogs, Players } from '../game';
-import { player1Image, player2Image } from '../variables/variables.ts';
+import { GameLogs, PlayerType } from '../game';
+import { player1Image, player2Image } from '../variables';
 import { ChatList } from '../components';
 
 interface PublicPageLayoutProps {
-    currentPlayer: Players;
+    currentPlayer: PlayerType;
     userName: string | null;
     children: React.ReactNode;
     gameLogs: GameLogs;
@@ -22,12 +22,15 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
             <Layout.Header>
                 <Row className="header">
                     <Col>
-                        Hello {userName ? userName : Players.PLAYER1}! Your avatar is:
+                        Hello {userName ? userName : PlayerType.PLAYER1}! Your avatar is:
                         <Image width={64} src={player1Image} />
                     </Col>
                     {gameLogs.length > 0 ? (
                         <Col className="player-info-block">
-                            <Image width={64} src={currentPlayer === Players.PLAYER1 ? player1Image : player2Image} />
+                            <Image
+                                width={64}
+                                src={currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image}
+                            />
                             {'  '}
                             Now its my turn!
                         </Col>

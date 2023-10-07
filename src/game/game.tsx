@@ -209,7 +209,7 @@ const Game = () => {
                 title="Vinner"
                 content={`Player ${vinner} vins!`}
                 onCancel={handleWinnerModalCancel}
-                image={vinner === Players.PLAYER1 ? player1Image : player2Image}
+                image={vinner === PlayerType.PLAYER1 ? player1Image : player2Image}
                 width={180}
             />
             <CreateUserModal
