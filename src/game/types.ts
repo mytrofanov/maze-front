@@ -44,4 +44,9 @@ export interface GameLog {
     created: string;
 }
 
+export interface WaitingListItem {
+    gameTimeInitiation: string;
+    initiatorUserName: string;
+}
+
 export type GameLogs = GameLog[];

@@ -1,9 +1,10 @@
 import React, { ChangeEvent } from 'react';
 import { Button, Col, Image, Input, Layout, Row, Space } from 'antd';
 import './private-page-layout.styles.css';
-import { GameLogs, PlayerType } from '../game';
+import { GameLogs, GameStage, PlayerType, WaitingListItem } from '../game';
 import { player1Image, player2Image } from '../variables';
 import { ChatList } from '../components';
+import WaitingList from '../components/waiting-list.tsx';
 
 interface PublicPageLayoutProps {
     currentPlayer: PlayerType;
@@ -13,10 +14,22 @@ interface PublicPageLayoutProps {
     currentMessage: string;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    gameStage: GameStage;
+    waitingList: WaitingListItem[];
 }
 
 const PrivatePageLayout = (props: PublicPageLayoutProps) => {
-    const { currentPlayer, children, userName, gameLogs, currentMessage, onKeyPress, onMessageChange } = props;
+    const {
+        currentPlayer,
+        children,
+        userName,
+        gameLogs,
+        currentMessage,
+        onKeyPress,
+        onMessageChange,
+        gameStage,
+        waitingList,
+    } = props;
     return (
         <Layout className="private-layout">
             <Layout.Header>
@@ -47,7 +60,9 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                             onKeyDown={onKeyPress}
                             placeholder="Type action or message..."
                         />
-                        <ChatList chat={gameLogs} />
+                        {gameStage === GameStage.NEW_GAME ? <ChatList chat={gameLogs} /> : null}
+                        {gameStage === GameStage.WAITING ? <WaitingList waitingList={waitingList} /> : null}
+
                         <Space wrap>
                             <Button type="primary">Give UP</Button>
                             <Button type="primary" disabled>

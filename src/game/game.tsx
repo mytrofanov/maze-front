@@ -8,6 +8,7 @@ import PrivatePageLayout from '../page-layout/private-page-layout.tsx';
 import { findPlayerPosition } from '../utils/find-player-position.ts';
 import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
+import { Button } from 'antd';
 
 interface GameProps {
     isConnected: boolean;
@@ -179,6 +180,20 @@ const Game = (props: GameProps) => {
             }
         }
     };
+    const waitingList = [
+        {
+            gameTimeInitiation: new Date().toISOString(),
+            initiatorUserName: 'Max',
+        },
+        {
+            gameTimeInitiation: new Date().toISOString(),
+            initiatorUserName: 'Mike',
+        },
+        {
+            gameTimeInitiation: new Date().toISOString(),
+            initiatorUserName: 'Nino',
+        },
+    ];
 
     return (
         <PrivatePageLayout
@@ -188,20 +203,13 @@ const Game = (props: GameProps) => {
             currentMessage={currentMessage}
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
+            gameStage={gameStage}
+            waitingList={waitingList}
         >
             {gameStage === GameStage.WAITING ? (
-                <>
-                    <Maze maze={newMazeArr} />
-                    <CustomModal
-                        modalOpen={openWinnerModal}
-                        onOk={handleWinnerModalOk}
-                        title="Vinner"
-                        content={`Player ${vinner} vins!`}
-                        onCancel={handleWinnerModalCancel}
-                        image={vinner === PlayerType.PLAYER1 ? player1Image : player2Image}
-                        width={180}
-                    />
-                </>
+                <div className="waiting-screen">
+                    <Button type="default">New Game</Button>
+                </div>
             ) : null}
 
             {gameStage === GameStage.NEW_GAME || gameStage === GameStage.CONNECTED ? (
