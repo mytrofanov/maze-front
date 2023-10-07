@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Cell, Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
+import { Cell, Direction, GameLogs, MazeCell, PlayerType, Position } from './types.ts';
 import { Maze } from '../components';
 import { localStorageUserName, player1Image, player2Image } from '../variables';
 import CustomModal from '../components/modal.tsx';
@@ -73,13 +73,15 @@ const Game = () => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
+        console.log('handleDirectionInput');
         const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
-        let newX = startPosition?.x;
-        let newY = startPosition?.y;
-        if (!newX || !newY || !startPosition) {
+        if (!startPosition) {
             console.log('Players are not found on maze');
             return;
         }
+
+        let newX = startPosition.x;
+        let newY = startPosition.y;
 
         if (direction === Direction.UP) {
             newY -= 1;
@@ -98,24 +100,21 @@ const Game = () => {
 
         if (newMazeArr[newY][newX].type !== Cell.WALL) {
             if (currentPlayer === PlayerType.PLAYER1) {
-                //setPlayer1({ ...player1, position: { x: newX, y: newY } });
                 if (newMazeArr[newY][newX].type === Cell.EXIT) {
                     setVinner(PlayerType.PLAYER1);
                     setOpenWinnerModal(true);
                 }
             } else {
-                //setPlayer2({ ...player2, position: { x: newX, y: newY } });
                 if (newMazeArr[newY][newX].type === Cell.EXIT) {
                     setVinner(PlayerType.PLAYER2);
                     setOpenWinnerModal(true);
                 }
             }
-            //setDirections(prevDirections => updateDirectionMap(prevDirections, currentPlayerPosition, direction));
+            setNewMazeArr(prev =>
+                updateMazeCell(prev, { x: newX, y: newY }, true, startPosition, direction, currentPlayer),
+            );
         }
-
-        setNewMazeArr(updateMazeCell(newMazeArr, { x: newX, y: newY }, startPosition, true, direction, currentPlayer));
-
-        //setRevealed(updateRevealed(revealed, newX, newY));
+        setNewMazeArr(prev => updateMazeCell(prev, { x: newX, y: newY }, true, undefined, undefined, undefined));
         togglePlayer();
     };
 

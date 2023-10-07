@@ -5,8 +5,8 @@ export enum Cell {
 }
 
 export enum PlayerType {
-    PLAYER1,
-    PLAYER2,
+    PLAYER1 = 1,
+    PLAYER2 = 2,
 }
 
 export type MazeCell = {

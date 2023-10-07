@@ -3,8 +3,8 @@ import { MazeCell, PlayerType, Direction, Position } from '../game';
 export const updateMazeCell = (
     maze: MazeCell[][],
     currentPosition: Position,
-    prevPosition: Position,
     revealed: boolean,
+    prevPosition?: Position,
     direction?: Direction,
     player?: PlayerType,
 ): MazeCell[][] => {
@@ -12,13 +12,21 @@ export const updateMazeCell = (
         console.log('Two players on one cell is not allowed');
         return maze;
     }
-    const updatedMaze = maze.map(row => row.slice());
+    const updatedMaze = maze.map(row => [...row]);
 
     if (updatedMaze[currentPosition.y] && updatedMaze[currentPosition.y][currentPosition.x]) {
-        updatedMaze[currentPosition.y][currentPosition.x].revealed = revealed;
-        updatedMaze[currentPosition.y][currentPosition.x].direction = direction;
-        updatedMaze[currentPosition.y][currentPosition.x].player = player;
-        updatedMaze[prevPosition.y][prevPosition.x].player = undefined;
+        updatedMaze[currentPosition.y][currentPosition.x] = {
+            ...updatedMaze[currentPosition.y][currentPosition.x],
+            revealed,
+            direction,
+            player,
+        };
+    }
+    if (prevPosition) {
+        updatedMaze[prevPosition.y][prevPosition.x] = {
+            ...updatedMaze[prevPosition.y][prevPosition.x],
+            player: undefined,
+        };
     }
 
     return updatedMaze;
