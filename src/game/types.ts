@@ -4,7 +4,20 @@ export enum Cell {
     EXIT = -1,
 }
 
+export enum PlayerType {
+    PLAYER1,
+    PLAYER2,
+}
+
+export type MazeCell = {
+    type: Cell;
+    revealed: boolean;
+    direction?: Direction;
+    player?: PlayerType;
+};
+
 export type MazeType = Cell[][];
+export type Maze = MazeCell[][];
 
 export enum Players {
     PLAYER1 = 'player1',

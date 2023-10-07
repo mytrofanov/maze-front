@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Cell, Direction, DirectionMap, GameLogs, MazeType, Player, Players } from './types.ts';
+import { Cell, Direction, DirectionMap, GameLogs, MazeCell, MazeType, Player, Players } from './types.ts';
 import { createRevealedMaze, directionsMap, updateDirectionMap, updateRevealed } from '../utils';
 import { Maze } from '../components';
 import { localStorageUserName, player1Image, player2Image } from '../variables/variables.ts';
