@@ -7,6 +7,7 @@ import CreateUserModal, { CreateUserFormValues } from '../components/create-user
 import PrivatePageLayout from '../page-layout/private-page-layout.tsx';
 import { findPlayerPosition } from '../utils/find-player-position.ts';
 import { newMaze } from '../variables';
+import { updateMazeCell } from '../utils/update-maze.ts';
 
 const maze: MazeType = [
     [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
@@ -72,10 +73,10 @@ const Game = () => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        const currentPlayerPosition = findPlayerPosition(newMazeArr, currentPlayer);
-        let newX = currentPlayerPosition?.x;
-        let newY = currentPlayerPosition?.y;
-        if (!newX || !newY) {
+        const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
+        let newX = startPosition?.x;
+        let newY = startPosition?.y;
+        if (!newX || !newY || !startPosition) {
             console.log('Players are not found on maze');
             return;
         }
@@ -112,6 +113,7 @@ const Game = () => {
             //setDirections(prevDirections => updateDirectionMap(prevDirections, currentPlayerPosition, direction));
         }
 
+        updateMazeCell(newMazeArr, { x: newX, y: newY }, startPosition, true, direction, currentPlayer);
         //setRevealed(updateRevealed(revealed, newX, newY));
         togglePlayer();
     };

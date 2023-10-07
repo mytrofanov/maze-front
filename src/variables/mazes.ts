@@ -23,14 +23,14 @@ const exit: MazeCell = {
 
 const startFirst: MazeCell = {
     type: Cell.PATH,
-    revealed: false,
+    revealed: true,
     direction: undefined,
     player: PlayerType.PLAYER1,
 };
 
 const startSecond: MazeCell = {
     type: Cell.PATH,
-    revealed: false,
+    revealed: true,
     direction: undefined,
     player: PlayerType.PLAYER2,
 };
