@@ -1,15 +1,13 @@
 import React, { ChangeEvent } from 'react';
 import { Cell, Direction, GameLogs, GameStage, MazeCell, PlayerType } from './types.ts';
-import { Maze } from '../components';
 import { localStorageUserName, player1Image, player2Image } from '../variables';
-import CustomModal from '../components/modal.tsx';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { findPlayerPosition } from '../utils/find-player-position.ts';
 import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
-import { Button } from 'antd';
 import Waiting from '../components/waiting.tsx';
+import PlayGame from '../components/play-game.tsx';
 
 interface GameProps {
     isConnected: boolean;
@@ -19,7 +17,7 @@ interface GameProps {
 const Game = (props: GameProps) => {
     const { isConnected, fooEvents } = props;
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
-    const [vinner, setVinner] = React.useState<PlayerType | null>();
+    const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
@@ -91,12 +89,12 @@ const Game = (props: GameProps) => {
         if (newMazeArr[newY][newX].type !== Cell.WALL) {
             if (currentPlayer === PlayerType.PLAYER1) {
                 if (newMazeArr[newY][newX].type === Cell.EXIT) {
-                    setVinner(PlayerType.PLAYER1);
+                    setWinner(PlayerType.PLAYER1);
                     setOpenWinnerModal(true);
                 }
             } else {
                 if (newMazeArr[newY][newX].type === Cell.EXIT) {
-                    setVinner(PlayerType.PLAYER2);
+                    setWinner(PlayerType.PLAYER2);
                     setOpenWinnerModal(true);
                 }
             }
@@ -149,12 +147,12 @@ const Game = (props: GameProps) => {
     }, [currentPlayer]);
 
     const handleWinnerModalOk = () => {
-        console.log('Winner is: ', vinner);
+        console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
     };
 
     const handleWinnerModalCancel = () => {
-        console.log('Winner is: ', vinner);
+        console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
     };
 
@@ -208,21 +206,14 @@ const Game = (props: GameProps) => {
             waitingList={waitingList}
         >
             <Waiting gameStage={gameStage} />
-
-            {gameStage === GameStage.NEW_GAME || gameStage === GameStage.CONNECTED ? (
-                <>
-                    <Maze maze={newMazeArr} />
-                    <CustomModal
-                        modalOpen={openWinnerModal}
-                        onOk={handleWinnerModalOk}
-                        title="Vinner"
-                        content={`Player ${vinner} vins!`}
-                        onCancel={handleWinnerModalCancel}
-                        image={vinner === PlayerType.PLAYER1 ? player1Image : player2Image}
-                        width={180}
-                    />
-                </>
-            ) : null}
+            <PlayGame
+                gameStage={gameStage}
+                handleWinnerModalCancel={handleWinnerModalCancel}
+                handleWinnerModalOk={handleWinnerModalOk}
+                openWinnerModal={openWinnerModal}
+                maze={newMazeArr}
+                winner={winner}
+            />
             <CreateUserModal
                 modalOpen={openCreateUserModal}
                 onCancel={handleCancelCreateUser}
