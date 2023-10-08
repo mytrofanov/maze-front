@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { Cell, Direction, GameLogs, GameStage, MazeCell, PlayerType } from './types.ts';
-import { localStorageUserName, player1Image, player2Image } from '../variables';
+import { localStorageUser, localStorageUserName, player1Image, player2Image } from '../variables';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { findPlayerPosition } from '../utils/find-player-position.ts';
@@ -8,17 +8,18 @@ import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
 import Waiting from '../components/waiting.tsx';
 import PlayGame from '../components/play-game.tsx';
-import { CreateGamePayload } from '../web-socket/useSocket.tsx';
+import { ConnectToServerPayload, CreateGamePayload } from '../web-socket/useSocket.tsx';
 import { CurrentUser } from '../types';
 
 interface GameProps {
     isConnected: boolean;
     fooEvents: unknown[];
     createGame: (payload: CreateGamePayload) => void;
+    connectToServer: (payload: ConnectToServerPayload | null) => void;
 }
 
 const Game = (props: GameProps) => {
-    const { isConnected, fooEvents, createGame } = props;
+    const { isConnected, fooEvents, createGame, connectToServer } = props;
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
@@ -31,9 +32,11 @@ const Game = (props: GameProps) => {
     const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
 
     React.useEffect(() => {
-        const storedName = localStorage.getItem(localStorageUserName);
-        if (storedName) {
-            setUsername(storedName);
+        const storedUserString = localStorage.getItem(localStorageUser);
+        if (storedUserString) {
+            const storedUser = JSON.parse(storedUserString);
+            connectToServer(storedUser);
+            setCurrentUser(storedUser);
         } else {
             setOpenCreateUserModal(true);
         }
@@ -161,6 +164,8 @@ const Game = (props: GameProps) => {
     };
 
     const handleCreateUser = (formValues: CreateUserFormValues) => {
+        //connect for create
+        connectToServer(formValues);
         localStorage.setItem(localStorageUserName, formValues.userName);
         setUsername(formValues.userName);
         setOpenCreateUserModal(false);

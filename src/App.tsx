@@ -4,11 +4,16 @@ import ThemeProvider from './styles/theme-provider.tsx';
 import useSocket from './web-socket/useSocket.tsx';
 
 function App() {
-    const { isConnected, fooEvents, createGame } = useSocket();
+    const { isConnected, fooEvents, createGame, connectToServer } = useSocket();
 
     return (
         <ThemeProvider>
-            <Game isConnected={isConnected} fooEvents={fooEvents} createGame={createGame} />
+            <Game
+                isConnected={isConnected}
+                fooEvents={fooEvents}
+                createGame={createGame}
+                connectToServer={connectToServer}
+            />
         </ThemeProvider>
     );
 }
