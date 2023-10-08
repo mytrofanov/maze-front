@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { Cell, Direction, GameLogs, GameStage, MazeCell, PlayerType } from './types.ts';
-import { localStorageUser, localStorageUserName, player1Image, player2Image } from '../variables';
+import { localStorageUser, player1Image, player2Image } from '../variables';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { findPlayerPosition } from '../utils/find-player-position.ts';
@@ -8,18 +8,32 @@ import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
 import Waiting from '../components/waiting.tsx';
 import PlayGame from '../components/play-game.tsx';
-import { ConnectToServerPayload, CreateGamePayload } from '../web-socket/useSocket.tsx';
+import {
+    ConnectToServerPayload,
+    CreateGamePayload,
+    CreateUserPayload,
+    SocketError,
+    SocketSuccess,
+    SocketSuccessCodes,
+} from '../web-socket/useSocket.tsx';
 import { CurrentUser } from '../types';
 
-interface GameProps {
+interface socket {
     isConnected: boolean;
     fooEvents: unknown[];
     createGame: (payload: CreateGamePayload) => void;
     connectToServer: (payload: ConnectToServerPayload | null) => void;
+    error: SocketError | undefined;
+    success: SocketSuccess | undefined;
+    createUser: (payload: CreateUserPayload) => void;
+}
+
+interface GameProps {
+    socket: socket;
 }
 
 const Game = (props: GameProps) => {
-    const { isConnected, fooEvents, createGame, connectToServer } = props;
+    const { socket } = props;
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
@@ -35,12 +49,20 @@ const Game = (props: GameProps) => {
         const storedUserString = localStorage.getItem(localStorageUser);
         if (storedUserString) {
             const storedUser = JSON.parse(storedUserString);
-            connectToServer(storedUser);
+            socket.connectToServer(storedUser);
             setCurrentUser(storedUser);
         } else {
             setOpenCreateUserModal(true);
         }
     }, []);
+
+    React.useEffect(() => {
+        if (socket.success?.code === SocketSuccessCodes.USER_CREATED) {
+            localStorage.setItem(localStorageUser, JSON.stringify(socket.success.payload));
+            setCurrentUser(socket.success.payload);
+            setOpenCreateUserModal(false);
+        }
+    }, [socket.success]);
 
     const togglePlayer = () => {
         setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
@@ -164,11 +186,12 @@ const Game = (props: GameProps) => {
     };
 
     const handleCreateUser = (formValues: CreateUserFormValues) => {
-        //connect for create
-        connectToServer(formValues);
-        localStorage.setItem(localStorageUserName, formValues.userName);
-        setUsername(formValues.userName);
-        setOpenCreateUserModal(false);
+        if (socket.isConnected) {
+            console.log('Already connected');
+            socket.createUser(formValues);
+            return;
+        }
+        socket.connectToServer(formValues);
     };
 
     const handleCancelCreateUser = () => {
@@ -205,7 +228,7 @@ const Game = (props: GameProps) => {
 
     const handleCreateNewGame = () => {
         console.log('handleCreateNewGame');
-        if (!isConnected) {
+        if (!socket.isConnected) {
             console.log('No connection');
             return;
         }
@@ -213,7 +236,7 @@ const Game = (props: GameProps) => {
             console.log('User is not registered');
             return;
         }
-        createGame({ player1Id: currentUser.userId });
+        socket.createGame({ player1Id: currentUser.userId });
     };
 
     return (

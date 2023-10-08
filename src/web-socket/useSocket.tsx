@@ -10,23 +10,42 @@ export type ConnectToServerPayload = {
     userId?: string;
 };
 
-export enum ErrorCodes {
+export type CreateUserPayload = {
+    userName: string;
+};
+
+export enum SocketSuccessCodes {
+    USER_CREATED = 'USER_CREATED',
+}
+
+export type SocketSuccess = {
+    code: SocketSuccessCodes;
+    message: string;
+    payload: never;
+};
+
+export enum SocketErrorCodes {
     USERNAME_REQUIRED = 'USERNAME_REQUIRED',
     USERNAME_TAKEN = 'USERNAME_TAKEN',
 }
 
-export type Error = {
-    code: ErrorCodes;
+export type SocketError = {
+    code: SocketErrorCodes;
     message: string;
 };
 
 const useSocket = () => {
     const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
     const [fooEvents, setFooEvents] = useState<unknown[]>([]);
-    const [error, setError] = useState<Error | undefined>(undefined);
+    const [error, setError] = useState<SocketError | undefined>(undefined);
+    const [success, setSuccess] = useState<SocketSuccess | undefined>(undefined);
 
     const createGame = (payload: CreateGamePayload) => {
         socket.emit('createGame', payload);
+    };
+
+    const createUser = (payload: CreateUserPayload) => {
+        socket.emit('createUser', payload);
     };
 
     const connectToServer = (payload: ConnectToServerPayload | null) => {
@@ -64,18 +83,17 @@ const useSocket = () => {
         });
 
         socket.on('error', error => {
-            switch (error.code) {
-                case 'USERNAME_REQUIRED':
-                    console.log(error.message);
-                    // Handle this error accordingly, perhaps show a modal to the user
-                    break;
-                case 'USERNAME_TAKEN':
-                    console.log(error.message);
-                    // Handle this error differently, maybe prompt for a different username
-                    break;
-                default:
-                    console.log('An unknown error occurred.');
+            if (!Object.values(SocketErrorCodes).includes(error.code)) {
+                console.log('An unknown error occurred.');
             }
+            setError(error);
+        });
+
+        socket.on('success', success => {
+            if (!Object.values(SocketSuccessCodes).includes(success.code)) {
+                console.log('An unknown success code.');
+            }
+            setSuccess(success);
         });
 
         return () => {
@@ -85,7 +103,7 @@ const useSocket = () => {
         };
     }, []);
 
-    return { isConnected, fooEvents, createGame, connectToServer };
+    return { isConnected, fooEvents, createGame, connectToServer, error, success, createUser };
 };
 
 export default useSocket;
