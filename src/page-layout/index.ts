@@ -1,3 +1,3 @@
-import PrivatePageLayout from './private-page-layout.tsx';
+import PageLayout from './page-layout.tsx';
 
-export { PrivatePageLayout };
+export { PageLayout };

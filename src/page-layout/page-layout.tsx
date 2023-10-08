@@ -1,10 +1,10 @@
 import React, { ChangeEvent } from 'react';
-import { Button, Col, Image, Input, Layout, Row, Space } from 'antd';
-import './private-page-layout.styles.css';
+import { Input, Layout } from 'antd';
+import './page-layout.styles.css';
 import { GameLogs, GameStage, PlayerType, WaitingListItem } from '../game';
-import { player1Image, player2Image } from '../variables';
 import { ChatList } from '../components';
 import WaitingList from '../components/waiting-list.tsx';
+import Header from '../components/header.tsx';
 
 interface PublicPageLayoutProps {
     currentPlayer: PlayerType;
@@ -18,7 +18,7 @@ interface PublicPageLayoutProps {
     waitingList: WaitingListItem[];
 }
 
-const PrivatePageLayout = (props: PublicPageLayoutProps) => {
+const PageLayout = (props: PublicPageLayoutProps) => {
     const {
         currentPlayer,
         children,
@@ -31,24 +31,9 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
         waitingList,
     } = props;
     return (
-        <Layout className="private-layout">
+        <Layout className="page-layout">
             <Layout.Header>
-                <Row className="header">
-                    <Col>
-                        Hello {userName ? userName : PlayerType.PLAYER1}! Your avatar is:
-                        <Image width={64} src={player1Image} />
-                    </Col>
-                    {gameLogs.length > 0 ? (
-                        <Col className="player-info-block">
-                            <Image
-                                width={64}
-                                src={currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image}
-                            />
-                            {'  '}
-                            Now its my turn!
-                        </Col>
-                    ) : null}
-                </Row>
+                <Header currentPlayer={currentPlayer} gameLogs={gameLogs} userName={userName} />
             </Layout.Header>
             <Layout hasSider>
                 <Layout.Sider className="sider" width={360}>
@@ -62,13 +47,6 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
                         />
                         {gameStage === GameStage.NEW_GAME ? <ChatList chat={gameLogs} /> : null}
                         {gameStage === GameStage.WAITING ? <WaitingList waitingList={waitingList} /> : null}
-
-                        <Space wrap>
-                            <Button type="primary">Give UP</Button>
-                            <Button type="primary" disabled>
-                                Exit
-                            </Button>
-                        </Space>
                     </div>
                 </Layout.Sider>
                 <Layout.Content className="content">{children}</Layout.Content>
@@ -78,4 +56,4 @@ const PrivatePageLayout = (props: PublicPageLayoutProps) => {
     );
 };
 
-export default PrivatePageLayout;
+export default PageLayout;

@@ -4,7 +4,7 @@ import { Maze } from '../components';
 import { localStorageUserName, player1Image, player2Image } from '../variables';
 import CustomModal from '../components/modal.tsx';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
-import PrivatePageLayout from '../page-layout/private-page-layout.tsx';
+import PageLayout from '../page-layout/page-layout.tsx';
 import { findPlayerPosition } from '../utils/find-player-position.ts';
 import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
@@ -196,7 +196,7 @@ const Game = (props: GameProps) => {
     ];
 
     return (
-        <PrivatePageLayout
+        <PageLayout
             userName={username}
             currentPlayer={currentPlayer}
             gameLogs={gameLogs}
@@ -231,7 +231,7 @@ const Game = (props: GameProps) => {
                 onCancel={handleCancelCreateUser}
                 onCreate={handleCreateUser}
             />
-        </PrivatePageLayout>
+        </PageLayout>
     );
 };
 
