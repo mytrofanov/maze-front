@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react';
 import { socket } from '../socket';
 
+export type CreateGamePayload = {
+    player1Id: string;
+};
+
 const useSocket = () => {
     const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
     const [fooEvents, setFooEvents] = useState<unknown[]>([]);
+
+    const createGame = (payload: CreateGamePayload) => {
+        socket.emit('createGame', payload);
+    };
 
     useEffect(() => {
         function onConnect() {
@@ -29,7 +37,7 @@ const useSocket = () => {
         };
     }, []);
 
-    return { isConnected, fooEvents };
+    return { isConnected, fooEvents, createGame };
 };
 
 export default useSocket;

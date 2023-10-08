@@ -8,20 +8,24 @@ import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
 import Waiting from '../components/waiting.tsx';
 import PlayGame from '../components/play-game.tsx';
+import { CreateGamePayload } from '../web-socket/useSocket.tsx';
+import { CurrentUser } from '../types';
 
 interface GameProps {
     isConnected: boolean;
     fooEvents: unknown[];
+    createGame: (payload: CreateGamePayload) => void;
 }
 
 const Game = (props: GameProps) => {
-    const { isConnected, fooEvents } = props;
+    const { isConnected, fooEvents, createGame } = props;
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     const [username, setUsername] = React.useState<string | null>(null);
+    const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][]>(newMaze);
     const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
@@ -194,6 +198,19 @@ const Game = (props: GameProps) => {
         },
     ];
 
+    const handleCreateNewGame = () => {
+        console.log('handleCreateNewGame');
+        if (!isConnected) {
+            console.log('No connection');
+            return;
+        }
+        if (!currentUser) {
+            console.log('User is not registered');
+            return;
+        }
+        createGame({ player1Id: currentUser.userId });
+    };
+
     return (
         <PageLayout
             userName={username}
@@ -205,7 +222,7 @@ const Game = (props: GameProps) => {
             gameStage={gameStage}
             waitingList={waitingList}
         >
-            <Waiting gameStage={gameStage} />
+            <Waiting gameStage={gameStage} onCreateNewGame={handleCreateNewGame} />
             <PlayGame
                 gameStage={gameStage}
                 handleWinnerModalCancel={handleWinnerModalCancel}

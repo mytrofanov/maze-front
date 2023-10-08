@@ -4,14 +4,17 @@ import './waiting.css';
 
 interface WaitingProps {
     gameStage: GameStage;
+    onCreateNewGame: () => void;
 }
 
 const Waiting = (props: WaitingProps) => {
-    const { gameStage } = props;
+    const { gameStage, onCreateNewGame } = props;
     if (gameStage !== GameStage.WAITING) return;
     return (
         <div className="waiting-screen">
-            <Button type="default">New Game</Button>
+            <Button type="default" onClick={onCreateNewGame}>
+                New Game
+            </Button>
         </div>
     );
 };
