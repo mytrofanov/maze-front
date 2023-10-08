@@ -12,6 +12,7 @@ import {
     ConnectToServerPayload,
     CreateGamePayload,
     CreateUserPayload,
+    DirectionPayload,
     SocketError,
     SocketSuccess,
     SocketSuccessCodes,
@@ -26,6 +27,7 @@ interface socket {
     success: SocketSuccess | undefined;
     createUser: (payload: CreateUserPayload) => void;
     game: unknown;
+    onDirectionInput: (payload: DirectionPayload) => void;
 }
 
 interface GameProps {
@@ -93,6 +95,8 @@ const Game = (props: GameProps) => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
+        socket.onDirectionInput(direction, gameId, playerId);
+
         const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
         if (!startPosition) {
             console.log('Players are not found on maze');

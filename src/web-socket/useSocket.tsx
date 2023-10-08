@@ -1,5 +1,6 @@
 import React from 'react';
 import { socket } from '../socket';
+import { Direction } from '../game';
 
 export type CreateGamePayload = {
     player1Id: string;
@@ -12,6 +13,13 @@ export type ConnectToServerPayload = {
 
 export type CreateUserPayload = {
     userName: string;
+};
+
+export type DirectionPayload = {
+    direction: Direction;
+    gameId: number;
+    playerId: number;
+    message?: string;
 };
 
 export enum SocketSuccessCodes {
@@ -27,6 +35,7 @@ export type SocketSuccess = {
 export enum SocketErrorCodes {
     USERNAME_REQUIRED = 'USERNAME_REQUIRED',
     USERNAME_TAKEN = 'USERNAME_TAKEN',
+    PLAYER_IS_NOT_FOUND = 'PLAYER_IS_NOT_FOUND',
 }
 
 export type SocketError = {
@@ -46,6 +55,10 @@ const useSocket = () => {
 
     const createUser = (payload: CreateUserPayload) => {
         socket.emit('createUser', payload);
+    };
+
+    const onDirectionInput = (payload: DirectionPayload) => {
+        socket.emit('direction', payload);
     };
 
     const connectToServer = (payload: ConnectToServerPayload | null) => {
@@ -98,7 +111,7 @@ const useSocket = () => {
         };
     }, []);
 
-    return { isConnected, game, createGame, connectToServer, error, success, createUser };
+    return { isConnected, game, createGame, connectToServer, error, success, createUser, onDirectionInput };
 };
 
 export default useSocket;
