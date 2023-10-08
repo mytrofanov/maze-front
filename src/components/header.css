@@ -1,0 +1,12 @@
+.header {
+    color: white;
+    display: flex;
+    justify-content: space-between;
+}
+
+.player-info-block {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}

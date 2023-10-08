@@ -3,12 +3,6 @@
   min-width: 1024px;
 }
 
-.header {
-  color: white;
-  display: flex;
-  justify-content: space-between;
-}
-
 .logo {
   height: 32px;
   margin: 16px;
@@ -16,17 +10,6 @@
 
 .page-layout__footer {
   text-align: center;
-}
-
-.player-info-block {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
-}
-
-.chat-block {
-  padding: 16px;
 }
 
 .player-icon{

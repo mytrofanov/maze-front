@@ -5,6 +5,7 @@ import { GameLogs, GameStage, PlayerType, WaitingListItem } from '../game';
 import { ChatList } from '../components';
 import WaitingList from '../components/waiting-list.tsx';
 import Header from '../components/header.tsx';
+import Sider from '../components/sider.tsx';
 
 interface PublicPageLayoutProps {
     currentPlayer: PlayerType;
@@ -37,17 +38,14 @@ const PageLayout = (props: PublicPageLayoutProps) => {
             </Layout.Header>
             <Layout hasSider>
                 <Layout.Sider className="sider" width={360}>
-                    <div className="chat-block">
-                        <Input
-                            autoFocus={false}
-                            value={currentMessage}
-                            onChange={onMessageChange}
-                            onKeyDown={onKeyPress}
-                            placeholder="Type action or message..."
-                        />
-                        {gameStage === GameStage.NEW_GAME ? <ChatList chat={gameLogs} /> : null}
-                        {gameStage === GameStage.WAITING ? <WaitingList waitingList={waitingList} /> : null}
-                    </div>
+                    <Sider
+                        gameLogs={gameLogs}
+                        currentMessage={currentMessage}
+                        onMessageChange={onMessageChange}
+                        gameStage={gameStage}
+                        waitingList={waitingList}
+                        onKeyPress={onKeyPress}
+                    />
                 </Layout.Sider>
                 <Layout.Content className="content">{children}</Layout.Content>
             </Layout>

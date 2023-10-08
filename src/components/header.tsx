@@ -1,6 +1,7 @@
 import { Col, Image, Row } from 'antd';
 import { GameLogs, PlayerType } from '../game';
 import { player1Image, player2Image } from '../variables';
+import './header.css';
 
 interface HeaderProps {
     userName: string | null;
