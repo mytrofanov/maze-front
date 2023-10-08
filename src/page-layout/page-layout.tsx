@@ -1,11 +1,8 @@
 import React, { ChangeEvent } from 'react';
-import { Input, Layout } from 'antd';
+import { Layout } from 'antd';
 import './page-layout.styles.css';
 import { GameLogs, GameStage, PlayerType, WaitingListItem } from '../game';
-import { ChatList } from '../components';
-import WaitingList from '../components/waiting-list.tsx';
-import Header from '../components/header.tsx';
-import Sider from '../components/sider.tsx';
+import { Header, Sider } from '../components';
 
 interface PublicPageLayoutProps {
     currentPlayer: PlayerType;
