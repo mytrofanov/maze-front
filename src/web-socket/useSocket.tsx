@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { socket } from '../socket';
 
 export type CreateGamePayload = {
@@ -35,10 +35,10 @@ export type SocketError = {
 };
 
 const useSocket = () => {
-    const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
-    const [fooEvents, setFooEvents] = useState<unknown[]>([]);
-    const [error, setError] = useState<SocketError | undefined>(undefined);
-    const [success, setSuccess] = useState<SocketSuccess | undefined>(undefined);
+    const [isConnected, setIsConnected] = React.useState<boolean>(socket.connected);
+    const [error, setError] = React.useState<SocketError | undefined>(undefined);
+    const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
+    const [game, setGame] = React.useState(undefined);
 
     const createGame = (payload: CreateGamePayload) => {
         socket.emit('createGame', payload);
@@ -58,10 +58,7 @@ const useSocket = () => {
         socket.connect();
     };
 
-    //create connect after user exist or entered his name
-    //save user to localStorage if succesfully created
-
-    useEffect(() => {
+    React.useEffect(() => {
         function onConnect() {
             setIsConnected(true);
         }
@@ -70,16 +67,12 @@ const useSocket = () => {
             setIsConnected(false);
         }
 
-        function onFooEvent(value: unknown) {
-            setFooEvents(previous => [...previous, value]);
-        }
-
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
-        socket.on('foo', onFooEvent);
 
         socket.on('gameCreated', newGame => {
             console.log('New game created:', newGame);
+            setGame(newGame);
         });
 
         socket.on('error', error => {
@@ -99,11 +92,13 @@ const useSocket = () => {
         return () => {
             socket.off('connect', onConnect);
             socket.off('disconnect', onDisconnect);
-            socket.off('foo', onFooEvent);
+            socket.off('gameCreated');
+            socket.off('error');
+            socket.off('success');
         };
     }, []);
 
-    return { isConnected, fooEvents, createGame, connectToServer, error, success, createUser };
+    return { isConnected, game, createGame, connectToServer, error, success, createUser };
 };
 
 export default useSocket;

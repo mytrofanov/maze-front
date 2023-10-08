@@ -20,12 +20,12 @@ import { CurrentUser } from '../types';
 
 interface socket {
     isConnected: boolean;
-    fooEvents: unknown[];
     createGame: (payload: CreateGamePayload) => void;
     connectToServer: (payload: ConnectToServerPayload | null) => void;
     error: SocketError | undefined;
     success: SocketSuccess | undefined;
     createUser: (payload: CreateUserPayload) => void;
+    game: unknown;
 }
 
 interface GameProps {
@@ -70,20 +70,22 @@ const Game = (props: GameProps) => {
 
     const saveLogs = (
         currentPlayer: PlayerType,
+        playerId: number,
         direction?: Direction,
         newX?: number,
         newY?: number,
         message?: string,
     ) => {
-        const playerId = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+        const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         const created = new Date().toLocaleTimeString();
         const newLog = {
-            playerId,
+            playerType: playerType,
+            playerId: playerId,
             direction: direction ? direction : null,
             position: newX && newY ? { x: newX, y: newY } : null,
             message: message
-                ? `${playerId} message: ${message} at ${created}`
-                : `${playerId} going ${direction} at ${created}`,
+                ? `${playerType} message: ${message} at ${created}`
+                : `${playerType} going ${direction} at ${created}`,
             created,
             playerAvatar: currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image,
         };
@@ -113,7 +115,7 @@ const Game = (props: GameProps) => {
             newX += 1;
         }
 
-        saveLogs(currentPlayer, direction, newX, newY);
+        saveLogs(currentPlayer, playerId, direction, newX, newY);
 
         if (newMazeArr[newY][newX].type !== Cell.WALL) {
             if (currentPlayer === PlayerType.PLAYER1) {

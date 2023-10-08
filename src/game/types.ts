@@ -36,7 +36,8 @@ export enum GameStage {
 export type Position = { x: number; y: number };
 
 export interface GameLog {
-    playerId: PlayerType;
+    playerType: PlayerType;
+    playerId: number;
     playerAvatar: string;
     direction: Direction | null;
     message: string;
