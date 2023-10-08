@@ -9,6 +9,7 @@ import { findPlayerPosition } from '../utils/find-player-position.ts';
 import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
 import { Button } from 'antd';
+import Waiting from '../components/waiting.tsx';
 
 interface GameProps {
     isConnected: boolean;
@@ -206,11 +207,7 @@ const Game = (props: GameProps) => {
             gameStage={gameStage}
             waitingList={waitingList}
         >
-            {gameStage === GameStage.WAITING ? (
-                <div className="waiting-screen">
-                    <Button type="default">New Game</Button>
-                </div>
-            ) : null}
+            <Waiting gameStage={gameStage} />
 
             {gameStage === GameStage.NEW_GAME || gameStage === GameStage.CONNECTED ? (
                 <>
