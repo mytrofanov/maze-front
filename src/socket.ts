@@ -1,18 +1,14 @@
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:4000', {
+const URL = 'http://localhost:4000';
+
+const socket = io(URL, {
     autoConnect: false,
     withCredentials: true,
 });
 
 socket.on('connect', () => {
-    console.log('Connected to server');
-
-    //socket.emit('createGame');
-
-    socket.on('gameCreated', newGame => {
-        console.log('New game created:', newGame);
-    });
+    console.log('Connected to server, on URL: ', URL);
 });
 
 export { socket };

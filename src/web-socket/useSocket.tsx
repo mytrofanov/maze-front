@@ -13,6 +13,8 @@ const useSocket = () => {
         socket.emit('createGame', payload);
     };
 
+    //create connect after user exist or entered his name
+
     useEffect(() => {
         function onConnect() {
             setIsConnected(true);
@@ -29,6 +31,10 @@ const useSocket = () => {
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
         socket.on('foo', onFooEvent);
+
+        socket.on('gameCreated', newGame => {
+            console.log('New game created:', newGame);
+        });
 
         return () => {
             socket.off('connect', onConnect);
