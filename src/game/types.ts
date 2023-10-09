@@ -38,16 +38,10 @@ export type Position = { x: number; y: number };
 export interface GameLog {
     playerType: PlayerType;
     playerId: number;
-    playerAvatar: string;
     direction: Direction | null;
     message: string;
     position: Position | null;
     created: string;
-}
-
-export interface WaitingListItem {
-    gameTimeInitiation: string;
-    initiatorUserName: string;
 }
 
 export type GameLogs = GameLog[];

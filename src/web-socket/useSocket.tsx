@@ -31,6 +31,7 @@ const useSocket = () => {
     };
 
     const connectGame = (payload: ConnectToGamePayload) => {
+        setGameStage(GameStage.CONNECTING);
         socket.emit(SocketEvents.CONNECT_GAME, payload);
     };
     const createUser = (payload: CreateUserPayload) => {
@@ -57,6 +58,11 @@ const useSocket = () => {
         setGameStage(GameStage.NEW_GAME);
     };
 
+    const onGameConnected = (payload: GamePayload) => {
+        setGameStage(GameStage.CONNECTED);
+        setGame(payload);
+    };
+
     const onGameUpdated = (payload: GamePayload) => {
         setGame(payload);
     };
@@ -75,6 +81,7 @@ const useSocket = () => {
         }
 
         function onDisconnect() {
+            setGameStage(GameStage.LOST_CONNECTION);
             setIsConnected(false);
         }
 
@@ -83,7 +90,7 @@ const useSocket = () => {
         socket.on(SocketEvents.GAME_CREATED, onGameCreated);
         socket.on(SocketEvents.GAME_UPDATED, onGameUpdated);
         socket.on(SocketEvents.LOG_UPDATED, onLogUpdated);
-        socket.on(SocketEvents.GAME_CONNECTED, onGameUpdated);
+        socket.on(SocketEvents.GAME_CONNECTED, onGameConnected);
         socket.on(SocketEvents.AVAILABLE_GAMES, onAvailableGames);
         socket.on(SocketEvents.ERROR, error => {
             if (!Object.values(SocketErrorCodes).includes(error.code)) {
