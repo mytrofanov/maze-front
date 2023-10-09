@@ -1,6 +1,7 @@
 import React from 'react';
 import { socket } from '../socket';
 import {
+    AvailableGamesPayload,
     ConnectToServerPayload,
     CreateGamePayload,
     CreateUserPayload,
@@ -17,19 +18,17 @@ const useSocket = () => {
     const [error, setError] = React.useState<SocketError | undefined>(undefined);
     const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
     const [game, setGame] = React.useState<GameCreatedPayload | undefined>(undefined);
+    const [availableGames, setAvailableGames] = React.useState<AvailableGamesPayload | undefined>(undefined);
 
     const createGame = (payload: CreateGamePayload) => {
         socket.emit('createGame', payload);
     };
-
     const createUser = (payload: CreateUserPayload) => {
         socket.emit('createUser', payload);
     };
-
     const onDirectionInput = (payload: DirectionPayload) => {
         socket.emit('direction', payload);
     };
-
     const connectToServer = (payload: ConnectToServerPayload | null) => {
         if (payload) {
             socket.io.opts.query = {
@@ -44,6 +43,10 @@ const useSocket = () => {
         setGame(payload);
     };
 
+    const onAvailableGames = (payload: AvailableGamesPayload) => {
+        setAvailableGames(payload);
+    };
+
     React.useEffect(() => {
         function onConnect() {
             setIsConnected(true);
@@ -55,16 +58,14 @@ const useSocket = () => {
 
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
-
         socket.on('gameCreated', onGameCreated);
-
+        socket.on('availableGames', onAvailableGames);
         socket.on('error', error => {
             if (!Object.values(SocketErrorCodes).includes(error.code)) {
                 console.log('An unknown error occurred.');
             }
             setError(error);
         });
-
         socket.on('success', success => {
             if (!Object.values(SocketSuccessCodes).includes(success.code)) {
                 console.log('An unknown success code.');
@@ -81,7 +82,17 @@ const useSocket = () => {
         };
     }, []);
 
-    return { isConnected, game, createGame, connectToServer, error, success, createUser, onDirectionInput };
+    return {
+        isConnected,
+        game,
+        availableGames,
+        createGame,
+        connectToServer,
+        error,
+        success,
+        createUser,
+        onDirectionInput,
+    };
 };
 
 export default useSocket;

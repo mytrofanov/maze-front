@@ -8,6 +8,7 @@ import { updateMazeCell } from '../utils/update-maze.ts';
 import Waiting from '../components/waiting.tsx';
 import PlayGame from '../components/play-game.tsx';
 import {
+    AvailableGamesPayload,
     ConnectToServerPayload,
     CreateGamePayload,
     CreateUserPayload,
@@ -27,6 +28,7 @@ interface socket {
     success: SocketSuccess | undefined;
     createUser: (payload: CreateUserPayload) => void;
     game: GameCreatedPayload;
+    availableGames: AvailableGamesPayload;
     onDirectionInput: (payload: DirectionPayload) => void;
 }
 

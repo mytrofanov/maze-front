@@ -49,12 +49,21 @@ export enum GameStatus {
     CONNECTION_ERROR = 'connection_error',
 }
 
-export type GameCreatedPayload = {
+export type Game = {
     id: number;
     player1Id: number;
     player2Id?: number;
     currentPlayer: PlayerType;
     winner: PlayerType;
     status: GameStatus;
+    createdAt: string;
+};
+
+export type availableGame = Omit<Game, 'status'> & { status: GameStatus.WAITING_FOR_PLAYER };
+
+export type AvailableGamesPayload = availableGame[];
+
+export type GameCreatedPayload = {
+    game: Game;
     maze: MazeCell[][];
 };
