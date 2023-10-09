@@ -1,29 +1,31 @@
 import { Avatar, List, Typography } from 'antd';
-import { WaitingListItem } from '../game';
 import './waiting-list.css';
 import { player1Image } from '../variables';
+import { AvailableGamesPayload } from '../web-socket';
 
 interface ChatListProps {
-    waitingList: WaitingListItem[];
+    waitingList: AvailableGamesPayload;
+    onConnectGame: (gameId: string) => void;
 }
 
 const WaitingList = (props: ChatListProps) => {
-    const { waitingList } = props;
+    const { waitingList, onConnectGame } = props;
     return (
         <List
             className="waiting-list"
             itemLayout="horizontal"
             dataSource={waitingList}
             renderItem={item => (
-                <List.Item>
+                <List.Item onClick={() => onConnectGame(item.id)}>
                     <List.Item.Meta
-                        key={item.gameTimeInitiation}
+                        key={item.createdAt}
                         avatar={<Avatar src={player1Image} />}
                         title={
                             <Typography.Text code className="waiting-item-title">
-                                {item.initiatorUserName}
+                                {item.player1Id}
                             </Typography.Text>
                         }
+                        description={item.createdAt}
                     />
                 </List.Item>
             )}

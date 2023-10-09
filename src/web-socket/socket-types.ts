@@ -1,5 +1,18 @@
 import { Direction, MazeCell, PlayerType } from '../game';
 
+export enum SocketEvents {
+    AVAILABLE_GAMES = 'AVAILABLE_GAMES',
+    CONNECT = 'CONNECT',
+    CONNECT_GAME = 'CONNECT_GAME',
+    CREATE_GAME = 'CREATE_GAME',
+    CREATE_USER = 'CREATE_USER',
+    DIRECTION = 'DIRECTION',
+    DISCONNECT = 'DISCONNECT',
+    ERROR = 'ERROR',
+    GAME_CREATED = 'GAME_CREATED',
+    SUCCESS = 'SUCCESS',
+}
+
 export type CreateGamePayload = {
     player1Id: string;
 };
@@ -7,6 +20,11 @@ export type CreateGamePayload = {
 export type ConnectToServerPayload = {
     userName: string;
     userId?: string;
+};
+
+export type ConnectToGamePayload = {
+    gameId: string;
+    userId: string;
 };
 
 export type CreateUserPayload = {
@@ -50,9 +68,9 @@ export enum GameStatus {
 }
 
 export type Game = {
-    id: number;
-    player1Id: number;
-    player2Id?: number;
+    id: string;
+    player1Id: string;
+    player2Id?: string;
     currentPlayer: PlayerType;
     winner: PlayerType;
     status: GameStatus;

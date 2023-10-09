@@ -9,6 +9,7 @@ import Waiting from '../components/waiting.tsx';
 import PlayGame from '../components/play-game.tsx';
 import {
     AvailableGamesPayload,
+    ConnectToGamePayload,
     ConnectToServerPayload,
     CreateGamePayload,
     CreateUserPayload,
@@ -24,6 +25,7 @@ interface socket {
     isConnected: boolean;
     createGame: (payload: CreateGamePayload) => void;
     connectToServer: (payload: ConnectToServerPayload | null) => void;
+    connectGame: (payload: ConnectToGamePayload) => void;
     error: SocketError | undefined;
     success: SocketSuccess | undefined;
     createUser: (payload: CreateUserPayload) => void;
@@ -223,20 +225,6 @@ const Game = (props: GameProps) => {
             }
         }
     };
-    const waitingList = [
-        {
-            gameTimeInitiation: new Date().toISOString(),
-            initiatorUserName: 'Max',
-        },
-        {
-            gameTimeInitiation: new Date().toISOString(),
-            initiatorUserName: 'Mike',
-        },
-        {
-            gameTimeInitiation: new Date().toISOString(),
-            initiatorUserName: 'Nino',
-        },
-    ];
 
     const handleCreateNewGame = () => {
         console.log('handleCreateNewGame');
@@ -251,16 +239,22 @@ const Game = (props: GameProps) => {
         socket.createGame({ player1Id: currentUser.userId });
     };
 
+    const handleConnectGame = (gameId: string) => {
+        if (!currentUser) return;
+        socket.connectGame({ gameId, userId: currentUser.userId });
+    };
+
     return (
         <PageLayout
-            userName={username}
+            userName={currentUser?.userName}
             currentPlayer={currentPlayer}
             gameLogs={gameLogs}
             currentMessage={currentMessage}
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
             gameStage={gameStage}
-            waitingList={waitingList}
+            waitingList={socket.availableGames}
+            onConnectGame={handleConnectGame}
         >
             <Waiting gameStage={gameStage} onCreateNewGame={handleCreateNewGame} />
             <PlayGame

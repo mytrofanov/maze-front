@@ -1,22 +1,24 @@
 import React, { ChangeEvent } from 'react';
 import { Layout } from 'antd';
 import './page-layout.styles.css';
-import { GameLogs, GameStage, PlayerType, WaitingListItem } from '../game';
+import { GameLogs, GameStage, PlayerType } from '../game';
 import { Header, Sider } from '../components';
+import { AvailableGamesPayload } from '../web-socket';
 
-interface PublicPageLayoutProps {
+interface PageLayoutProps {
     currentPlayer: PlayerType;
-    userName: string | null;
+    userName?: string;
     children: React.ReactNode;
     gameLogs: GameLogs;
     currentMessage: string;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     gameStage: GameStage;
-    waitingList: WaitingListItem[];
+    waitingList: AvailableGamesPayload;
+    onConnectGame: (gameId: string) => void;
 }
 
-const PageLayout = (props: PublicPageLayoutProps) => {
+const PageLayout = (props: PageLayoutProps) => {
     const {
         currentPlayer,
         children,
@@ -27,6 +29,7 @@ const PageLayout = (props: PublicPageLayoutProps) => {
         onMessageChange,
         gameStage,
         waitingList,
+        onConnectGame,
     } = props;
     return (
         <Layout className="page-layout">
@@ -42,6 +45,7 @@ const PageLayout = (props: PublicPageLayoutProps) => {
                         gameStage={gameStage}
                         waitingList={waitingList}
                         onKeyPress={onKeyPress}
+                        onConnectGame={onConnectGame}
                     />
                 </Layout.Sider>
                 <Layout.Content className="content">{children}</Layout.Content>

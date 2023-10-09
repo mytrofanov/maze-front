@@ -2,6 +2,7 @@ import React from 'react';
 import { socket } from '../socket';
 import {
     AvailableGamesPayload,
+    ConnectToGamePayload,
     ConnectToServerPayload,
     CreateGamePayload,
     CreateUserPayload,
@@ -9,6 +10,7 @@ import {
     GameCreatedPayload,
     SocketError,
     SocketErrorCodes,
+    SocketEvents,
     SocketSuccess,
     SocketSuccessCodes,
 } from './socket-types.ts';
@@ -21,13 +23,17 @@ const useSocket = () => {
     const [availableGames, setAvailableGames] = React.useState<AvailableGamesPayload | undefined>(undefined);
 
     const createGame = (payload: CreateGamePayload) => {
-        socket.emit('createGame', payload);
+        socket.emit(SocketEvents.CREATE_GAME, payload);
+    };
+
+    const connectGame = (payload: ConnectToGamePayload) => {
+        socket.emit(SocketEvents.CONNECT_GAME, payload);
     };
     const createUser = (payload: CreateUserPayload) => {
-        socket.emit('createUser', payload);
+        socket.emit(SocketEvents.CREATE_USER, payload);
     };
     const onDirectionInput = (payload: DirectionPayload) => {
-        socket.emit('direction', payload);
+        socket.emit(SocketEvents.DIRECTION, payload);
     };
     const connectToServer = (payload: ConnectToServerPayload | null) => {
         if (payload) {
@@ -56,17 +62,17 @@ const useSocket = () => {
             setIsConnected(false);
         }
 
-        socket.on('connect', onConnect);
-        socket.on('disconnect', onDisconnect);
-        socket.on('gameCreated', onGameCreated);
-        socket.on('availableGames', onAvailableGames);
-        socket.on('error', error => {
+        socket.on(SocketEvents.CONNECT, onConnect);
+        socket.on(SocketEvents.DISCONNECT, onDisconnect);
+        socket.on(SocketEvents.GAME_CREATED, onGameCreated);
+        socket.on(SocketEvents.AVAILABLE_GAMES, onAvailableGames);
+        socket.on(SocketEvents.ERROR, error => {
             if (!Object.values(SocketErrorCodes).includes(error.code)) {
                 console.log('An unknown error occurred.');
             }
             setError(error);
         });
-        socket.on('success', success => {
+        socket.on(SocketEvents.SUCCESS, success => {
             if (!Object.values(SocketSuccessCodes).includes(success.code)) {
                 console.log('An unknown success code.');
             }
@@ -74,11 +80,11 @@ const useSocket = () => {
         });
 
         return () => {
-            socket.off('connect', onConnect);
-            socket.off('disconnect', onDisconnect);
-            socket.off('gameCreated');
-            socket.off('error');
-            socket.off('success');
+            socket.off(SocketEvents.CONNECT, onConnect);
+            socket.off(SocketEvents.DISCONNECT, onDisconnect);
+            socket.off(SocketEvents.GAME_CREATED);
+            socket.off(SocketEvents.ERROR);
+            socket.off(SocketEvents.SUCCESS);
         };
     }, []);
 
@@ -87,6 +93,7 @@ const useSocket = () => {
         game,
         availableGames,
         createGame,
+        connectGame,
         connectToServer,
         error,
         success,

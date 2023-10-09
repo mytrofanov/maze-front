@@ -1,9 +1,10 @@
 import React, { ChangeEvent } from 'react';
 import { Input } from 'antd';
-import { GameLogs, GameStage, WaitingListItem } from '../game';
+import { GameLogs, GameStage } from '../game';
 import { ChatList } from './index.ts';
 import WaitingList from './waiting-list.tsx';
 import './sider.css';
+import { AvailableGamesPayload } from '../web-socket';
 
 interface SiderProps {
     gameLogs: GameLogs;
@@ -11,11 +12,12 @@ interface SiderProps {
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     gameStage: GameStage;
-    waitingList: WaitingListItem[];
+    waitingList: AvailableGamesPayload;
+    onConnectGame: (gameId: string) => void;
 }
 
 const Sider = (props: SiderProps) => {
-    const { currentMessage, onMessageChange, onKeyPress, gameStage, gameLogs, waitingList } = props;
+    const { currentMessage, onMessageChange, onKeyPress, gameStage, gameLogs, waitingList, onConnectGame } = props;
     return (
         <div className="chat-block">
             <Input
@@ -26,7 +28,9 @@ const Sider = (props: SiderProps) => {
                 placeholder="Type action or message..."
             />
             {gameStage === GameStage.NEW_GAME ? <ChatList chat={gameLogs} /> : null}
-            {gameStage === GameStage.WAITING ? <WaitingList waitingList={waitingList} /> : null}
+            {gameStage === GameStage.WAITING ? (
+                <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />
+            ) : null}
         </div>
     );
 };
