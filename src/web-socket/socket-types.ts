@@ -1,4 +1,4 @@
-import { Direction } from '../game';
+import { Direction, MazeCell, PlayerType } from '../game';
 
 export type CreateGamePayload = {
     player1Id: string;
@@ -40,4 +40,21 @@ export enum SocketErrorCodes {
 export type SocketError = {
     code: SocketErrorCodes;
     message: string;
+};
+
+export enum GameStatus {
+    WAITING_FOR_PLAYER = 'WAITING_FOR_PLAYER',
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
+    CONNECTION_ERROR = 'connection_error',
+}
+
+export type GameCreatedPayload = {
+    id: number;
+    player1Id: number;
+    player2Id?: number;
+    currentPlayer: PlayerType;
+    winner: PlayerType;
+    status: GameStatus;
+    maze: MazeCell[][];
 };

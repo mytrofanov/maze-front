@@ -5,6 +5,7 @@ import {
     CreateGamePayload,
     CreateUserPayload,
     DirectionPayload,
+    GameCreatedPayload,
     SocketError,
     SocketErrorCodes,
     SocketSuccess,
@@ -15,7 +16,7 @@ const useSocket = () => {
     const [isConnected, setIsConnected] = React.useState<boolean>(socket.connected);
     const [error, setError] = React.useState<SocketError | undefined>(undefined);
     const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
-    const [game, setGame] = React.useState(undefined);
+    const [game, setGame] = React.useState<GameCreatedPayload | undefined>(undefined);
 
     const createGame = (payload: CreateGamePayload) => {
         socket.emit('createGame', payload);
@@ -39,6 +40,10 @@ const useSocket = () => {
         socket.connect();
     };
 
+    const onGameCreated = (payload: GameCreatedPayload) => {
+        setGame(payload);
+    };
+
     React.useEffect(() => {
         function onConnect() {
             setIsConnected(true);
@@ -51,10 +56,7 @@ const useSocket = () => {
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
 
-        socket.on('gameCreated', newGame => {
-            console.log('New game created:', newGame);
-            setGame(newGame);
-        });
+        socket.on('gameCreated', onGameCreated);
 
         socket.on('error', error => {
             if (!Object.values(SocketErrorCodes).includes(error.code)) {

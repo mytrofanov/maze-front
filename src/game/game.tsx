@@ -4,7 +4,6 @@ import { localStorageUser, player1Image, player2Image } from '../variables';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { findPlayerPosition } from '../utils/find-player-position.ts';
-import { newMaze } from '../variables';
 import { updateMazeCell } from '../utils/update-maze.ts';
 import Waiting from '../components/waiting.tsx';
 import PlayGame from '../components/play-game.tsx';
@@ -13,10 +12,11 @@ import {
     CreateGamePayload,
     CreateUserPayload,
     DirectionPayload,
+    GameCreatedPayload,
     SocketError,
     SocketSuccess,
     SocketSuccessCodes,
-} from '../web-socket/useSocket.tsx';
+} from '../web-socket';
 import { CurrentUser } from '../types';
 
 interface socket {
@@ -26,7 +26,7 @@ interface socket {
     error: SocketError | undefined;
     success: SocketSuccess | undefined;
     createUser: (payload: CreateUserPayload) => void;
-    game: unknown;
+    game: GameCreatedPayload;
     onDirectionInput: (payload: DirectionPayload) => void;
 }
 
@@ -41,11 +41,15 @@ const Game = (props: GameProps) => {
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
-    const [username, setUsername] = React.useState<string | null>(null);
+    // const [username, setUsername] = React.useState<string | null>(null);
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
-    const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][]>(newMaze);
+    const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][] | undefined>(undefined);
     const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
+
+    React.useEffect(() => {
+        setNewMazeArr(socket.game.maze);
+    }, [socket.game.maze]);
 
     React.useEffect(() => {
         const storedUserString = localStorage.getItem(localStorageUser);
