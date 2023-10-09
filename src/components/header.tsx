@@ -5,7 +5,7 @@ import './header.css';
 
 interface HeaderProps {
     userName?: string;
-    gameLogs: GameLogs;
+    gameLogs?: GameLogs;
     currentPlayer: PlayerType;
 }
 
@@ -17,7 +17,7 @@ const Header = (props: HeaderProps) => {
                 Hello {userName ? userName : 'handsome!'}! Your avatar is:
                 <Image width={64} src={player1Image} />
             </Col>
-            {gameLogs.length > 0 ? (
+            {gameLogs && gameLogs.length > 0 ? (
                 <Col className="player-info-block">
                     <Image width={64} src={currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image} />
                     {'  '}

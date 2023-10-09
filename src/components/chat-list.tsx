@@ -1,10 +1,9 @@
 import { Avatar, Button, List, Space, Typography } from 'antd';
 import { GameLogs } from '../game';
 import './chat-list.css';
-import React from 'react';
 
 interface ChatListProps {
-    chat: GameLogs;
+    chat?: GameLogs;
 }
 
 const ChatList = (props: ChatListProps) => {

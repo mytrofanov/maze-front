@@ -9,7 +9,7 @@ interface PageLayoutProps {
     currentPlayer: PlayerType;
     userName?: string;
     children: React.ReactNode;
-    gameLogs: GameLogs;
+    gameLogs?: GameLogs;
     currentMessage: string;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;

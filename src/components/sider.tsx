@@ -7,7 +7,7 @@ import './sider.css';
 import { AvailableGamesPayload } from '../web-socket';
 
 interface SiderProps {
-    gameLogs: GameLogs;
+    gameLogs?: GameLogs;
     currentMessage: string;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;

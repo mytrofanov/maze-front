@@ -8,13 +8,14 @@ import {
     CreateUserPayload,
     DirectionPayload,
     GamePayload,
+    MessagePayload,
     SocketError,
     SocketErrorCodes,
     SocketEvents,
     SocketSuccess,
     SocketSuccessCodes,
 } from './socket-types.ts';
-import { GameStage } from '../game';
+import { GameLogs, GameStage } from '../game';
 
 const useSocket = () => {
     const [isConnected, setIsConnected] = React.useState<boolean>(socket.connected);
@@ -23,6 +24,7 @@ const useSocket = () => {
     const [game, setGame] = React.useState<GamePayload | undefined>(undefined);
     const [availableGames, setAvailableGames] = React.useState<AvailableGamesPayload | undefined>(undefined);
     const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
+    const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
 
     const createGame = (payload: CreateGamePayload) => {
         socket.emit(SocketEvents.CREATE_GAME, payload);
@@ -36,6 +38,9 @@ const useSocket = () => {
     };
     const onDirectionInput = (payload: DirectionPayload) => {
         socket.emit(SocketEvents.DIRECTION, payload);
+    };
+    const onSendMessage = (payload: MessagePayload) => {
+        socket.emit(SocketEvents.SEND_MESSAGE, payload);
     };
     const connectToServer = (payload: ConnectToServerPayload | null) => {
         if (payload) {
@@ -56,6 +61,10 @@ const useSocket = () => {
         setGame(payload);
     };
 
+    const onLogUpdated = (payload: GameLogs) => {
+        setGameLogs(payload);
+    };
+
     const onAvailableGames = (payload: AvailableGamesPayload) => {
         setAvailableGames(payload);
     };
@@ -73,6 +82,7 @@ const useSocket = () => {
         socket.on(SocketEvents.DISCONNECT, onDisconnect);
         socket.on(SocketEvents.GAME_CREATED, onGameCreated);
         socket.on(SocketEvents.GAME_UPDATED, onGameUpdated);
+        socket.on(SocketEvents.LOG_UPDATED, onLogUpdated);
         socket.on(SocketEvents.GAME_CONNECTED, onGameUpdated);
         socket.on(SocketEvents.AVAILABLE_GAMES, onAvailableGames);
         socket.on(SocketEvents.ERROR, error => {
@@ -101,6 +111,7 @@ const useSocket = () => {
         isConnected,
         game,
         gameStage,
+        gameLogs,
         availableGames,
         createGame,
         connectGame,
@@ -108,6 +119,7 @@ const useSocket = () => {
         error,
         success,
         createUser,
+        onSendMessage,
         onDirectionInput,
     };
 };

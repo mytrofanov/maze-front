@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { Direction, GameLogs, GameStage, MazeCell, PlayerType } from './types.ts';
-import { localStorageUser, player1Image, player2Image } from '../variables';
+import { localStorageUser } from '../variables';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PageLayout from '../page-layout/page-layout.tsx';
 import Waiting from '../components/waiting.tsx';
@@ -13,6 +13,7 @@ import {
     CreateUserPayload,
     DirectionPayload,
     GamePayload,
+    MessagePayload,
     SocketError,
     SocketSuccess,
     SocketSuccessCodes,
@@ -31,6 +32,8 @@ interface socket {
     availableGames?: AvailableGamesPayload;
     onDirectionInput: (payload: DirectionPayload) => void;
     gameStage: GameStage;
+    gameLogs: GameLogs;
+    onSendMessage: (payload: MessagePayload) => void;
 }
 
 interface GameProps {
@@ -43,7 +46,7 @@ const Game = (props: GameProps) => {
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
-    const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
+    //const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     // const [username, setUsername] = React.useState<string | null>(null);
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
@@ -52,10 +55,10 @@ const Game = (props: GameProps) => {
     React.useEffect(() => {
         if (!socket.game) return;
         setNewMazeArr(socket.game.maze);
-    }, [socket.game]);
-
-    React.useEffect(() => {
-        if (socket.game && socket.game.game.winner) {
+        if (socket.game.game.currentPlayer === currentPlayer) {
+            setCurrentPlayer(socket.game.game.currentPlayer);
+        }
+        if (socket.game.game.winner) {
             setWinner(socket.game.game.winner);
             setOpenWinnerModal(true);
         }
@@ -84,28 +87,17 @@ const Game = (props: GameProps) => {
     //     setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
     // };
 
-    const saveLogs = (
-        currentPlayer: PlayerType,
-        playerId: number,
-        direction?: Direction,
-        newX?: number,
-        newY?: number,
-        message?: string,
-    ) => {
+    const saveLogs = (currentPlayer: PlayerType, message: string) => {
+        if (!socket.game || !currentUser) return;
         const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         const created = new Date().toLocaleTimeString();
         const newLog = {
+            gameId: socket.game.game.id,
             playerType: playerType,
-            playerId: playerId,
-            direction: direction ? direction : null,
-            position: newX && newY ? { x: newX, y: newY } : null,
-            message: message
-                ? `${playerType} message: ${message} at ${created}`
-                : `${playerType} going ${direction} at ${created}`,
-            created,
-            playerAvatar: currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image,
+            playerId: currentUser.userId,
+            message: `${playerType} message: ${message} at ${created}`,
         };
-        setGameLogs(prevLogs => [newLog, ...prevLogs]);
+        socket.onSendMessage(newLog);
     };
 
     const handleDirectionInput = (direction: Direction) => {
@@ -234,7 +226,7 @@ const Game = (props: GameProps) => {
             if (Object.values(Direction).includes(currentMessage as Direction)) {
                 handleDirectionInput(currentMessage as Direction);
             } else {
-                saveLogs(currentPlayer, undefined, undefined, undefined, currentMessage);
+                saveLogs(currentPlayer, currentMessage);
             }
         }
     };
@@ -261,7 +253,7 @@ const Game = (props: GameProps) => {
         <PageLayout
             userName={currentUser?.userName}
             currentPlayer={currentPlayer}
-            gameLogs={gameLogs}
+            gameLogs={socket.gameLogs}
             currentMessage={currentMessage}
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
