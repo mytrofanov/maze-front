@@ -53,7 +53,7 @@ const Game = (props: GameProps) => {
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][] | undefined>(undefined);
-
+    console.log('currentUser: ', currentUser);
     React.useEffect(() => {
         if (!socket.game) return;
         setNewMazeArr(socket.game.maze);
@@ -70,7 +70,8 @@ const Game = (props: GameProps) => {
         const storedUserString = localStorage.getItem(localStorageUser);
         if (storedUserString) {
             const storedUser = JSON.parse(storedUserString);
-            socket.connectToServer(storedUser);
+            console.log('storedUser: ', storedUser);
+            socket.connectToServer({ userName: storedUser.userName, userId: storedUser.id });
             setCurrentUser(storedUser);
         } else {
             setOpenCreateUserModal(true);
@@ -81,7 +82,7 @@ const Game = (props: GameProps) => {
         if (socket.success?.code === SocketSuccessCodes.USER_CREATED) {
             localStorage.setItem(localStorageUser, JSON.stringify(socket.success.payload.user));
             const socketUser = socket.success.payload.user;
-            setCurrentUser({ userName: socketUser.userName, userId: socketUser.id });
+            setCurrentUser({ userName: socketUser.userName, userId: socketUser.id, type: socketUser.type });
             setOpenCreateUserModal(false);
         }
     }, [socket.success]);
@@ -104,11 +105,12 @@ const Game = (props: GameProps) => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        if (!socket.game) return;
+        if (!socket.game || !currentUser) return;
         const gameId = socket.game.game.id;
         const playerId = currentUser?.userId;
-        const player1 = socket.game.game.player1Id;
-        const playerType = player1 === playerId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+        //const player1 = socket.game.game.player1Id;
+        //const playerType = player1 === playerId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+        const playerType = currentUser.type;
         if (!playerId) return;
 
         socket.onDirectionInput({ direction, gameId, playerId, playerType });
@@ -245,10 +247,10 @@ const Game = (props: GameProps) => {
 
     const handleCreateNewGame = () => {
         console.log('handleCreateNewGame');
-        if (!socket.isConnected) {
-            console.log('No connection');
-            return;
-        }
+        // if (!socket.isConnected) {
+        //     console.log('No connection');
+        //     return;
+        // }
         if (!currentUser) {
             console.log('User is not registered');
             return;

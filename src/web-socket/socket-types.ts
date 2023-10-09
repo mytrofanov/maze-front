@@ -59,6 +59,7 @@ export type SocketUser = {
     id: string;
     updatedAt: string;
     userName: string;
+    type: PlayerType;
 };
 
 export interface SocketPayload {

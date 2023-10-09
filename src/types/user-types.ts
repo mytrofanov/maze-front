@@ -1,3 +1,5 @@
+import { PlayerType } from '../game';
+
 export interface CreateUserFormValues {
     userName: string;
 }
@@ -5,4 +7,5 @@ export interface CreateUserFormValues {
 export type CurrentUser = {
     userName: string;
     userId: string;
+    type: PlayerType;
 };
