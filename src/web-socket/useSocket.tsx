@@ -1,47 +1,15 @@
 import React from 'react';
 import { socket } from '../socket';
-import { Direction } from '../game';
-
-export type CreateGamePayload = {
-    player1Id: string;
-};
-
-export type ConnectToServerPayload = {
-    userName: string;
-    userId?: string;
-};
-
-export type CreateUserPayload = {
-    userName: string;
-};
-
-export type DirectionPayload = {
-    direction: Direction;
-    gameId: number;
-    playerId: number;
-    message?: string;
-};
-
-export enum SocketSuccessCodes {
-    USER_CREATED = 'USER_CREATED',
-}
-
-export type SocketSuccess = {
-    code: SocketSuccessCodes;
-    message: string;
-    payload: never;
-};
-
-export enum SocketErrorCodes {
-    USERNAME_REQUIRED = 'USERNAME_REQUIRED',
-    USERNAME_TAKEN = 'USERNAME_TAKEN',
-    PLAYER_IS_NOT_FOUND = 'PLAYER_IS_NOT_FOUND',
-}
-
-export type SocketError = {
-    code: SocketErrorCodes;
-    message: string;
-};
+import {
+    ConnectToServerPayload,
+    CreateGamePayload,
+    CreateUserPayload,
+    DirectionPayload,
+    SocketError,
+    SocketErrorCodes,
+    SocketSuccess,
+    SocketSuccessCodes,
+} from './socket-types.ts';
 
 const useSocket = () => {
     const [isConnected, setIsConnected] = React.useState<boolean>(socket.connected);
