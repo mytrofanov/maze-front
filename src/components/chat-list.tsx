@@ -1,6 +1,7 @@
 import { Avatar, Button, List, Space, Typography } from 'antd';
-import { GameLogs } from '../game';
+import { GameLogs, PlayerType } from '../game';
 import './chat-list.css';
+import { player1Image, player2Image } from '../variables';
 
 interface ChatListProps {
     chat?: GameLogs;
@@ -18,7 +19,9 @@ const ChatList = (props: ChatListProps) => {
                     <List.Item>
                         <List.Item.Meta
                             key={item.created}
-                            avatar={<Avatar src={item.playerAvatar} />}
+                            avatar={
+                                <Avatar src={item.playerType === PlayerType.PLAYER1 ? player1Image : player2Image} />
+                            }
                             title={
                                 <Typography.Text code className="chat-item-title">
                                     {item.direction}
