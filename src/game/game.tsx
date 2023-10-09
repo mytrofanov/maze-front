@@ -1,10 +1,8 @@
 import React, { ChangeEvent } from 'react';
-import { Cell, Direction, GameLogs, GameStage, MazeCell, PlayerType } from './types.ts';
+import { Direction, GameLogs, GameStage, MazeCell, PlayerType } from './types.ts';
 import { localStorageUser, player1Image, player2Image } from '../variables';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PageLayout from '../page-layout/page-layout.tsx';
-import { findPlayerPosition } from '../utils/find-player-position.ts';
-import { updateMazeCell } from '../utils/update-maze.ts';
 import Waiting from '../components/waiting.tsx';
 import PlayGame from '../components/play-game.tsx';
 import {
@@ -14,7 +12,7 @@ import {
     CreateGamePayload,
     CreateUserPayload,
     DirectionPayload,
-    GameCreatedPayload,
+    GamePayload,
     SocketError,
     SocketSuccess,
     SocketSuccessCodes,
@@ -26,12 +24,13 @@ interface socket {
     createGame: (payload: CreateGamePayload) => void;
     connectToServer: (payload: ConnectToServerPayload | null) => void;
     connectGame: (payload: ConnectToGamePayload) => void;
-    error: SocketError | undefined;
-    success: SocketSuccess | undefined;
+    error?: SocketError;
+    success?: SocketSuccess;
     createUser: (payload: CreateUserPayload) => void;
-    game: GameCreatedPayload;
-    availableGames: AvailableGamesPayload;
+    game?: GamePayload;
+    availableGames?: AvailableGamesPayload;
     onDirectionInput: (payload: DirectionPayload) => void;
+    gameStage: GameStage;
 }
 
 interface GameProps {
@@ -49,11 +48,18 @@ const Game = (props: GameProps) => {
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][] | undefined>(undefined);
-    const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
 
     React.useEffect(() => {
+        if (!socket.game) return;
         setNewMazeArr(socket.game.maze);
-    }, [socket.game.maze]);
+    }, [socket.game]);
+
+    React.useEffect(() => {
+        if (socket.game && socket.game.game.winner) {
+            setWinner(socket.game.game.winner);
+            setOpenWinnerModal(true);
+        }
+    }, [socket.game]);
 
     React.useEffect(() => {
         const storedUserString = localStorage.getItem(localStorageUser);
@@ -74,9 +80,9 @@ const Game = (props: GameProps) => {
         }
     }, [socket.success]);
 
-    const togglePlayer = () => {
-        setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
-    };
+    // const togglePlayer = () => {
+    //     setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
+    // };
 
     const saveLogs = (
         currentPlayer: PlayerType,
@@ -103,6 +109,7 @@ const Game = (props: GameProps) => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
+        if (!socket.game) return;
         const gameId = socket.game.game.id;
         const playerId = currentUser?.userId;
         const player1 = socket.game.game.player1Id;
@@ -111,48 +118,48 @@ const Game = (props: GameProps) => {
 
         socket.onDirectionInput({ direction, gameId, playerId, playerType });
 
-        const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
-        if (!startPosition) {
-            console.log('Players are not found on maze');
-            return;
-        }
+        // const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
+        // if (!startPosition) {
+        //     console.log('Players are not found on maze');
+        //     return;
+        // }
 
-        let newX = startPosition.x;
-        let newY = startPosition.y;
+        // let newX = startPosition.x;
+        // let newY = startPosition.y;
+        //
+        // if (direction === Direction.UP) {
+        //     newY -= 1;
+        // }
+        // if (direction === Direction.DOWN) {
+        //     newY += 1;
+        // }
+        // if (direction === Direction.LEFT) {
+        //     newX -= 1;
+        // }
+        // if (direction === Direction.RIGHT) {
+        //     newX += 1;
+        // }
 
-        if (direction === Direction.UP) {
-            newY -= 1;
-        }
-        if (direction === Direction.DOWN) {
-            newY += 1;
-        }
-        if (direction === Direction.LEFT) {
-            newX -= 1;
-        }
-        if (direction === Direction.RIGHT) {
-            newX += 1;
-        }
+        // saveLogs(currentPlayer, playerId, direction, newX, newY);
 
-        saveLogs(currentPlayer, playerId, direction, newX, newY);
-
-        if (newMazeArr[newY][newX].type !== Cell.WALL) {
-            if (currentPlayer === PlayerType.PLAYER1) {
-                if (newMazeArr[newY][newX].type === Cell.EXIT) {
-                    setWinner(PlayerType.PLAYER1);
-                    setOpenWinnerModal(true);
-                }
-            } else {
-                if (newMazeArr[newY][newX].type === Cell.EXIT) {
-                    setWinner(PlayerType.PLAYER2);
-                    setOpenWinnerModal(true);
-                }
-            }
-            setNewMazeArr(prev =>
-                updateMazeCell(prev, { x: newX, y: newY }, true, startPosition, direction, currentPlayer),
-            );
-        }
-        setNewMazeArr(prev => updateMazeCell(prev, { x: newX, y: newY }, true, undefined, undefined, undefined));
-        togglePlayer();
+        // if (newMazeArr[newY][newX].type !== Cell.WALL) {
+        //     if (currentPlayer === PlayerType.PLAYER1) {
+        //         if (newMazeArr[newY][newX].type === Cell.EXIT) {
+        //             setWinner(PlayerType.PLAYER1);
+        //             setOpenWinnerModal(true);
+        //         }
+        //     } else {
+        //         if (newMazeArr[newY][newX].type === Cell.EXIT) {
+        //             setWinner(PlayerType.PLAYER2);
+        //             setOpenWinnerModal(true);
+        //         }
+        //     }
+        //     setNewMazeArr(prev =>
+        //         updateMazeCell(prev, { x: newX, y: newY }, true, startPosition, direction, currentPlayer),
+        //     );
+        // }
+        // setNewMazeArr(prev => updateMazeCell(prev, { x: newX, y: newY }, true, undefined, undefined, undefined));
+        // togglePlayer();
     };
 
     const handleGlobalKeyPress = (event: KeyboardEvent) => {
@@ -258,13 +265,13 @@ const Game = (props: GameProps) => {
             currentMessage={currentMessage}
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
-            gameStage={gameStage}
+            gameStage={socket.gameStage}
             waitingList={socket.availableGames}
             onConnectGame={handleConnectGame}
         >
-            <Waiting gameStage={gameStage} onCreateNewGame={handleCreateNewGame} />
+            <Waiting gameStage={socket.gameStage} onCreateNewGame={handleCreateNewGame} />
             <PlayGame
-                gameStage={gameStage}
+                gameStage={socket.gameStage}
                 handleWinnerModalCancel={handleWinnerModalCancel}
                 handleWinnerModalOk={handleWinnerModalOk}
                 openWinnerModal={openWinnerModal}

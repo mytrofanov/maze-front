@@ -4,12 +4,13 @@ import { player1Image } from '../variables';
 import { AvailableGamesPayload } from '../web-socket';
 
 interface ChatListProps {
-    waitingList: AvailableGamesPayload;
+    waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
 }
 
 const WaitingList = (props: ChatListProps) => {
     const { waitingList, onConnectGame } = props;
+    if (!waitingList) return null;
     return (
         <List
             className="waiting-list"

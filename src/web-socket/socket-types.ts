@@ -10,6 +10,7 @@ export enum SocketEvents {
     DISCONNECT = 'DISCONNECT',
     ERROR = 'ERROR',
     GAME_CREATED = 'GAME_CREATED',
+    GAME_UPDATED = 'GAME_UPDATED',
     GAME_CONNECTED = 'GAME_CONNECTED',
     SUCCESS = 'SUCCESS',
 }
@@ -83,7 +84,7 @@ export type availableGame = Omit<Game, 'status'> & { status: GameStatus.WAITING_
 
 export type AvailableGamesPayload = availableGame[];
 
-export type GameCreatedPayload = {
+export type GamePayload = {
     game: Game;
     maze: MazeCell[][];
 };

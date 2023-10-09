@@ -14,7 +14,7 @@ interface PageLayoutProps {
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     gameStage: GameStage;
-    waitingList: AvailableGamesPayload;
+    waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
 }
 

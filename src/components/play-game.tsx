@@ -5,7 +5,7 @@ import { player1Image, player2Image } from '../variables';
 
 interface PlayGameProps {
     gameStage: GameStage;
-    maze: MazeCell[][];
+    maze?: MazeCell[][];
     openWinnerModal: boolean;
     handleWinnerModalOk: () => void;
     handleWinnerModalCancel: () => void;
@@ -14,7 +14,7 @@ interface PlayGameProps {
 
 const PlayGame = (props: PlayGameProps) => {
     const { gameStage, maze, handleWinnerModalCancel, openWinnerModal, handleWinnerModalOk, winner } = props;
-
+    if (!maze) return null;
     if (gameStage === GameStage.NEW_GAME || gameStage === GameStage.CONNECTED) {
         return (
             <>
