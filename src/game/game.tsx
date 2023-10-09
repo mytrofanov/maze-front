@@ -19,6 +19,7 @@ import {
     SocketSuccessCodes,
 } from '../web-socket';
 import { CurrentUser } from '../types';
+import { useNotification } from '../hooks';
 
 interface socket {
     isConnected: boolean;
@@ -42,6 +43,7 @@ interface GameProps {
 
 const Game = (props: GameProps) => {
     const { socket } = props;
+    const notification = useNotification();
     const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
@@ -231,6 +233,15 @@ const Game = (props: GameProps) => {
             }
         }
     };
+
+    React.useEffect(() => {
+        if (socket.isConnected) {
+            notification.success('Game connected to server');
+        }
+        if (!socket.isConnected) {
+            notification.error('Connection lost');
+        }
+    }, [socket.isConnected]);
 
     const handleCreateNewGame = () => {
         console.log('handleCreateNewGame');

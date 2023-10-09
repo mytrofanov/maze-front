@@ -26,6 +26,12 @@ const useSocket = () => {
     const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     console.log('success: ', success);
+
+    React.useEffect(() => {
+        console.log('success: ', success);
+        console.log('error: ', error);
+    }, [error, success]);
+
     const createGame = (payload: CreateGamePayload) => {
         socket.emit(SocketEvents.CREATE_GAME, payload);
     };
@@ -54,6 +60,7 @@ const useSocket = () => {
     };
 
     const onGameCreated = (payload: GamePayload) => {
+        console.log('game created: ', payload);
         setGame(payload);
         setGameStage(GameStage.NEW_GAME);
     };
@@ -72,6 +79,7 @@ const useSocket = () => {
     };
 
     const onAvailableGames = (payload: AvailableGamesPayload) => {
+        console.log('AvailableGamesPayload: ', payload);
         setAvailableGames(payload);
     };
 
