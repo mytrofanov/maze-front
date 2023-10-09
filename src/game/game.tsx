@@ -77,8 +77,9 @@ const Game = (props: GameProps) => {
 
     React.useEffect(() => {
         if (socket.success?.code === SocketSuccessCodes.USER_CREATED) {
-            localStorage.setItem(localStorageUser, JSON.stringify(socket.success.payload));
-            setCurrentUser(socket.success.payload);
+            localStorage.setItem(localStorageUser, JSON.stringify(socket.success.payload.user));
+            const socketUser = socket.success.payload.user;
+            setCurrentUser({ userName: socketUser.userName, userId: socketUser.id });
             setOpenCreateUserModal(false);
         }
     }, [socket.success]);

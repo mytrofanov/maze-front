@@ -54,10 +54,21 @@ export enum SocketSuccessCodes {
     USER_CREATED = 'USER_CREATED',
 }
 
+export type SocketUser = {
+    createdAt: string;
+    id: string;
+    updatedAt: string;
+    userName: string;
+};
+
+export interface SocketPayload {
+    user: SocketUser;
+}
+
 export type SocketSuccess = {
     code: SocketSuccessCodes;
     message: string;
-    payload: never;
+    payload: SocketPayload;
 };
 
 export enum SocketErrorCodes {
