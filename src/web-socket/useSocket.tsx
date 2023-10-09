@@ -65,6 +65,7 @@ const useSocket = () => {
         socket.on(SocketEvents.CONNECT, onConnect);
         socket.on(SocketEvents.DISCONNECT, onDisconnect);
         socket.on(SocketEvents.GAME_CREATED, onGameCreated);
+        socket.on(SocketEvents.GAME_CONNECTED, onGameCreated);
         socket.on(SocketEvents.AVAILABLE_GAMES, onAvailableGames);
         socket.on(SocketEvents.ERROR, error => {
             if (!Object.values(SocketErrorCodes).includes(error.code)) {

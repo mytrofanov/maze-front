@@ -10,6 +10,7 @@ export enum SocketEvents {
     DISCONNECT = 'DISCONNECT',
     ERROR = 'ERROR',
     GAME_CREATED = 'GAME_CREATED',
+    GAME_CONNECTED = 'GAME_CONNECTED',
     SUCCESS = 'SUCCESS',
 }
 
