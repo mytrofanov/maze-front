@@ -103,7 +103,13 @@ const Game = (props: GameProps) => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        socket.onDirectionInput(direction, gameId, playerId);
+        const gameId = socket.game.game.id;
+        const playerId = currentUser?.userId;
+        const player1 = socket.game.game.player1Id;
+        const playerType = player1 === playerId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+        if (!playerId) return;
+
+        socket.onDirectionInput({ direction, gameId, playerId, playerType });
 
         const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
         if (!startPosition) {

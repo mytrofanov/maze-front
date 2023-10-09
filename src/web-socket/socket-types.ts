@@ -32,12 +32,13 @@ export type CreateUserPayload = {
     userName: string;
 };
 
-export type DirectionPayload = {
+export interface DirectionPayload {
     direction: Direction;
-    gameId: number;
-    playerId: number;
+    gameId: string;
+    playerId: string;
+    playerType: PlayerType;
     message?: string;
-};
+}
 
 export enum SocketSuccessCodes {
     USER_CREATED = 'USER_CREATED',
