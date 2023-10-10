@@ -1,10 +1,11 @@
-import { GameStage, MazeCell, PlayerType } from '../game';
+import { MazeCell, PlayerType } from '../game';
 import Maze from './maze.tsx';
 import CustomModal from './modal.tsx';
 import { player1Image, player2Image } from '../variables';
+import { GameStatus } from '../web-socket';
 
 interface PlayGameProps {
-    gameStage: GameStage;
+    gameStage: GameStatus;
     maze?: MazeCell[][];
     openWinnerModal: boolean;
     handleWinnerModalOk: () => void;
@@ -16,7 +17,7 @@ const PlayGame = (props: PlayGameProps) => {
     const { gameStage, maze, handleWinnerModalCancel, openWinnerModal, handleWinnerModalOk, winner } = props;
     if (!maze) return null;
 
-    if (gameStage === GameStage.NEW_GAME || gameStage === GameStage.CONNECTED) {
+    if (gameStage === GameStatus.IN_PROGRESS) {
         return (
             <>
                 <Maze maze={maze} />

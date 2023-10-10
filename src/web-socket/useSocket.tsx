@@ -142,7 +142,7 @@ const useSocket = () => {
     return {
         isConnected,
         game,
-        gameStage: gameStatus,
+        gameStatus,
         gameLogs,
         availableGames,
         createGame,

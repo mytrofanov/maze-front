@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Direction, GameLogs, GameStage, MazeCell, PlayerType } from './types.ts';
+import { Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
 import { localStorageUser } from '../variables';
 import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
 import PageLayout from '../page-layout/page-layout.tsx';
@@ -13,6 +13,7 @@ import {
     CreateUserPayload,
     DirectionPayload,
     GamePayload,
+    GameStatus,
     MessagePayload,
     SocketError,
     SocketErrorCodes,
@@ -21,6 +22,7 @@ import {
 } from '../web-socket';
 import { CurrentUser } from '../types';
 import { useNotification } from '../hooks';
+import NewGame from '../components/new-game.tsx';
 
 interface socket {
     isConnected: boolean;
@@ -33,7 +35,7 @@ interface socket {
     game?: GamePayload;
     availableGames?: AvailableGamesPayload;
     onDirectionInput: (payload: DirectionPayload) => void;
-    gameStage: GameStage;
+    gameStatus: GameStatus;
     gameLogs: GameLogs;
     onSendMessage: (payload: MessagePayload) => void;
 }
@@ -274,13 +276,14 @@ const Game = (props: GameProps) => {
             currentMessage={currentMessage}
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
-            gameStage={socket.gameStage}
+            gameStage={socket.gameStatus}
             waitingList={socket.availableGames}
             onConnectGame={handleConnectGame}
         >
-            <Waiting gameStage={socket.gameStage} onCreateNewGame={handleCreateNewGame} />
+            <Waiting gameStage={socket.gameStatus} />
+            <NewGame gameStage={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />
             <PlayGame
-                gameStage={socket.gameStage}
+                gameStage={socket.gameStatus}
                 handleWinnerModalCancel={handleWinnerModalCancel}
                 handleWinnerModalOk={handleWinnerModalOk}
                 openWinnerModal={openWinnerModal}

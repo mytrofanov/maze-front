@@ -84,7 +84,7 @@ export type SocketError = {
     message: string;
 };
 
-export declare enum GameStatus {
+export enum GameStatus {
     WAITING_FOR_PLAYER = 'WAITING_FOR_PLAYER',
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',

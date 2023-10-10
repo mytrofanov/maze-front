@@ -1,20 +1,20 @@
-import { Button } from 'antd';
-import { GameStage } from '../game';
+import { Space, Spin, Typography } from 'antd';
 import './waiting.css';
+import { GameStatus } from '../web-socket';
 
 interface WaitingProps {
-    gameStage: GameStage;
-    onCreateNewGame: () => void;
+    gameStage: GameStatus;
 }
 
 const Waiting = (props: WaitingProps) => {
-    const { gameStage, onCreateNewGame } = props;
-    if (gameStage !== GameStage.WAITING) return;
+    const { gameStage } = props;
+    if (gameStage !== GameStatus.WAITING_FOR_PLAYER) return;
     return (
         <div className="waiting-screen">
-            <Button type="default" onClick={onCreateNewGame}>
-                New Game
-            </Button>
+            <Space size="middle">
+                <Typography.Title>Waiting for player ...</Typography.Title>
+                <Spin size="large" />
+            </Space>
         </div>
     );
 };
