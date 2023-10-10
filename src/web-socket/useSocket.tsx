@@ -8,6 +8,7 @@ import {
     CreateUserPayload,
     DirectionPayload,
     GamePayload,
+    GameStatus,
     MessagePayload,
     SocketError,
     SocketErrorCodes,
@@ -15,7 +16,7 @@ import {
     SocketSuccess,
     SocketSuccessCodes,
 } from './socket-types.ts';
-import { GameLogs, GameStage } from '../game';
+import { GameLogs } from '../game';
 
 const useSocket = () => {
     const [connected, setIsConnected] = React.useState<boolean>(socket.connected);
@@ -23,7 +24,7 @@ const useSocket = () => {
     const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
     const [game, setGame] = React.useState<GamePayload | undefined>(undefined);
     const [availableGames, setAvailableGames] = React.useState<AvailableGamesPayload | undefined>(undefined);
-    const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
+    const [gameStatus, setGameStatus] = React.useState<GameStatus>(GameStatus.WELCOME_SCREEN);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
 
     const successMemo = React.useMemo(() => {
@@ -43,12 +44,13 @@ const useSocket = () => {
     }, [errorMemo, successMemo]);
 
     const createGame = (payload: CreateGamePayload) => {
-        if (!isConnected) socket.connect();
+        console.log('socket isConnected', isConnected);
+        console.log('createGame payload', payload);
         socket.emit(SocketEvents.CREATE_GAME, payload);
     };
 
     const connectGame = (payload: ConnectToGamePayload) => {
-        setGameStage(GameStage.CONNECTING);
+        setGameStatus(GameStatus.CONNECTING);
         socket.emit(SocketEvents.CONNECT_GAME, payload);
     };
     const createUser = (payload: CreateUserPayload) => {
@@ -72,20 +74,20 @@ const useSocket = () => {
     };
 
     const onGameCreated = (payload: GamePayload) => {
-        // console.log('game created: ', payload);
-        // const newMaze = JSON.parse(payload.maze);
-        console.log('payload.maze: ', payload.maze);
+        console.log('onGameCreated: ', payload.maze);
         setGame(payload);
-        setGameStage(GameStage.NEW_GAME);
+        setGameStatus(GameStatus.WAITING_FOR_PLAYER);
     };
 
     const onGameConnected = (payload: GamePayload) => {
-        setGameStage(GameStage.CONNECTED);
+        setGameStatus(GameStatus.GAME);
         setGame(payload);
     };
 
     const onGameUpdated = (payload: GamePayload) => {
+        console.log('onGameUpdated: ', payload.game);
         setGame(payload);
+        setGameStatus(payload.game.status);
     };
 
     const onLogUpdated = (payload: GameLogs) => {
@@ -103,13 +105,13 @@ const useSocket = () => {
         }
 
         function onDisconnect() {
+            console.log('onDisconnect');
             setGameStage(GameStage.LOST_CONNECTION);
             setIsConnected(false);
         }
 
         socket.on(SocketEvents.CONNECT, onConnect);
         socket.on(SocketEvents.DISCONNECT, onDisconnect);
-        socket.on(SocketEvents.GAME_CREATED, onGameCreated);
         socket.on(SocketEvents.GAME_CREATED, onGameCreated);
         socket.on(SocketEvents.GAME_UPDATED, onGameUpdated);
         socket.on(SocketEvents.LOG_UPDATED, onLogUpdated);
@@ -140,7 +142,7 @@ const useSocket = () => {
     return {
         isConnected,
         game,
-        gameStage,
+        gameStage: gameStatus,
         gameLogs,
         availableGames,
         createGame,

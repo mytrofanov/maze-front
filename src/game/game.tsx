@@ -15,6 +15,7 @@ import {
     GamePayload,
     MessagePayload,
     SocketError,
+    SocketErrorCodes,
     SocketSuccess,
     SocketSuccessCodes,
 } from '../web-socket';
@@ -86,6 +87,14 @@ const Game = (props: GameProps) => {
         }
     }, [socket.success]);
 
+    React.useEffect(() => {
+        if (socket.error?.code === SocketErrorCodes.USERNAME_TAKEN) {
+            localStorage.removeItem(localStorageUser);
+            setCurrentUser(undefined);
+            setOpenCreateUserModal(true);
+        }
+    }, [socket.error]);
+
     // const togglePlayer = () => {
     //     setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
     // };
@@ -93,18 +102,16 @@ const Game = (props: GameProps) => {
     const saveLogs = (currentPlayer: PlayerType, message: string) => {
         if (!socket.game || !currentUser) return;
         const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-        const created = new Date().toLocaleTimeString();
         const newLog = {
             gameId: socket.game.game.id,
             playerType: playerType,
             playerId: currentUser.userId,
-            message: `${playerType} message: ${message} at ${created}`,
+            message: `${playerType} message: ${message} at`,
         };
         socket.onSendMessage(newLog);
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        console.log('direction: ', direction);
         if (!socket.game || !currentUser) return;
         const gameId = socket.game.game.id;
         const playerId = currentUser?.userId;
@@ -112,6 +119,7 @@ const Game = (props: GameProps) => {
         //const playerType = player1 === playerId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         const playerType = currentUser.type;
         if (!playerId) return;
+        console.log('before onDirection: ', direction);
 
         socket.onDirectionInput({ direction, gameId, playerId, playerType, message: undefined });
 
