@@ -18,21 +18,32 @@ import {
 import { GameLogs, GameStage } from '../game';
 
 const useSocket = () => {
-    const [isConnected, setIsConnected] = React.useState<boolean>(socket.connected);
+    const [connected, setIsConnected] = React.useState<boolean>(socket.connected);
     const [error, setError] = React.useState<SocketError | undefined>(undefined);
     const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
     const [game, setGame] = React.useState<GamePayload | undefined>(undefined);
     const [availableGames, setAvailableGames] = React.useState<AvailableGamesPayload | undefined>(undefined);
     const [gameStage, setGameStage] = React.useState<GameStage>(GameStage.WAITING);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
-    console.log('success: ', success);
+
+    const successMemo = React.useMemo(() => {
+        return success;
+    }, [success]);
+    const errorMemo = React.useMemo(() => {
+        return error;
+    }, [error]);
+
+    const isConnected = React.useMemo(() => {
+        return connected;
+    }, [connected]);
 
     React.useEffect(() => {
-        console.log('success: ', success);
-        console.log('error: ', error);
-    }, [error, success]);
+        console.log('successMemo: ', successMemo);
+        console.log('errorMemo: ', errorMemo);
+    }, [errorMemo, successMemo]);
 
     const createGame = (payload: CreateGamePayload) => {
+        if (!isConnected) socket.connect();
         socket.emit(SocketEvents.CREATE_GAME, payload);
     };
 
@@ -44,6 +55,7 @@ const useSocket = () => {
         socket.emit(SocketEvents.CREATE_USER, payload);
     };
     const onDirectionInput = (payload: DirectionPayload) => {
+        console.log('onDirectionInput DirectionPayload: ', payload);
         socket.emit(SocketEvents.DIRECTION, payload);
     };
     const onSendMessage = (payload: MessagePayload) => {
@@ -60,7 +72,9 @@ const useSocket = () => {
     };
 
     const onGameCreated = (payload: GamePayload) => {
-        console.log('game created: ', payload);
+        // console.log('game created: ', payload);
+        // const newMaze = JSON.parse(payload.maze);
+        console.log('payload.maze: ', payload.maze);
         setGame(payload);
         setGameStage(GameStage.NEW_GAME);
     };

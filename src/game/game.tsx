@@ -53,7 +53,7 @@ const Game = (props: GameProps) => {
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][] | undefined>(undefined);
-    console.log('currentUser: ', currentUser);
+
     React.useEffect(() => {
         if (!socket.game) return;
         setNewMazeArr(socket.game.maze);
@@ -70,7 +70,6 @@ const Game = (props: GameProps) => {
         const storedUserString = localStorage.getItem(localStorageUser);
         if (storedUserString) {
             const storedUser = JSON.parse(storedUserString);
-            console.log('storedUser: ', storedUser);
             socket.connectToServer({ userName: storedUser.userName, userId: storedUser.id });
             setCurrentUser(storedUser);
         } else {
@@ -105,6 +104,7 @@ const Game = (props: GameProps) => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
+        console.log('direction: ', direction);
         if (!socket.game || !currentUser) return;
         const gameId = socket.game.game.id;
         const playerId = currentUser?.userId;
@@ -113,7 +113,7 @@ const Game = (props: GameProps) => {
         const playerType = currentUser.type;
         if (!playerId) return;
 
-        socket.onDirectionInput({ direction, gameId, playerId, playerType });
+        socket.onDirectionInput({ direction, gameId, playerId, playerType, message: undefined });
 
         // const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
         // if (!startPosition) {
@@ -246,11 +246,6 @@ const Game = (props: GameProps) => {
     }, [socket.isConnected]);
 
     const handleCreateNewGame = () => {
-        console.log('handleCreateNewGame');
-        // if (!socket.isConnected) {
-        //     console.log('No connection');
-        //     return;
-        // }
         if (!currentUser) {
             console.log('User is not registered');
             return;

@@ -12,25 +12,30 @@ const WaitingList = (props: ChatListProps) => {
     const { waitingList, onConnectGame } = props;
     if (!waitingList) return null;
     return (
-        <List
-            className="waiting-list"
-            itemLayout="horizontal"
-            dataSource={waitingList}
-            renderItem={item => (
-                <List.Item onClick={() => onConnectGame(item.id)}>
-                    <List.Item.Meta
-                        key={item.createdAt}
-                        avatar={<Avatar src={player1Image} />}
-                        title={
-                            <Typography.Text code className="waiting-item-title">
-                                {item.player1Id}
-                            </Typography.Text>
-                        }
-                        description={item.createdAt}
-                    />
-                </List.Item>
-            )}
-        />
+        <>
+            <Typography.Title level={5} color="undefined">
+                Available Games
+            </Typography.Title>
+            <List
+                className="waiting-list"
+                itemLayout="horizontal"
+                dataSource={waitingList}
+                renderItem={item => (
+                    <List.Item onClick={() => onConnectGame(item.id)}>
+                        <List.Item.Meta
+                            key={item.createdAt}
+                            avatar={<Avatar src={player1Image} />}
+                            title={
+                                <Typography.Text code className="waiting-item-title">
+                                    {item.player1.userName}
+                                </Typography.Text>
+                            }
+                            description={item.createdAt}
+                        />
+                    </List.Item>
+                )}
+            />
+        </>
     );
 };
 

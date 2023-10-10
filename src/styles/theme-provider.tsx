@@ -5,6 +5,8 @@ interface ThemeProviderProps {
     children: React.ReactNode;
 }
 
+const baseTextColor = '#f6ffed';
+
 const ThemeProvider = (props: ThemeProviderProps) => {
     const { children } = props;
     return (
@@ -22,8 +24,8 @@ const ThemeProvider = (props: ThemeProviderProps) => {
                     },
                     Input: {
                         colorBgContainer: undefined,
-                        colorText: '#f6ffed',
-                        colorTextPlaceholder: '#f6ffed',
+                        colorText: baseTextColor,
+                        colorTextPlaceholder: baseTextColor,
                     },
                     Modal: {
                         colorText: '#00b96b',
@@ -31,9 +33,12 @@ const ThemeProvider = (props: ThemeProviderProps) => {
                         colorBgMask: '#222222',
                     },
                     List: {
-                        colorTextBase: '#f6ffed',
-                        colorText: '#f6ffed',
-                        colorTextDescription: '#f6ffed',
+                        colorTextBase: baseTextColor,
+                        colorText: baseTextColor,
+                        colorTextDescription: baseTextColor,
+                    },
+                    Typography: {
+                        colorTextHeading: baseTextColor,
                     },
                 },
             }}

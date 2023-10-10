@@ -101,7 +101,11 @@ export type Game = {
     createdAt: string;
 };
 
-export type availableGame = Omit<Game, 'status'> & { status: GameStatus.WAITING_FOR_PLAYER };
+export type availableGame = Omit<Game, 'status'> & {
+    status: GameStatus.WAITING_FOR_PLAYER;
+    createdAt: string;
+    player1: { userName: string };
+};
 
 export type AvailableGamesPayload = availableGame[];
 
