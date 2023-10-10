@@ -40,9 +40,12 @@ const WaitingScreen = (props: WaitingProps) => {
     return (
         <div className="waiting-screen">
             <Space direction="vertical" size="middle">
-                <Typography.Title level={2}> You started a new game {time} ago</Typography.Title>
+                <Typography.Title level={2}> You started a new game</Typography.Title>
+                <Space align="center">
+                    <Typography.Title level={3}> {time} ago</Typography.Title>
+                    <Spin size="large" />
+                </Space>
                 <Typography.Title level={3}>Waiting for a second player…</Typography.Title>
-                <Spin size="large" />
             </Space>
         </div>
     );
