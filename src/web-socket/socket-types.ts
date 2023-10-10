@@ -92,7 +92,6 @@ export declare enum GameStatus {
     CONNECTING = 'CONNECTING',
     CONNECTED = 'CONNECTED',
     WELCOME_SCREEN = 'WELCOME_SCREEN',
-    GAME = 'GAME',
 }
 
 export type Game = {

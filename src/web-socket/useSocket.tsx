@@ -80,7 +80,7 @@ const useSocket = () => {
     };
 
     const onGameConnected = (payload: GamePayload) => {
-        setGameStatus(GameStatus.GAME);
+        setGameStatus(GameStatus.IN_PROGRESS);
         setGame(payload);
     };
 
@@ -106,7 +106,7 @@ const useSocket = () => {
 
         function onDisconnect() {
             console.log('onDisconnect');
-            setGameStage(GameStage.LOST_CONNECTION);
+            setGameStatus(GameStatus.CONNECTION_ERROR);
             setIsConnected(false);
         }
 
