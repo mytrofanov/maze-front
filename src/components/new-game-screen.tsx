@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import './new-game.css';
+import './new-game-screen.css';
 import { GameStatus } from '../web-socket';
 
 interface NewGameProps {
@@ -7,7 +7,7 @@ interface NewGameProps {
     onCreateNewGame: () => void;
 }
 
-const NewGame = (props: NewGameProps) => {
+const NewGameScreen = (props: NewGameProps) => {
     const { gameStage, onCreateNewGame } = props;
     if (gameStage !== GameStatus.WELCOME_SCREEN) return;
     return (
@@ -19,4 +19,4 @@ const NewGame = (props: NewGameProps) => {
     );
 };
 
-export default NewGame;
+export default NewGameScreen;

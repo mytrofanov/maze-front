@@ -1,10 +1,10 @@
 import React, { ChangeEvent } from 'react';
 import { Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
 import { localStorageUser } from '../variables';
-import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
+import { CreateUserFormValues } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
-import Waiting from '../components/waiting.tsx';
-import PlayGame from '../components/play-game.tsx';
+import { WaitingScreen, PlayGame, CreateUserModal } from '../components';
+
 import {
     AvailableGamesPayload,
     ConnectToGamePayload,
@@ -22,7 +22,7 @@ import {
 } from '../web-socket';
 import { CurrentUser } from '../types';
 import { useNotification } from '../hooks';
-import NewGame from '../components/new-game.tsx';
+import NewGameScreen from '../components/new-game-screen.tsx';
 
 interface socket {
     isConnected: boolean;
@@ -280,8 +280,8 @@ const Game = (props: GameProps) => {
             waitingList={socket.availableGames}
             onConnectGame={handleConnectGame}
         >
-            <Waiting gameStage={socket.gameStatus} />
-            <NewGame gameStage={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />
+            <WaitingScreen gameStatus={socket.gameStatus} />
+            <NewGameScreen gameStage={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />
             <PlayGame
                 gameStage={socket.gameStatus}
                 handleWinnerModalCancel={handleWinnerModalCancel}
