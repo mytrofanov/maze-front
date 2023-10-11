@@ -35,17 +35,17 @@ const useSocket = () => {
     }, [error]);
 
     React.useEffect(() => {
-        console.log('successMemo: ', successMemo);
-        console.log('errorMemo: ', errorMemo);
+        // console.log('successMemo: ', successMemo);
+        // console.log('errorMemo: ', errorMemo);
     }, [errorMemo, successMemo]);
 
     const createGame = (payload: CreateGamePayload) => {
-        console.log('createGame payload', payload);
+        // console.log('createGame payload', payload);
         socket.emit(SocketEvents.CREATE_GAME, payload);
     };
 
     React.useEffect(() => {
-        console.log('socket isConnected', socket.connected);
+        // console.log('socket isConnected', socket.connected);
         setIsConnected(socket.connected);
     }, [socket.connected]);
 
@@ -57,7 +57,7 @@ const useSocket = () => {
         socket.emit(SocketEvents.CREATE_USER, payload);
     };
     const onDirectionInput = (payload: DirectionPayload) => {
-        console.log('onDirectionInput DirectionPayload: ', payload);
+        // console.log('onDirectionInput DirectionPayload: ', payload);
         socket.emit(SocketEvents.DIRECTION, payload);
     };
     const onSendMessage = (payload: MessagePayload) => {
@@ -74,7 +74,7 @@ const useSocket = () => {
     };
 
     const onGameCreated = (payload: GamePayload) => {
-        console.log('onGameCreated: ', payload.maze);
+        // console.log('onGameCreated: ', payload.maze);
         setGame(payload);
         setGameStatus(GameStatus.WAITING_FOR_PLAYER);
     };
@@ -85,7 +85,7 @@ const useSocket = () => {
     };
 
     const onGameUpdated = (payload: GamePayload) => {
-        console.log('onGameUpdated: ', payload.game);
+        console.log('onGameUpdated: ', payload.maze);
         setGame(payload);
         setGameStatus(payload.game.status);
     };
@@ -95,7 +95,7 @@ const useSocket = () => {
     };
 
     const onAvailableGames = (payload: AvailableGamesPayload) => {
-        console.log('AvailableGamesPayload: ', payload);
+        // console.log('AvailableGamesPayload: ', payload);
         setAvailableGames(payload);
     };
 

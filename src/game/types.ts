@@ -1,7 +1,7 @@
 export enum Cell {
-    WALL = 1,
-    PATH = 0,
-    EXIT = -1,
+    WALL = 'WALL',
+    PATH = 'PATH',
+    EXIT = 'EXIT',
 }
 
 export enum PlayerType {
