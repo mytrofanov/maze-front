@@ -1,4 +1,4 @@
-import { Col, Image, Row } from 'antd';
+import { Col, Image, Row, Tooltip } from 'antd';
 import { GameLogs, PlayerType } from '../game';
 import { player1Image, player2Image } from '../variables';
 import './header.css';
@@ -20,7 +20,9 @@ const Header = (props: HeaderProps) => {
                 <Image width={64} src={player1Image} />
             </Col>
             <Col>
-                <BulbFilled style={connected ? undefined : { color: 'red' }} />
+                <Tooltip title={connected ? 'connected' : 'disconnected'}>
+                    <BulbFilled style={connected ? undefined : { color: 'red' }} />
+                </Tooltip>
             </Col>
             {gameLogs && gameLogs.length > 0 ? (
                 <Col className="player-info-block">

@@ -1,9 +1,9 @@
 import React, { ChangeEvent } from 'react';
 import { Layout } from 'antd';
 import './page-layout.styles.css';
-import { GameLogs, GameStage, PlayerType } from '../game';
+import { GameLogs, PlayerType } from '../game';
 import { Header, Sider } from '../components';
-import { AvailableGamesPayload } from '../web-socket';
+import { AvailableGamesPayload, GameStatus } from '../web-socket';
 
 interface PageLayoutProps {
     currentPlayer: PlayerType;
@@ -13,7 +13,7 @@ interface PageLayoutProps {
     currentMessage: string;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    gameStage: GameStage;
+    gameStage: GameStatus;
     waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
     connected: boolean;
