@@ -167,7 +167,7 @@ const Game = (props: GameProps) => {
 
     const handleGlobalKeyPress = (event: KeyboardEvent) => {
         const targetElement = event.target as HTMLElement;
-
+        console.log('event: ', event);
         if (targetElement.tagName === 'INPUT') {
             return;
         }

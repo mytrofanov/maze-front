@@ -16,8 +16,6 @@ interface HeaderProps {
 
 const Header = (props: HeaderProps) => {
     const { currentUser, gameStatus, currentPlayer, connected, player1Id } = props;
-    console.log('currentPlayer: ', currentPlayer);
-    console.log('currentPlayer === PlayerType.PLAYER1 : ', currentPlayer === PlayerType.PLAYER1);
     return (
         <Row className="header">
             <Col>
