@@ -19,7 +19,7 @@ import {
 import { GameLogs } from '../game';
 
 const useSocket = () => {
-    const [connected, setIsConnected] = React.useState<boolean>(socket.connected);
+    const [isConnected, setIsConnected] = React.useState<boolean>(socket.connected);
     const [error, setError] = React.useState<SocketError | undefined>(undefined);
     const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
     const [game, setGame] = React.useState<GamePayload | undefined>(undefined);
@@ -34,20 +34,19 @@ const useSocket = () => {
         return error;
     }, [error]);
 
-    const isConnected = React.useMemo(() => {
-        return connected;
-    }, [connected]);
-
     React.useEffect(() => {
         console.log('successMemo: ', successMemo);
         console.log('errorMemo: ', errorMemo);
     }, [errorMemo, successMemo]);
 
     const createGame = (payload: CreateGamePayload) => {
-        console.log('socket isConnected', isConnected);
         console.log('createGame payload', payload);
         socket.emit(SocketEvents.CREATE_GAME, payload);
     };
+
+    React.useEffect(() => {
+        console.log('socket isConnected', isConnected);
+    }, [isConnected]);
 
     const connectGame = (payload: ConnectToGamePayload) => {
         setGameStatus(GameStatus.CONNECTING);

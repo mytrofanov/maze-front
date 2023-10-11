@@ -279,6 +279,7 @@ const Game = (props: GameProps) => {
             gameStage={socket.gameStatus}
             waitingList={socket.availableGames}
             onConnectGame={handleConnectGame}
+            connected={socket.isConnected}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />
             <NewGameScreen gameStage={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />

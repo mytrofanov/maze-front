@@ -16,6 +16,7 @@ interface PageLayoutProps {
     gameStage: GameStage;
     waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
+    connected: boolean;
 }
 
 const PageLayout = (props: PageLayoutProps) => {
@@ -30,11 +31,12 @@ const PageLayout = (props: PageLayoutProps) => {
         gameStage,
         waitingList,
         onConnectGame,
+        connected,
     } = props;
     return (
         <Layout className="page-layout">
             <Layout.Header>
-                <Header currentPlayer={currentPlayer} gameLogs={gameLogs} userName={userName} />
+                <Header currentPlayer={currentPlayer} gameLogs={gameLogs} userName={userName} connected={connected} />
             </Layout.Header>
             <Layout hasSider>
                 <Layout.Sider className="sider" width={360}>

@@ -77,6 +77,7 @@ export enum SocketErrorCodes {
     USERNAME_TAKEN = 'USERNAME_TAKEN',
     PLAYER_IS_NOT_FOUND = 'PLAYER_IS_NOT_FOUND',
     GAME_NOT_CREATED = 'GAME_NOT_CREATED',
+    NETWORK_ERROR = 'NETWORK_ERROR',
 }
 
 export type SocketError = {
