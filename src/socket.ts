@@ -1,8 +1,9 @@
 import { io } from 'socket.io-client';
 
 const URL = 'http://localhost:5000';
+const myNetwork = process.env.REACT_APP_MY_NETWORK || URL;
 
-const socket = io(URL, {
+const socket = io(myNetwork, {
     autoConnect: false,
     withCredentials: true,
 });
