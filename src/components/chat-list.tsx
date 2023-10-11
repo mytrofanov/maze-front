@@ -15,22 +15,27 @@ const ChatList = (props: ChatListProps) => {
                 className="chat-list"
                 itemLayout="horizontal"
                 dataSource={chat}
-                renderItem={item => (
-                    <List.Item>
-                        <List.Item.Meta
-                            key={item.createdAt}
-                            avatar={
-                                <Avatar src={item.playerType === PlayerType.PLAYER1 ? player1Image : player2Image} />
-                            }
-                            title={
-                                <Typography.Text code className="chat-item-title">
-                                    {item.direction} at {item.createdAt}
-                                </Typography.Text>
-                            }
-                            description={`${item.message} at ${item.createdAt}`}
-                        />
-                    </List.Item>
-                )}
+                renderItem={item => {
+                    return (
+                        <List.Item>
+                            <List.Item.Meta
+                                key={item.createdAt}
+                                avatar={
+                                    <Avatar
+                                        src={item.playerType === PlayerType.PLAYER1 ? player1Image : player2Image}
+                                    />
+                                }
+                                title={
+                                    <Typography.Text code className="chat-item-title">
+                                        {item.id}
+                                        {item.message} {item.createdAt.toString()}
+                                    </Typography.Text>
+                                }
+                                // description={`${item.message} ${item.createdAt}`}
+                            />
+                        </List.Item>
+                    );
+                }}
             />
             <Space wrap>
                 <Button type="primary">Give UP</Button>

@@ -47,7 +47,6 @@ interface GameProps {
 const Game = (props: GameProps) => {
     const { socket } = props;
     const notification = useNotification();
-    const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
@@ -60,9 +59,6 @@ const Game = (props: GameProps) => {
     React.useEffect(() => {
         if (!socket.game) return;
         setNewMazeArr(socket.game.maze);
-        if (socket.game.game.currentPlayer === currentPlayer) {
-            setCurrentPlayer(socket.game.game.currentPlayer);
-        }
         if (socket.game.game.winner) {
             setWinner(socket.game.game.winner);
             setOpenWinnerModal(true);
@@ -101,14 +97,14 @@ const Game = (props: GameProps) => {
     //     setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
     // };
 
-    const saveLogs = (currentPlayer: PlayerType, message: string) => {
+    const saveLogs = (message: string, currentPlayer?: PlayerType) => {
         if (!socket.game || !currentUser) return;
         const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         const newLog = {
             gameId: socket.game.game.id,
             playerType: playerType,
             playerId: currentUser.userId,
-            message: `${playerType} message: ${message} at`,
+            message: `${message} at`,
         };
         socket.onSendMessage(newLog);
     };
@@ -202,12 +198,13 @@ const Game = (props: GameProps) => {
     };
 
     React.useEffect(() => {
+        if (!socket.game) return;
         window.addEventListener('keydown', handleGlobalKeyPress);
 
         return () => {
             window.removeEventListener('keydown', handleGlobalKeyPress);
         };
-    }, [currentPlayer]);
+    }, [socket.game?.game.currentPlayer]);
 
     const handleWinnerModalOk = () => {
         console.log('Winner is: ', winner);
@@ -241,7 +238,7 @@ const Game = (props: GameProps) => {
             if (Object.values(Direction).includes(currentMessage as Direction)) {
                 handleDirectionInput(currentMessage as Direction);
             } else {
-                saveLogs(currentPlayer, currentMessage);
+                saveLogs(currentMessage, socket.game?.game.currentPlayer);
             }
         }
     };
@@ -270,13 +267,14 @@ const Game = (props: GameProps) => {
 
     return (
         <PageLayout
-            userName={currentUser?.userName}
-            currentPlayer={currentPlayer}
+            currentUser={currentUser}
+            player1Id={socket.game?.game.player1Id}
+            currentPlayer={socket.game?.game.currentPlayer}
             gameLogs={socket.gameLogs}
             currentMessage={currentMessage}
             onMessageChange={handleTextInput}
             onKeyPress={handleInputKeyPress}
-            gameStage={socket.gameStatus}
+            gameStatus={socket.gameStatus}
             waitingList={socket.availableGames}
             onConnectGame={handleConnectGame}
             connected={socket.isConnected}

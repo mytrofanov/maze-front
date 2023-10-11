@@ -1,4 +1,4 @@
-import { Direction, MazeCell, PlayerType } from '../game';
+import { Direction, GameLogs, MazeCell, PlayerType } from '../game';
 
 export enum SocketEvents {
     AVAILABLE_GAMES = 'AVAILABLE_GAMES',
@@ -103,6 +103,7 @@ export type Game = {
     winner: PlayerType;
     status: GameStatus;
     createdAt: string;
+    logs: GameLogs;
 };
 
 export type availableGame = Omit<Game, 'status'> & {

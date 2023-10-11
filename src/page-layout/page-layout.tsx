@@ -4,39 +4,48 @@ import './page-layout.styles.css';
 import { GameLogs, PlayerType } from '../game';
 import { Header, Sider } from '../components';
 import { AvailableGamesPayload, GameStatus } from '../web-socket';
+import { CurrentUser } from '../types';
 
 interface PageLayoutProps {
-    currentPlayer: PlayerType;
-    userName?: string;
+    currentPlayer?: PlayerType;
+    currentUser?: CurrentUser;
     children: React.ReactNode;
     gameLogs?: GameLogs;
     currentMessage: string;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    gameStage: GameStatus;
+    gameStatus?: GameStatus;
     waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
     connected: boolean;
+    player1Id?: string;
 }
 
 const PageLayout = (props: PageLayoutProps) => {
     const {
         currentPlayer,
         children,
-        userName,
-        gameLogs,
+        currentUser,
+        gameStatus,
         currentMessage,
         onKeyPress,
         onMessageChange,
-        gameStage,
         waitingList,
         onConnectGame,
         connected,
+        player1Id,
+        gameLogs,
     } = props;
     return (
         <Layout className="page-layout">
             <Layout.Header>
-                <Header currentPlayer={currentPlayer} gameLogs={gameLogs} userName={userName} connected={connected} />
+                <Header
+                    player1Id={player1Id}
+                    currentPlayer={currentPlayer}
+                    gameStatus={gameStatus}
+                    currentUser={currentUser}
+                    connected={connected}
+                />
             </Layout.Header>
             <Layout hasSider>
                 <Layout.Sider className="sider" width={360}>
@@ -44,7 +53,7 @@ const PageLayout = (props: PageLayoutProps) => {
                         gameLogs={gameLogs}
                         currentMessage={currentMessage}
                         onMessageChange={onMessageChange}
-                        gameStage={gameStage}
+                        gameStatus={gameStatus}
                         waitingList={waitingList}
                         onKeyPress={onKeyPress}
                         onConnectGame={onConnectGame}

@@ -11,13 +11,13 @@ interface SiderProps {
     currentMessage: string;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    gameStage: GameStatus;
+    gameStatus?: GameStatus;
     waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
 }
 
 const Sider = (props: SiderProps) => {
-    const { currentMessage, onMessageChange, onKeyPress, gameStage, gameLogs, waitingList, onConnectGame } = props;
+    const { currentMessage, onMessageChange, onKeyPress, gameStatus, gameLogs, waitingList, onConnectGame } = props;
     return (
         <div className="chat-block">
             <Input
@@ -27,8 +27,8 @@ const Sider = (props: SiderProps) => {
                 onKeyDown={onKeyPress}
                 placeholder="Type action or message..."
             />
-            {gameStage === GameStatus.IN_PROGRESS ? <ChatList chat={gameLogs} /> : null}
-            {gameStage === GameStatus.WELCOME_SCREEN ? (
+            {gameStatus === GameStatus.IN_PROGRESS ? <ChatList chat={gameLogs} /> : null}
+            {gameStatus === GameStatus.WELCOME_SCREEN ? (
                 <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />
             ) : null}
         </div>
