@@ -1,5 +1,5 @@
 import React from 'react';
-import { socket } from '../socket';
+import { myNetwork, socket } from '../socket';
 import {
     AvailableGamesPayload,
     ConnectToGamePayload,
@@ -19,7 +19,7 @@ import {
 import { GameLogs } from '../game';
 
 const useSocket = () => {
-    const [isConnected, setIsConnected] = React.useState<boolean>(socket.connected);
+    const [isConnected, setIsConnected] = React.useState<boolean>(false);
     const [error, setError] = React.useState<SocketError | undefined>(undefined);
     const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
     const [game, setGame] = React.useState<GamePayload | undefined>(undefined);
@@ -45,8 +45,9 @@ const useSocket = () => {
     };
 
     React.useEffect(() => {
-        console.log('socket isConnected', isConnected);
-    }, [isConnected]);
+        console.log('socket isConnected', socket.connected);
+        setIsConnected(socket.connected);
+    }, [socket.connected]);
 
     const connectGame = (payload: ConnectToGamePayload) => {
         setGameStatus(GameStatus.CONNECTING);
@@ -100,14 +101,23 @@ const useSocket = () => {
 
     React.useEffect(() => {
         function onConnect() {
+            console.log('Connected to server, on URL: ', myNetwork);
             setIsConnected(true);
         }
 
         function onDisconnect() {
-            console.log('onDisconnect');
+            console.log('Disconnected from server, on URL: ', myNetwork);
             setGameStatus(GameStatus.CONNECTION_ERROR);
             setIsConnected(false);
         }
+
+        // socket.on('connect', () => {
+        //     console.log('Connected to server, on URL: ', URL);
+        // });
+        //
+        // socket.on('disconnect', () => {
+        //     console.log('Disconnected from server, on URL: ', URL);
+        // });
 
         socket.on(SocketEvents.CONNECT, onConnect);
         socket.on(SocketEvents.DISCONNECT, onDisconnect);
