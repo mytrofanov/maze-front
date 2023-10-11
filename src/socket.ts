@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 const URL = 'http://localhost:5000';
-const myNetwork = process.env.REACT_APP_MY_NETWORK || URL;
+const myNetwork = import.meta.env.VITE_MY_NETWORK || URL;
 
 const socket = io(myNetwork, {
     autoConnect: false,
