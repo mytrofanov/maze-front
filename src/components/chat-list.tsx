@@ -5,10 +5,12 @@ import { player1Image, player2Image } from '../variables';
 
 interface ChatListProps {
     chat?: GameLogs;
+    onGiveUP: () => void;
+    exitDisabled: boolean;
 }
 
 const ChatList = (props: ChatListProps) => {
-    const { chat } = props;
+    const { chat, onGiveUP, exitDisabled } = props;
     return (
         <>
             <List

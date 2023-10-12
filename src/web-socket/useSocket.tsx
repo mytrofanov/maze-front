@@ -9,6 +9,7 @@ import {
     DirectionPayload,
     GamePayload,
     GameStatus,
+    GiveUpPayload,
     MessagePayload,
     SocketError,
     SocketErrorCodes,
@@ -29,6 +30,10 @@ const useSocket = () => {
 
     const createGame = (payload: CreateGamePayload) => {
         socket.emit(SocketEvents.CREATE_GAME, payload);
+    };
+
+    const giveUP = (payload: GiveUpPayload) => {
+        socket.emit(SocketEvents.GIVE_UP, payload);
     };
 
     React.useEffect(() => {
@@ -123,19 +128,20 @@ const useSocket = () => {
     }, []);
 
     return {
-        isConnected,
-        game,
-        gameStatus,
-        gameLogs,
         availableGames,
-        createGame,
         connectGame,
         connectToServer,
-        error,
-        success,
+        createGame,
         createUser,
-        onSendMessage,
+        error,
+        game,
+        gameLogs,
+        gameStatus,
+        giveUP,
+        isConnected,
         onDirectionInput,
+        onSendMessage,
+        success,
     };
 };
 

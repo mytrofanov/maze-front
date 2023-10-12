@@ -1,50 +1,52 @@
 import React, { ChangeEvent } from 'react';
-import { Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
+import { Direction, MazeCell, PlayerType } from './types.ts';
 import { localStorageUser } from '../variables';
 import { CreateUserFormValues, CurrentUser } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { CreateUserModal, PlayGame, WaitingScreen } from '../components';
 
 import {
-    AvailableGamesPayload,
-    ConnectToGamePayload,
-    ConnectToServerPayload,
-    CreateGamePayload,
-    CreateUserPayload,
-    DirectionPayload,
-    GamePayload,
     GameStatus,
-    MessagePayload,
-    SocketError,
+    // AvailableGamesPayload,
+    // ConnectToGamePayload,
+    // ConnectToServerPayload,
+    // CreateGamePayload,
+    // CreateUserPayload,
+    // DirectionPayload,
+    // GamePayload,
+    // GameStatus,
+    // MessagePayload,
+    // SocketError,
     SocketErrorCodes,
-    SocketSuccess,
+    // SocketSuccess,
     SocketSuccessCodes,
 } from '../web-socket';
 import { useNotification } from '../hooks';
 import NewGameScreen from '../components/new-game-screen.tsx';
+import useSocket from '../web-socket/useSocket.tsx';
 
-interface socket {
-    isConnected: boolean;
-    createGame: (payload: CreateGamePayload) => void;
-    connectToServer: (payload: ConnectToServerPayload | null) => void;
-    connectGame: (payload: ConnectToGamePayload) => void;
-    error?: SocketError;
-    success?: SocketSuccess;
-    createUser: (payload: CreateUserPayload) => void;
-    game?: GamePayload;
-    availableGames?: AvailableGamesPayload;
-    onDirectionInput: (payload: DirectionPayload) => void;
-    gameStatus: GameStatus;
-    gameLogs: GameLogs;
-    onSendMessage: (payload: MessagePayload) => void;
-}
+// interface socket {
+//     isConnected: boolean;
+//     createGame: (payload: CreateGamePayload) => void;
+//     connectToServer: (payload: ConnectToServerPayload | null) => void;
+//     connectGame: (payload: ConnectToGamePayload) => void;
+//     error?: SocketError;
+//     success?: SocketSuccess;
+//     createUser: (payload: CreateUserPayload) => void;
+//     game?: GamePayload;
+//     availableGames?: AvailableGamesPayload;
+//     onDirectionInput: (payload: DirectionPayload) => void;
+//     gameStatus: GameStatus;
+//     gameLogs: GameLogs;
+//     onSendMessage: (payload: MessagePayload) => void;
+// }
+//
+// interface GameProps {
+//     socket: socket;
+// }
 
-interface GameProps {
-    socket: socket;
-}
-
-const Game = (props: GameProps) => {
-    const { socket } = props;
+const Game = () => {
+    const socket = useSocket();
     const notification = useNotification();
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
@@ -55,7 +57,7 @@ const Game = (props: GameProps) => {
 
     React.useEffect(() => {
         if (!socket.game) return;
-        setMaze(socket.game.maze);
+        if (socket.game.maze) setMaze(socket.game.maze);
         if (socket.game.game.winner) {
             setWinner(socket.game.game.winner);
             setOpenWinnerModal(true);
@@ -214,20 +216,27 @@ const Game = (props: GameProps) => {
         socket.connectGame({ gameId, userId: currentUser.userId });
     };
 
+    const onGiveUP = () => {
+        if (!socket.game || !currentUser) return;
+        socket.giveUP({ gameId: socket.game.game.id, playerId: currentUser.userId });
+    };
+
     return (
         <PageLayout
-            currentUser={currentUser}
-            player1Id={socket.game?.game.player1Id}
-            currentPlayer={socket.game?.game.currentPlayer}
-            gameLogs={socket.gameLogs}
-            currentMessage={currentMessage}
-            onMessageChange={handleTextInput}
-            onKeyPress={handleInputKeyPress}
-            gameStatus={socket.gameStatus}
-            waitingList={socket.availableGames}
-            onConnectGame={handleConnectGame}
             connected={socket.isConnected}
+            currentPlayer={socket.game?.game.currentPlayer}
+            currentMessage={currentMessage}
+            currentUser={currentUser}
+            exitDisabled={socket.gameStatus !== GameStatus.COMPLETED}
+            gameLogs={socket.gameLogs}
+            gameStatus={socket.gameStatus}
+            onConnectGame={handleConnectGame}
+            onGiveUP={onGiveUP}
+            onKeyPress={handleInputKeyPress}
+            onMessageChange={handleTextInput}
             onSendMessage={onSendMessage}
+            player1Id={socket.game?.game.player1Id}
+            waitingList={socket.availableGames}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />
             <NewGameScreen gameStage={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />

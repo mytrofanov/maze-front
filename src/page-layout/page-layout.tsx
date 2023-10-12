@@ -7,36 +7,40 @@ import { AvailableGamesPayload, GameStatus } from '../web-socket';
 import { CurrentUser } from '../types';
 
 interface PageLayoutProps {
+    children: React.ReactNode;
+    connected: boolean;
+    currentMessage: string;
     currentPlayer?: PlayerType;
     currentUser?: CurrentUser;
-    children: React.ReactNode;
+    exitDisabled: boolean;
     gameLogs?: GameLogs;
-    currentMessage: string;
-    onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     gameStatus?: GameStatus;
-    waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
-    connected: boolean;
-    player1Id?: string;
+    onGiveUP: () => void;
+    onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
+    player1Id?: string;
+    waitingList?: AvailableGamesPayload;
 }
 
 const PageLayout = (props: PageLayoutProps) => {
     const {
-        currentPlayer,
         children,
-        currentUser,
-        gameStatus,
+        connected,
         currentMessage,
+        currentPlayer,
+        currentUser,
+        exitDisabled,
+        gameLogs,
+        gameStatus,
+        onConnectGame,
+        onGiveUP,
         onKeyPress,
         onMessageChange,
-        waitingList,
-        onConnectGame,
-        connected,
-        player1Id,
-        gameLogs,
         onSendMessage,
+        player1Id,
+        waitingList,
     } = props;
     return (
         <Layout className="page-layout">
@@ -60,6 +64,8 @@ const PageLayout = (props: PageLayoutProps) => {
                         onKeyPress={onKeyPress}
                         onConnectGame={onConnectGame}
                         onSendMessage={onSendMessage}
+                        onGiveUP={onGiveUP}
+                        exitDisabled={exitDisabled}
                     />
                 </Layout.Sider>
                 <Layout.Content className="content">{children}</Layout.Content>

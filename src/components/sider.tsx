@@ -7,27 +7,32 @@ import './sider.css';
 import { AvailableGamesPayload, GameStatus } from '../web-socket';
 
 interface SiderProps {
-    gameLogs?: GameLogs;
     currentMessage: string;
-    onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    exitDisabled: boolean;
+    gameLogs?: GameLogs;
     gameStatus?: GameStatus;
-    waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
+    onGiveUP: () => void;
+    onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
+    waitingList?: AvailableGamesPayload;
 }
 
 const Sider = (props: SiderProps) => {
     const {
         currentMessage,
-        onMessageChange,
-        onKeyPress,
-        gameStatus,
+        exitDisabled,
         gameLogs,
-        waitingList,
+        gameStatus,
         onConnectGame,
+        onGiveUP,
+        onKeyPress,
+        onMessageChange,
         onSendMessage,
+        waitingList,
     } = props;
+
     return (
         <div className="chat-block">
             <div className="chat-block__input-block">
@@ -41,7 +46,9 @@ const Sider = (props: SiderProps) => {
                 />
                 <Button onClick={onSendMessage}>Send</Button>
             </div>
-            {gameStatus === GameStatus.IN_PROGRESS ? <ChatList chat={gameLogs} /> : null}
+            {gameStatus === GameStatus.IN_PROGRESS ? (
+                <ChatList chat={gameLogs} exitDisabled={exitDisabled} onGiveUP={onGiveUP} />
+            ) : null}
             {gameStatus === GameStatus.WELCOME_SCREEN ? (
                 <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />
             ) : null}

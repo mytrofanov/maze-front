@@ -9,12 +9,13 @@ export enum SocketEvents {
     DIRECTION = 'DIRECTION',
     DISCONNECT = 'DISCONNECT',
     ERROR = 'ERROR',
+    GAME_CONNECTED = 'GAME_CONNECTED',
     GAME_CREATED = 'GAME_CREATED',
     GAME_UPDATED = 'GAME_UPDATED',
+    GIVE_UP = 'GIVE_UP',
     LOG_UPDATED = 'LOG_UPDATED',
-    GAME_CONNECTED = 'GAME_CONNECTED',
-    SUCCESS = 'SUCCESS',
     SEND_MESSAGE = 'SEND_MESSAGE',
+    SUCCESS = 'SUCCESS',
 }
 
 export type CreateGamePayload = {
@@ -117,5 +118,10 @@ export type AvailableGamesPayload = availableGame[];
 
 export type GamePayload = {
     game: Game;
-    maze: MazeCell[][];
+    maze?: MazeCell[][];
+};
+
+export type GiveUpPayload = {
+    gameId: string;
+    playerId: string;
 };
