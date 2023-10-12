@@ -1,107 +1,95 @@
 import React, { ChangeEvent } from 'react';
-import { Cell, Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
-import { Maze } from '../components';
-import { localStorageUserName, player1Image, player2Image } from '../variables';
-import CustomModal from '../components/modal.tsx';
-import CreateUserModal, { CreateUserFormValues } from '../components/create-user-modal.tsx';
-import PrivatePageLayout from '../page-layout/private-page-layout.tsx';
-import { findPlayerPosition } from '../utils/find-player-position.ts';
-import { newMaze } from '../variables';
-import { updateMazeCell } from '../utils/update-maze.ts';
+import { Direction, MazeCell, PlayerType } from './types.ts';
+import { localStorageUser } from '../variables';
+import { CreateUserFormValues, CurrentUser } from '../types';
+import PageLayout from '../page-layout/page-layout.tsx';
+import { CreateUserModal, PlayGame, WaitingScreen } from '../components';
+
+import { GameStatus, SocketErrorCodes, SocketSuccessCodes } from '../web-socket';
+import { useNotification } from '../hooks';
+import NewGameScreen from '../components/new-game-screen.tsx';
+import useSocket from '../web-socket/useSocket.tsx';
 
 const Game = () => {
-    const [currentPlayer, setCurrentPlayer] = React.useState<PlayerType>(PlayerType.PLAYER1);
-    const [vinner, setVinner] = React.useState<PlayerType | null>();
+    const socket = useSocket();
+    const notification = useNotification();
+    const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
-    const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
-    const [username, setUsername] = React.useState<string | null>(null);
+    const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
-    const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][]>(newMaze);
+    const [maze, setMaze] = React.useState<MazeCell[][] | undefined>(undefined);
+    const exitEnabled =
+        socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || socket.gameStatus === GameStatus.COMPLETED;
 
     React.useEffect(() => {
-        const storedName = localStorage.getItem(localStorageUserName);
-        if (storedName) {
-            setUsername(storedName);
+        if (!socket.game) return;
+        if (socket.game.maze) setMaze(socket.game.maze);
+        if (socket.game) {
+            setWinner(socket.game.game.winner);
+        }
+        if (currentUser) {
+            const playerType =
+                socket.game?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+            setCurrentUser({ ...currentUser, type: playerType });
+        }
+    }, [socket.game]);
+
+    React.useEffect(() => {
+        if (winner) setOpenWinnerModal(true);
+    }, [winner]);
+
+    React.useEffect(() => {
+        const storedUserString = localStorage.getItem(localStorageUser);
+        if (storedUserString) {
+            const storedUser = JSON.parse(storedUserString);
+            socket.connectToServer({ userName: storedUser.userName, userId: storedUser.id });
         } else {
             setOpenCreateUserModal(true);
         }
     }, []);
 
-    const togglePlayer = () => {
-        setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
-    };
+    React.useEffect(() => {
+        if (socket.success?.code === SocketSuccessCodes.USER_CREATED) {
+            localStorage.setItem(localStorageUser, JSON.stringify(socket.success.payload.user));
+            const socketUser = socket.success.payload.user;
+            setCurrentUser({ userName: socketUser.userName, userId: socketUser.id, type: socketUser.type });
+            setOpenCreateUserModal(false);
+        }
+    }, [socket.success]);
 
-    const saveLogs = (
-        currentPlayer: PlayerType,
-        direction?: Direction,
-        newX?: number,
-        newY?: number,
-        message?: string,
-    ) => {
-        const playerId = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-        const created = new Date().toLocaleTimeString();
+    React.useEffect(() => {
+        if (socket.error?.code === SocketErrorCodes.USERNAME_TAKEN) {
+            localStorage.removeItem(localStorageUser);
+            setCurrentUser(undefined);
+            setOpenCreateUserModal(true);
+        }
+    }, [socket.error]);
+
+    const saveLogs = (message: string, currentPlayer?: PlayerType) => {
+        if (!socket.game || !currentUser) return;
+        const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         const newLog = {
-            playerId,
-            direction: direction ? direction : null,
-            position: newX && newY ? { x: newX, y: newY } : null,
-            message: message
-                ? `${playerId} message: ${message} at ${created}`
-                : `${playerId} going ${direction} at ${created}`,
-            created,
-            playerAvatar: currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image,
+            gameId: socket.game.game.id,
+            playerType: playerType,
+            playerId: currentUser.userId,
+            message: `${message} at`,
         };
-        setGameLogs(prevLogs => [newLog, ...prevLogs]);
+        socket.onSendMessage(newLog);
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
-        if (!startPosition) {
-            console.log('Players are not found on maze');
-            return;
-        }
+        if (!socket.game || !currentUser) return;
+        const gameId = socket.game.game.id;
+        const playerId = currentUser?.userId;
 
-        let newX = startPosition.x;
-        let newY = startPosition.y;
+        if (!playerId) return;
 
-        if (direction === Direction.UP) {
-            newY -= 1;
-        }
-        if (direction === Direction.DOWN) {
-            newY += 1;
-        }
-        if (direction === Direction.LEFT) {
-            newX -= 1;
-        }
-        if (direction === Direction.RIGHT) {
-            newX += 1;
-        }
-
-        saveLogs(currentPlayer, direction, newX, newY);
-
-        if (newMazeArr[newY][newX].type !== Cell.WALL) {
-            if (currentPlayer === PlayerType.PLAYER1) {
-                if (newMazeArr[newY][newX].type === Cell.EXIT) {
-                    setVinner(PlayerType.PLAYER1);
-                    setOpenWinnerModal(true);
-                }
-            } else {
-                if (newMazeArr[newY][newX].type === Cell.EXIT) {
-                    setVinner(PlayerType.PLAYER2);
-                    setOpenWinnerModal(true);
-                }
-            }
-            setNewMazeArr(prev =>
-                updateMazeCell(prev, { x: newX, y: newY }, true, startPosition, direction, currentPlayer),
-            );
-        }
-        setNewMazeArr(prev => updateMazeCell(prev, { x: newX, y: newY }, true, undefined, undefined, undefined));
-        togglePlayer();
+        socket.onDirectionInput({ direction, gameId, playerId, message: undefined });
     };
 
     const handleGlobalKeyPress = (event: KeyboardEvent) => {
         const targetElement = event.target as HTMLElement;
-
         if (targetElement.tagName === 'INPUT') {
             return;
         }
@@ -132,27 +120,37 @@ const Game = () => {
     };
 
     React.useEffect(() => {
+        if (!socket.game) return;
         window.addEventListener('keydown', handleGlobalKeyPress);
 
         return () => {
             window.removeEventListener('keydown', handleGlobalKeyPress);
         };
-    }, [currentPlayer]);
+    }, [socket.game?.game.currentPlayer]);
+
+    const onExit = () => {
+        if (!socket.game || !currentUser) return;
+        socket.gameExit({ gameId: socket.game.game.id, playerId: currentUser.userId });
+    };
 
     const handleWinnerModalOk = () => {
-        console.log('Winner is: ', vinner);
+        console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
+        onExit();
     };
 
     const handleWinnerModalCancel = () => {
-        console.log('Winner is: ', vinner);
+        console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
+        onExit();
     };
 
     const handleCreateUser = (formValues: CreateUserFormValues) => {
-        localStorage.setItem(localStorageUserName, formValues.userName);
-        setUsername(formValues.userName);
-        setOpenCreateUserModal(false);
+        if (socket.isConnected) {
+            socket.createUser(formValues);
+            return;
+        }
+        socket.connectToServer(formValues);
     };
 
     const handleCancelCreateUser = () => {
@@ -163,41 +161,82 @@ const Game = () => {
         setCurrentMessage(event.target.value);
     };
 
+    const onSendMessage = () => {
+        saveLogs(currentMessage, socket.game?.game.currentPlayer);
+    };
+
     const handleInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             if (Object.values(Direction).includes(currentMessage as Direction)) {
                 handleDirectionInput(currentMessage as Direction);
             } else {
-                saveLogs(currentPlayer, undefined, undefined, undefined, currentMessage);
+                onSendMessage();
             }
         }
     };
 
+    React.useEffect(() => {
+        if (socket.isConnected) {
+            notification.success('Game connected to server');
+        }
+        if (!socket.isConnected) {
+            notification.error('Connection lost');
+        }
+    }, [socket.isConnected]);
+
+    const handleCreateNewGame = () => {
+        if (!currentUser) {
+            console.log('User is not registered');
+            return;
+        }
+        socket.createGame({ player1Id: currentUser.userId });
+    };
+
+    const handleConnectGame = (gameId: string) => {
+        if (!currentUser) return;
+        socket.connectGame({ gameId, userId: currentUser.userId });
+    };
+
+    const onGiveUP = () => {
+        if (!socket.game || !currentUser) return;
+        socket.giveUP({ gameId: socket.game.game.id, playerId: currentUser.userId });
+    };
+
     return (
-        <PrivatePageLayout
-            userName={username}
-            currentPlayer={currentPlayer}
-            gameLogs={gameLogs}
+        <PageLayout
+            connected={socket.isConnected}
+            currentPlayer={socket.game?.game.currentPlayer}
             currentMessage={currentMessage}
-            onMessageChange={handleTextInput}
+            currentUser={currentUser}
+            exitDisabled={!exitEnabled}
+            gameLogs={socket.gameLogs}
+            gameStatus={socket.gameStatus}
+            onConnectGame={handleConnectGame}
+            onGiveUP={onGiveUP}
+            onExit={onExit}
             onKeyPress={handleInputKeyPress}
+            onMessageChange={handleTextInput}
+            onSendMessage={onSendMessage}
+            player1Id={socket.game?.game.player1Id}
+            waitingList={socket.availableGames}
         >
-            <Maze maze={newMazeArr} />
-            <CustomModal
-                modalOpen={openWinnerModal}
-                onOk={handleWinnerModalOk}
-                title="Vinner"
-                content={`Player ${vinner} vins!`}
-                onCancel={handleWinnerModalCancel}
-                image={vinner === PlayerType.PLAYER1 ? player1Image : player2Image}
-                width={180}
+            <WaitingScreen gameStatus={socket.gameStatus} />
+            <NewGameScreen gameStatus={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />
+            <PlayGame
+                gameStatus={socket.gameStatus}
+                handleWinnerModalCancel={handleWinnerModalCancel}
+                handleWinnerModalOk={handleWinnerModalOk}
+                openWinnerModal={openWinnerModal}
+                maze={maze}
+                winner={winner}
+                currentUser={currentUser}
             />
             <CreateUserModal
                 modalOpen={openCreateUserModal}
                 onCancel={handleCancelCreateUser}
                 onCreate={handleCreateUser}
             />
-        </PrivatePageLayout>
+        </PageLayout>
     );
 };
 

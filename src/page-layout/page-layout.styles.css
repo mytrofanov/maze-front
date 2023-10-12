@@ -1,12 +1,6 @@
-.private-layout {
+.page-layout {
   min-height: 100vh;
-  min-width: 1024px;
-}
-
-.header {
-  color: white;
-  display: flex;
-  justify-content: space-between;
+  width: 1302px;
 }
 
 .logo {
@@ -16,17 +10,6 @@
 
 .page-layout__footer {
   text-align: center;
-}
-
-.player-info-block {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
-}
-
-.chat-block {
-  padding: 16px;
 }
 
 .player-icon{

@@ -1,4 +1,5 @@
 import { Modal, Image } from 'antd';
+import './modal.css';
 
 interface CustomModalProps {
     modalOpen: boolean;
@@ -15,8 +16,10 @@ const CustomModal = (props: CustomModalProps) => {
 
     return (
         <Modal title={title} centered open={modalOpen} onOk={onOk} onCancel={onCancel} width={width}>
-            {content ? <p>{content}</p> : null}
-            {image ? <Image width={64} src={image} /> : null}
+            <div className="modal-content">
+                {content ? <p>{content}</p> : null}
+                {image ? <Image width={64} src={image} /> : null}
+            </div>
         </Modal>
     );
 };

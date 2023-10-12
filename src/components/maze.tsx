@@ -16,10 +16,12 @@ const Maze = (props: MazeProps) => {
                 <div key={rowIndex + 'row'} className="maze-row">
                     {row.map((cell, cellIndex) => (
                         <div
-                            key={cellIndex + cell.type + cellIndex * rowIndex}
+                            key={`x:${cell.colX}, y:${cell.rowY}` + cellIndex}
                             style={chooseImage(cell)}
                             className={chooseClassName(cell)}
-                        />
+                        >
+                            {/*x:{cell.colX} y:{cell.rowY}*/}
+                        </div>
                     ))}
                 </div>
             ))}
