@@ -120,14 +120,21 @@ const Game = () => {
         };
     }, [socket.game?.game.currentPlayer]);
 
+    const onExit = () => {
+        if (!socket.game || !currentUser) return;
+        socket.gameExit({ gameId: socket.game.game.id, playerId: currentUser.userId });
+    };
+
     const handleWinnerModalOk = () => {
         console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
+        onExit();
     };
 
     const handleWinnerModalCancel = () => {
         console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
+        onExit();
     };
 
     const handleCreateUser = (formValues: CreateUserFormValues) => {
@@ -187,10 +194,6 @@ const Game = () => {
         socket.giveUP({ gameId: socket.game.game.id, playerId: currentUser.userId });
     };
 
-    const onExit = () => {
-        if (!socket.game || !currentUser) return;
-        socket.gameExit({ gameId: socket.game.game.id, playerId: currentUser.userId });
-    };
     console.log('gameStatus', socket.gameStatus);
 
     return (
