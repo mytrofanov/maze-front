@@ -1,3 +1,11 @@
 .chat-block {
     padding: 16px;
 }
+
+.chat-block__input-block {
+    display: flex;
+}
+
+.chat-block__input{
+    margin-right: 8px;
+}

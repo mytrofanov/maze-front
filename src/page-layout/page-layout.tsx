@@ -19,6 +19,7 @@ interface PageLayoutProps {
     onConnectGame: (gameId: string) => void;
     connected: boolean;
     player1Id?: string;
+    onSendMessage: () => void;
 }
 
 const PageLayout = (props: PageLayoutProps) => {
@@ -35,6 +36,7 @@ const PageLayout = (props: PageLayoutProps) => {
         connected,
         player1Id,
         gameLogs,
+        onSendMessage,
     } = props;
     return (
         <Layout className="page-layout">
@@ -57,6 +59,7 @@ const PageLayout = (props: PageLayoutProps) => {
                         waitingList={waitingList}
                         onKeyPress={onKeyPress}
                         onConnectGame={onConnectGame}
+                        onSendMessage={onSendMessage}
                     />
                 </Layout.Sider>
                 <Layout.Content className="content">{children}</Layout.Content>

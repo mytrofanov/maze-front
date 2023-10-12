@@ -27,19 +27,19 @@ const ChatList = (props: ChatListProps) => {
                                 }
                                 title={
                                     <Typography.Text code className="chat-item-title">
-                                        {item.id}
                                         {item.message} {item.createdAt.toString()}
                                     </Typography.Text>
                                 }
-                                // description={`${item.message} ${item.createdAt}`}
                             />
                         </List.Item>
                     );
                 }}
             />
             <Space wrap>
-                <Button type="primary">Give UP</Button>
-                <Button type="primary" disabled>
+                <Button type="primary" onClick={onGiveUP}>
+                    Give UP
+                </Button>
+                <Button type="primary" onClick={onGiveUP} disabled={exitDisabled}>
                     Exit
                 </Button>
             </Space>

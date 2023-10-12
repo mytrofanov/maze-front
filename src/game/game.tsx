@@ -51,11 +51,11 @@ const Game = (props: GameProps) => {
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
-    const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][] | undefined>(undefined);
+    const [maze, setMaze] = React.useState<MazeCell[][] | undefined>(undefined);
 
     React.useEffect(() => {
         if (!socket.game) return;
-        setNewMazeArr(socket.game.maze);
+        setMaze(socket.game.maze);
         if (socket.game.game.winner) {
             setWinner(socket.game.game.winner);
             setOpenWinnerModal(true);
@@ -178,12 +178,16 @@ const Game = (props: GameProps) => {
         setCurrentMessage(event.target.value);
     };
 
+    const onSendMessage = () => {
+        saveLogs(currentMessage, socket.game?.game.currentPlayer);
+    };
+
     const handleInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             if (Object.values(Direction).includes(currentMessage as Direction)) {
                 handleDirectionInput(currentMessage as Direction);
             } else {
-                saveLogs(currentMessage, socket.game?.game.currentPlayer);
+                onSendMessage();
             }
         }
     };
@@ -223,6 +227,7 @@ const Game = (props: GameProps) => {
             waitingList={socket.availableGames}
             onConnectGame={handleConnectGame}
             connected={socket.isConnected}
+            onSendMessage={onSendMessage}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />
             <NewGameScreen gameStage={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />
@@ -231,7 +236,7 @@ const Game = (props: GameProps) => {
                 handleWinnerModalCancel={handleWinnerModalCancel}
                 handleWinnerModalOk={handleWinnerModalOk}
                 openWinnerModal={openWinnerModal}
-                maze={newMazeArr}
+                maze={maze}
                 winner={winner}
             />
             <CreateUserModal
