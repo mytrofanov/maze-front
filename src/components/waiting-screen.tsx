@@ -11,26 +11,35 @@ interface WaitingProps {
 
 const WaitingScreen = (props: WaitingProps) => {
     const { gameStatus } = props;
-    const timer = new Timer();
+    const timer = React.useRef(new Timer()); // зміна на useRef
     const [timeInSeconds, setTimeInSeconds] = React.useState<number>(0);
     const [timeInMinutes, setTimeInMinutes] = React.useState<number>(0);
 
-    React.useEffect(() => {
-        if (gameStatus === GameStatus.WAITING_FOR_PLAYER) {
-            timer.start();
-        }
+    const stopTimer = () => {
+        timer.current.stop();
+        timer.current.reset();
+        setTimeInSeconds(0);
+        setTimeInMinutes(0);
+    };
 
-        timer.addEventListener('secondsUpdated', () => {
-            const currentSeconds = timer.getTimeValues().seconds;
-            const currentMinutes = timer.getTotalTimeValues().minutes;
+    React.useEffect(() => {
+        const handleSecondsUpdated = () => {
+            const currentSeconds = timer.current.getTimeValues().seconds;
+            const currentMinutes = timer.current.getTotalTimeValues().minutes;
             setTimeInSeconds(currentSeconds);
             setTimeInMinutes(currentMinutes);
-        });
+        };
+
+        if (gameStatus === GameStatus.WAITING_FOR_PLAYER) {
+            timer.current.start();
+            timer.current.addEventListener('secondsUpdated', handleSecondsUpdated);
+        } else {
+            stopTimer();
+        }
 
         return () => {
-            timer.stop();
-            timer.reset();
-            setTimeInSeconds(0);
+            stopTimer();
+            timer.current.removeEventListener('secondsUpdated', handleSecondsUpdated);
         };
     }, [gameStatus]);
 
