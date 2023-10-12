@@ -21,7 +21,7 @@ const Game = () => {
     const [maze, setMaze] = React.useState<MazeCell[][] | undefined>(undefined);
     const exitEnabled =
         socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || socket.gameStatus === GameStatus.COMPLETED;
-    console.log('winner: ', winner);
+
     React.useEffect(() => {
         if (!socket.game) return;
         if (socket.game.maze) setMaze(socket.game.maze);
