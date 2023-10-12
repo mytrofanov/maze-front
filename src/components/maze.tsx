@@ -19,7 +19,9 @@ const Maze = (props: MazeProps) => {
                             key={`x:${cell.colX}, y:${cell.rowY}` + cellIndex}
                             style={chooseImage(cell)}
                             className={chooseClassName(cell)}
-                        />
+                        >
+                            x:{cell.colX} y:{cell.rowY}
+                        </div>
                     ))}
                 </div>
             ))}

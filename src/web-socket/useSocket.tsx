@@ -85,7 +85,7 @@ const useSocket = () => {
     };
 
     const onGameUpdated = (payload: GamePayload) => {
-        console.log('onGameUpdated: ', payload.maze);
+        // console.log('onGameUpdated: ', payload.maze);
         setGame(payload);
         setGameStatus(payload.game.status);
     };

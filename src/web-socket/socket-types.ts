@@ -39,7 +39,7 @@ export interface DirectionPayload {
     direction: Direction;
     gameId: string;
     playerId: string;
-    playerType: PlayerType;
+    // playerType: PlayerType;
     message?: string;
 }
 

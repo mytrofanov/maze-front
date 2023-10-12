@@ -1,9 +1,9 @@
 import React, { ChangeEvent } from 'react';
 import { Direction, GameLogs, MazeCell, PlayerType } from './types.ts';
 import { localStorageUser } from '../variables';
-import { CreateUserFormValues } from '../types';
+import { CreateUserFormValues, CurrentUser } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
-import { WaitingScreen, PlayGame, CreateUserModal } from '../components';
+import { CreateUserModal, PlayGame, WaitingScreen } from '../components';
 
 import {
     AvailableGamesPayload,
@@ -20,7 +20,6 @@ import {
     SocketSuccess,
     SocketSuccessCodes,
 } from '../web-socket';
-import { CurrentUser } from '../types';
 import { useNotification } from '../hooks';
 import NewGameScreen from '../components/new-game-screen.tsx';
 
@@ -113,13 +112,12 @@ const Game = (props: GameProps) => {
         if (!socket.game || !currentUser) return;
         const gameId = socket.game.game.id;
         const playerId = currentUser?.userId;
-        //const player1 = socket.game.game.player1Id;
-        //const playerType = player1 === playerId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-        const playerType = currentUser.type;
+
+        //const playerType = currentUser?.userId === socket.game.game.player1Id ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         if (!playerId) return;
         console.log('before onDirection: ', direction);
 
-        socket.onDirectionInput({ direction, gameId, playerId, playerType, message: undefined });
+        socket.onDirectionInput({ direction, gameId, playerId, message: undefined });
 
         // const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
         // if (!startPosition) {
