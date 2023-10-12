@@ -20,7 +20,7 @@ const Maze = (props: MazeProps) => {
                             style={chooseImage(cell)}
                             className={chooseClassName(cell)}
                         >
-                            x:{cell.colX} y:{cell.rowY}
+                            {/*x:{cell.colX} y:{cell.rowY}*/}
                         </div>
                     ))}
                 </div>
