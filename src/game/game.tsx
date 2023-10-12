@@ -21,15 +21,12 @@ const Game = () => {
     const [maze, setMaze] = React.useState<MazeCell[][] | undefined>(undefined);
     const exitEnabled =
         socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || socket.gameStatus === GameStatus.COMPLETED;
-
+    console.log('winner: ', winner);
     React.useEffect(() => {
         if (!socket.game) return;
         if (socket.game.maze) setMaze(socket.game.maze);
-        if (socket.game.game.winner) {
+        if (socket.game) {
             setWinner(socket.game.game.winner);
-            setOpenWinnerModal(true);
-        } else {
-            setWinner(null);
         }
         if (currentUser) {
             const playerType =
@@ -37,6 +34,10 @@ const Game = () => {
             setCurrentUser({ ...currentUser, type: playerType });
         }
     }, [socket.game]);
+
+    React.useEffect(() => {
+        if (winner) setOpenWinnerModal(true);
+    }, [winner]);
 
     React.useEffect(() => {
         const storedUserString = localStorage.getItem(localStorageUser);
