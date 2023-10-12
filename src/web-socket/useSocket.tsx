@@ -27,25 +27,11 @@ const useSocket = () => {
     const [gameStatus, setGameStatus] = React.useState<GameStatus>(GameStatus.WELCOME_SCREEN);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
 
-    const successMemo = React.useMemo(() => {
-        return success;
-    }, [success]);
-    const errorMemo = React.useMemo(() => {
-        return error;
-    }, [error]);
-
-    React.useEffect(() => {
-        // console.log('successMemo: ', successMemo);
-        // console.log('errorMemo: ', errorMemo);
-    }, [errorMemo, successMemo]);
-
     const createGame = (payload: CreateGamePayload) => {
-        // console.log('createGame payload', payload);
         socket.emit(SocketEvents.CREATE_GAME, payload);
     };
 
     React.useEffect(() => {
-        // console.log('socket isConnected', socket.connected);
         setIsConnected(socket.connected);
     }, [socket.connected]);
 
@@ -57,7 +43,6 @@ const useSocket = () => {
         socket.emit(SocketEvents.CREATE_USER, payload);
     };
     const onDirectionInput = (payload: DirectionPayload) => {
-        // console.log('onDirectionInput DirectionPayload: ', payload);
         socket.emit(SocketEvents.DIRECTION, payload);
     };
     const onSendMessage = (payload: MessagePayload) => {
@@ -74,7 +59,6 @@ const useSocket = () => {
     };
 
     const onGameCreated = (payload: GamePayload) => {
-        // console.log('onGameCreated: ', payload.maze);
         setGame(payload);
         setGameStatus(GameStatus.WAITING_FOR_PLAYER);
     };
@@ -85,7 +69,6 @@ const useSocket = () => {
     };
 
     const onGameUpdated = (payload: GamePayload) => {
-        // console.log('onGameUpdated: ', payload.maze);
         setGame(payload);
         setGameStatus(payload.game.status);
     };
@@ -95,7 +78,6 @@ const useSocket = () => {
     };
 
     const onAvailableGames = (payload: AvailableGamesPayload) => {
-        // console.log('AvailableGamesPayload: ', payload);
         setAvailableGames(payload);
     };
 
@@ -110,14 +92,6 @@ const useSocket = () => {
             setGameStatus(GameStatus.CONNECTION_ERROR);
             setIsConnected(false);
         }
-
-        // socket.on('connect', () => {
-        //     console.log('Connected to server, on URL: ', URL);
-        // });
-        //
-        // socket.on('disconnect', () => {
-        //     console.log('Disconnected from server, on URL: ', URL);
-        // });
 
         socket.on(SocketEvents.CONNECT, onConnect);
         socket.on(SocketEvents.DISCONNECT, onDisconnect);

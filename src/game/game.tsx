@@ -49,8 +49,6 @@ const Game = (props: GameProps) => {
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
-    //const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
-    // const [username, setUsername] = React.useState<string | null>(null);
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [newMazeArr, setNewMazeArr] = React.useState<MazeCell[][] | undefined>(undefined);
@@ -92,10 +90,6 @@ const Game = (props: GameProps) => {
         }
     }, [socket.error]);
 
-    // const togglePlayer = () => {
-    //     setCurrentPlayer(prev => (prev === PlayerType.PLAYER1 ? PlayerType.PLAYER2 : PlayerType.PLAYER1));
-    // };
-
     const saveLogs = (message: string, currentPlayer?: PlayerType) => {
         if (!socket.game || !currentUser) return;
         const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
@@ -113,59 +107,13 @@ const Game = (props: GameProps) => {
         const gameId = socket.game.game.id;
         const playerId = currentUser?.userId;
 
-        //const playerType = currentUser?.userId === socket.game.game.player1Id ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         if (!playerId) return;
-        console.log('before onDirection: ', direction);
 
         socket.onDirectionInput({ direction, gameId, playerId, message: undefined });
-
-        // const startPosition = findPlayerPosition(newMazeArr, currentPlayer);
-        // if (!startPosition) {
-        //     console.log('Players are not found on maze');
-        //     return;
-        // }
-
-        // let newX = startPosition.x;
-        // let newY = startPosition.y;
-        //
-        // if (direction === Direction.UP) {
-        //     newY -= 1;
-        // }
-        // if (direction === Direction.DOWN) {
-        //     newY += 1;
-        // }
-        // if (direction === Direction.LEFT) {
-        //     newX -= 1;
-        // }
-        // if (direction === Direction.RIGHT) {
-        //     newX += 1;
-        // }
-
-        // saveLogs(currentPlayer, playerId, direction, newX, newY);
-
-        // if (newMazeArr[newY][newX].type !== Cell.WALL) {
-        //     if (currentPlayer === PlayerType.PLAYER1) {
-        //         if (newMazeArr[newY][newX].type === Cell.EXIT) {
-        //             setWinner(PlayerType.PLAYER1);
-        //             setOpenWinnerModal(true);
-        //         }
-        //     } else {
-        //         if (newMazeArr[newY][newX].type === Cell.EXIT) {
-        //             setWinner(PlayerType.PLAYER2);
-        //             setOpenWinnerModal(true);
-        //         }
-        //     }
-        //     setNewMazeArr(prev =>
-        //         updateMazeCell(prev, { x: newX, y: newY }, true, startPosition, direction, currentPlayer),
-        //     );
-        // }
-        // setNewMazeArr(prev => updateMazeCell(prev, { x: newX, y: newY }, true, undefined, undefined, undefined));
-        // togglePlayer();
     };
 
     const handleGlobalKeyPress = (event: KeyboardEvent) => {
         const targetElement = event.target as HTMLElement;
-        console.log('event: ', event);
         if (targetElement.tagName === 'INPUT') {
             return;
         }
@@ -216,7 +164,6 @@ const Game = (props: GameProps) => {
 
     const handleCreateUser = (formValues: CreateUserFormValues) => {
         if (socket.isConnected) {
-            console.log('Already connected');
             socket.createUser(formValues);
             return;
         }
