@@ -38,15 +38,19 @@ const Sider = (props: SiderProps) => {
     return (
         <div className="chat-block">
             <div className="chat-block__input-block">
-                <Input
-                    autoFocus={false}
-                    value={currentMessage}
-                    onChange={onMessageChange}
-                    onKeyDown={onKeyPress}
-                    placeholder="Type action or message..."
-                    className="chat-block__input"
-                />
-                <Button onClick={onSendMessage}>Send</Button>
+                {gameStatus === GameStatus.IN_PROGRESS ? (
+                    <>
+                        <Input
+                            autoFocus={false}
+                            value={currentMessage}
+                            onChange={onMessageChange}
+                            onKeyDown={onKeyPress}
+                            placeholder="Type action or message..."
+                            className="chat-block__input"
+                        />
+                        <Button onClick={onSendMessage}>Send</Button>
+                    </>
+                ) : null}
             </div>
             {gameStatus === GameStatus.IN_PROGRESS || gameStatus === GameStatus.WAITING_FOR_PLAYER ? (
                 <ChatList chat={gameLogs} exitDisabled={exitDisabled} onGiveUP={onGiveUP} onExit={onExit} />
