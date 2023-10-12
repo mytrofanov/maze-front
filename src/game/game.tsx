@@ -27,6 +27,11 @@ const Game = () => {
             setWinner(socket.game.game.winner);
             setOpenWinnerModal(true);
         }
+        if (currentUser) {
+            const playerType =
+                socket.game?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+            setCurrentUser({ ...currentUser, type: playerType });
+        }
     }, [socket.game]);
 
     React.useEffect(() => {
@@ -34,8 +39,6 @@ const Game = () => {
         if (storedUserString) {
             const storedUser = JSON.parse(storedUserString);
             socket.connectToServer({ userName: storedUser.userName, userId: storedUser.id });
-            const playerType = socket.game?.game.player1Id === storedUser.id ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-            setCurrentUser({ ...storedUser, type: playerType });
         } else {
             setOpenCreateUserModal(true);
         }
