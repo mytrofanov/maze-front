@@ -5,7 +5,7 @@ import { CreateUserFormValues, CurrentUser } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { CreateUserModal, PlayGame, WaitingScreen } from '../components';
 
-import { SocketErrorCodes, SocketSuccessCodes } from '../web-socket';
+import { GameStatus, SocketErrorCodes, SocketSuccessCodes } from '../web-socket';
 import { useNotification } from '../hooks';
 import NewGameScreen from '../components/new-game-screen.tsx';
 import useSocket from '../web-socket/useSocket.tsx';
@@ -31,6 +31,7 @@ const Game = () => {
             const playerType =
                 socket.game?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
             setCurrentUser({ ...currentUser, type: playerType });
+            console.log('currentUser:', currentUser);
         }
     }, [socket.game]);
 
@@ -197,7 +198,8 @@ const Game = () => {
         socket.giveUP({ gameId: socket.game.game.id, playerId: currentUser.userId });
     };
 
-    console.log('gameStatus', socket.gameStatus);
+    const exitEnabled =
+        socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || socket.gameStatus === GameStatus.COMPLETED;
 
     return (
         <PageLayout
@@ -205,7 +207,7 @@ const Game = () => {
             currentPlayer={socket.game?.game.currentPlayer}
             currentMessage={currentMessage}
             currentUser={currentUser}
-            exitDisabled={!winner}
+            exitDisabled={!exitEnabled}
             gameLogs={socket.gameLogs}
             gameStatus={socket.gameStatus}
             onConnectGame={handleConnectGame}
