@@ -8,8 +8,8 @@
 }
 
 .maze-cell {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
 }
 
 .wall {
