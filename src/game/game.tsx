@@ -28,6 +28,8 @@ const Game = () => {
         if (socket.game.game.winner) {
             setWinner(socket.game.game.winner);
             setOpenWinnerModal(true);
+        } else {
+            setWinner(null);
         }
         if (currentUser) {
             const playerType =
