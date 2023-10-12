@@ -39,7 +39,6 @@ const useSocket = () => {
 
     const gameExit = (payload: GameExitPayload) => {
         socket.emit(SocketEvents.EXIT, payload);
-        setGameStatus(GameStatus.WELCOME_SCREEN);
     };
 
     React.useEffect(() => {

@@ -9,14 +9,15 @@ interface NewGameProps {
 
 const NewGameScreen = (props: NewGameProps) => {
     const { gameStatus, onCreateNewGame } = props;
-    if (gameStatus !== GameStatus.WELCOME_SCREEN) return;
-    return (
-        <div className="new-game-screen">
-            <Button type="default" onClick={onCreateNewGame}>
-                New Game
-            </Button>
-        </div>
-    );
+    if (gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED) {
+        return (
+            <div className="new-game-screen">
+                <Button type="default" onClick={onCreateNewGame}>
+                    New Game
+                </Button>
+            </div>
+        );
+    }
 };
 
 export default NewGameScreen;

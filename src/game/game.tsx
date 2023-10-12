@@ -191,6 +191,7 @@ const Game = () => {
         if (!socket.game || !currentUser) return;
         socket.gameExit({ gameId: socket.game.game.id, playerId: currentUser.userId });
     };
+    console.log('gameStatus', socket.gameStatus);
 
     return (
         <PageLayout
@@ -213,7 +214,7 @@ const Game = () => {
             <WaitingScreen gameStatus={socket.gameStatus} />
             <NewGameScreen gameStatus={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />
             <PlayGame
-                gameStage={socket.gameStatus}
+                gameStatus={socket.gameStatus}
                 handleWinnerModalCancel={handleWinnerModalCancel}
                 handleWinnerModalOk={handleWinnerModalOk}
                 openWinnerModal={openWinnerModal}

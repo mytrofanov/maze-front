@@ -6,7 +6,7 @@ import { GameStatus } from '../web-socket';
 import { CurrentUser } from '../types';
 
 interface PlayGameProps {
-    gameStage: GameStatus;
+    gameStatus: GameStatus;
     maze?: MazeCell[][];
     openWinnerModal: boolean;
     handleWinnerModalOk: () => void;
@@ -16,11 +16,11 @@ interface PlayGameProps {
 }
 
 const PlayGame = (props: PlayGameProps) => {
-    const { gameStage, maze, handleWinnerModalCancel, openWinnerModal, handleWinnerModalOk, winner, currentUser } =
+    const { gameStatus, maze, handleWinnerModalCancel, openWinnerModal, handleWinnerModalOk, winner, currentUser } =
         props;
     if (!maze) return null;
 
-    if (gameStage === GameStatus.IN_PROGRESS) {
+    if (gameStatus === GameStatus.IN_PROGRESS) {
         return (
             <>
                 <Maze maze={maze} />
