@@ -19,6 +19,8 @@ const Game = () => {
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [maze, setMaze] = React.useState<MazeCell[][] | undefined>(undefined);
+    const exitEnabled =
+        socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || socket.gameStatus === GameStatus.COMPLETED;
 
     React.useEffect(() => {
         if (!socket.game) return;
@@ -31,7 +33,6 @@ const Game = () => {
             const playerType =
                 socket.game?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
             setCurrentUser({ ...currentUser, type: playerType });
-            console.log('currentUser:', currentUser);
         }
     }, [socket.game]);
 
@@ -197,9 +198,6 @@ const Game = () => {
         if (!socket.game || !currentUser) return;
         socket.giveUP({ gameId: socket.game.game.id, playerId: currentUser.userId });
     };
-
-    const exitEnabled =
-        socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || socket.gameStatus === GameStatus.COMPLETED;
 
     return (
         <PageLayout
