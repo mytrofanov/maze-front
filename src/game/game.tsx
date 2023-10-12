@@ -5,45 +5,10 @@ import { CreateUserFormValues, CurrentUser } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { CreateUserModal, PlayGame, WaitingScreen } from '../components';
 
-import {
-    GameStatus,
-    // AvailableGamesPayload,
-    // ConnectToGamePayload,
-    // ConnectToServerPayload,
-    // CreateGamePayload,
-    // CreateUserPayload,
-    // DirectionPayload,
-    // GamePayload,
-    // GameStatus,
-    // MessagePayload,
-    // SocketError,
-    SocketErrorCodes,
-    // SocketSuccess,
-    SocketSuccessCodes,
-} from '../web-socket';
+import { GameStatus, SocketErrorCodes, SocketSuccessCodes } from '../web-socket';
 import { useNotification } from '../hooks';
 import NewGameScreen from '../components/new-game-screen.tsx';
 import useSocket from '../web-socket/useSocket.tsx';
-
-// interface socket {
-//     isConnected: boolean;
-//     createGame: (payload: CreateGamePayload) => void;
-//     connectToServer: (payload: ConnectToServerPayload | null) => void;
-//     connectGame: (payload: ConnectToGamePayload) => void;
-//     error?: SocketError;
-//     success?: SocketSuccess;
-//     createUser: (payload: CreateUserPayload) => void;
-//     game?: GamePayload;
-//     availableGames?: AvailableGamesPayload;
-//     onDirectionInput: (payload: DirectionPayload) => void;
-//     gameStatus: GameStatus;
-//     gameLogs: GameLogs;
-//     onSendMessage: (payload: MessagePayload) => void;
-// }
-//
-// interface GameProps {
-//     socket: socket;
-// }
 
 const Game = () => {
     const socket = useSocket();
@@ -69,7 +34,8 @@ const Game = () => {
         if (storedUserString) {
             const storedUser = JSON.parse(storedUserString);
             socket.connectToServer({ userName: storedUser.userName, userId: storedUser.id });
-            setCurrentUser(storedUser);
+            const playerType = socket.game?.game.player1Id === storedUser.id ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+            setCurrentUser({ ...storedUser, type: playerType });
         } else {
             setOpenCreateUserModal(true);
         }
@@ -247,6 +213,7 @@ const Game = () => {
                 openWinnerModal={openWinnerModal}
                 maze={maze}
                 winner={winner}
+                currentUser={currentUser}
             />
             <CreateUserModal
                 modalOpen={openCreateUserModal}
