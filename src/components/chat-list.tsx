@@ -6,11 +6,12 @@ import { player1Image, player2Image } from '../variables';
 interface ChatListProps {
     chat?: GameLogs;
     onGiveUP: () => void;
+    onExit: () => void;
     exitDisabled: boolean;
 }
 
 const ChatList = (props: ChatListProps) => {
-    const { chat, onGiveUP, exitDisabled } = props;
+    const { chat, onGiveUP, exitDisabled, onExit } = props;
     return (
         <>
             <List
@@ -41,7 +42,7 @@ const ChatList = (props: ChatListProps) => {
                 <Button type="primary" onClick={onGiveUP}>
                     Give UP
                 </Button>
-                <Button type="primary" onClick={onGiveUP} disabled={exitDisabled}>
+                <Button type="primary" onClick={onExit} disabled={exitDisabled}>
                     Exit
                 </Button>
             </Space>

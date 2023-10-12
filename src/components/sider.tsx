@@ -13,6 +13,7 @@ interface SiderProps {
     gameStatus?: GameStatus;
     onConnectGame: (gameId: string) => void;
     onGiveUP: () => void;
+    onExit: () => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
@@ -26,6 +27,7 @@ const Sider = (props: SiderProps) => {
         gameLogs,
         gameStatus,
         onConnectGame,
+        onExit,
         onGiveUP,
         onKeyPress,
         onMessageChange,
@@ -47,7 +49,7 @@ const Sider = (props: SiderProps) => {
                 <Button onClick={onSendMessage}>Send</Button>
             </div>
             {gameStatus === GameStatus.IN_PROGRESS ? (
-                <ChatList chat={gameLogs} exitDisabled={exitDisabled} onGiveUP={onGiveUP} />
+                <ChatList chat={gameLogs} exitDisabled={exitDisabled} onGiveUP={onGiveUP} onExit={onExit} />
             ) : null}
             {gameStatus === GameStatus.WELCOME_SCREEN ? (
                 <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />

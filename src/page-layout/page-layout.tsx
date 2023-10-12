@@ -17,6 +17,7 @@ interface PageLayoutProps {
     gameStatus?: GameStatus;
     onConnectGame: (gameId: string) => void;
     onGiveUP: () => void;
+    onExit: () => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
@@ -36,6 +37,7 @@ const PageLayout = (props: PageLayoutProps) => {
         gameStatus,
         onConnectGame,
         onGiveUP,
+        onExit,
         onKeyPress,
         onMessageChange,
         onSendMessage,
@@ -65,6 +67,7 @@ const PageLayout = (props: PageLayoutProps) => {
                         onConnectGame={onConnectGame}
                         onSendMessage={onSendMessage}
                         onGiveUP={onGiveUP}
+                        onExit={onExit}
                         exitDisabled={exitDisabled}
                     />
                 </Layout.Sider>

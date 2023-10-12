@@ -7,6 +7,7 @@ import {
     CreateGamePayload,
     CreateUserPayload,
     DirectionPayload,
+    GameExitPayload,
     GamePayload,
     GameStatus,
     GiveUpPayload,
@@ -34,6 +35,11 @@ const useSocket = () => {
 
     const giveUP = (payload: GiveUpPayload) => {
         socket.emit(SocketEvents.GIVE_UP, payload);
+    };
+
+    const gameExit = (payload: GameExitPayload) => {
+        socket.emit(SocketEvents.EXIT, payload);
+        setGameStatus(GameStatus.WELCOME_SCREEN);
     };
 
     React.useEffect(() => {
@@ -135,6 +141,7 @@ const useSocket = () => {
         createUser,
         error,
         game,
+        gameExit,
         gameLogs,
         gameStatus,
         giveUP,

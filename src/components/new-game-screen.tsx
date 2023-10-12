@@ -3,13 +3,13 @@ import './new-game-screen.css';
 import { GameStatus } from '../web-socket';
 
 interface NewGameProps {
-    gameStage: GameStatus;
+    gameStatus: GameStatus;
     onCreateNewGame: () => void;
 }
 
 const NewGameScreen = (props: NewGameProps) => {
-    const { gameStage, onCreateNewGame } = props;
-    if (gameStage !== GameStatus.WELCOME_SCREEN) return;
+    const { gameStatus, onCreateNewGame } = props;
+    if (gameStatus !== GameStatus.WELCOME_SCREEN) return;
     return (
         <div className="new-game-screen">
             <Button type="default" onClick={onCreateNewGame}>
