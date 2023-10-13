@@ -19,7 +19,7 @@ const PlayGame = (props: PlayGameProps) => {
     const { gameStatus, maze, handleWinnerModalCancel, openWinnerModal, handleWinnerModalOk, winner, currentUser } =
         props;
     if (!maze) return null;
-    if (gameStatus === GameStatus.IN_PROGRESS) {
+    if (gameStatus === GameStatus.IN_PROGRESS && maze) {
         return (
             <>
                 <Maze maze={maze} />

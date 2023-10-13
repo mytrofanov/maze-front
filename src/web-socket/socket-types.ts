@@ -1,4 +1,4 @@
-import { Direction, GameLogs, MazeCell, PlayerType } from '../game';
+import { Cell, Direction, GameLogs, PlayerType } from '../game';
 
 export enum SocketEvents {
     AVAILABLE_GAMES = 'AVAILABLE_GAMES',
@@ -116,9 +116,38 @@ export type availableGame = Omit<Game, 'status'> & {
 
 export type AvailableGamesPayload = availableGame[];
 
+export type PayloadCell = {
+    colX: number;
+    createdAt: string;
+    direction: Direction | null;
+    id: number;
+    player: PlayerType | null;
+    revealed: boolean;
+    rowId: number;
+    type: Cell;
+    updatedAt: string;
+};
+
+export type row = {
+    cells: PayloadCell[];
+    createdAt: string;
+    id: number;
+    mazeId: number;
+    player: PlayerType;
+    rowY: number;
+    updatedAt: string;
+};
+
+export type SocketMaze = {
+    createdAt: string;
+    gameId: number;
+    id: number;
+    rows: row[];
+};
+
 export type GamePayload = {
     game: Game;
-    maze?: MazeCell[][];
+    maze?: SocketMaze;
 };
 
 export type GiveUpPayload = {

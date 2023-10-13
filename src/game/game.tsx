@@ -29,10 +29,13 @@ const Game = () => {
             setWinner(socket.game.game.winner);
         }
         if (currentUser) {
-            const playerType =
-                socket.game?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-            setCurrentUser({ ...currentUser, type: playerType });
+            //get user from Game
+            // const playerType =
+            //     socket.game?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+            // setCurrentUser({ ...currentUser, type: playerType });
         }
+        console.log('maze:', maze);
+        console.log('check type currentUser:', currentUser);
     }, [socket.game]);
 
     React.useEffect(() => {
