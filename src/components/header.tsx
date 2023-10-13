@@ -7,20 +7,24 @@ import { CurrentUser } from '../types';
 import { GameStatus } from '../web-socket';
 
 interface HeaderProps {
-    player1Id?: string;
     currentUser?: CurrentUser;
     gameStatus?: GameStatus;
-    currentPlayer?: PlayerType;
     connected: boolean;
 }
 
 const Header = (props: HeaderProps) => {
-    const { currentUser, gameStatus, currentPlayer, connected, player1Id } = props;
+    const { currentUser, gameStatus, connected } = props;
+    const userAvatar = currentUser?.type === PlayerType.PLAYER1 ? player1Image : player2Image;
     return (
         <Row className="header">
             <Col>
-                Hello {currentUser && currentUser.userName ? currentUser.userName : 'handsome!'}! Your avatar is:
-                <Image width={64} src={currentUser?.userId === player1Id ? player1Image : player2Image} />
+                Hello {currentUser && currentUser.userName ? currentUser.userName : 'handsome!'}!
+                {gameStatus === GameStatus.IN_PROGRESS ? (
+                    <>
+                        Your avatar is:
+                        <Image width={64} src={userAvatar} />
+                    </>
+                ) : null}
             </Col>
             <Col>
                 <Tooltip title={connected ? 'connected' : 'disconnected'}>
@@ -29,7 +33,7 @@ const Header = (props: HeaderProps) => {
             </Col>
             {gameStatus === GameStatus.IN_PROGRESS ? (
                 <Col className="player-info-block">
-                    <Image width={64} src={currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image} />
+                    <Image width={64} src={userAvatar} />
                     {'  '}
                     Now its my turn!
                 </Col>

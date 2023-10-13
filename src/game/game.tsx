@@ -209,7 +209,6 @@ const Game = () => {
     return (
         <PageLayout
             connected={socket.isConnected}
-            currentPlayer={socket.gameState?.game.currentPlayer}
             currentMessage={currentMessage}
             currentUser={currentUser}
             exitDisabled={!exitEnabled}
@@ -221,7 +220,6 @@ const Game = () => {
             onKeyPress={handleInputKeyPress}
             onMessageChange={handleTextInput}
             onSendMessage={onSendMessage}
-            player1Id={socket.gameState?.game.player1Id}
             waitingList={socket.availableGames}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />
