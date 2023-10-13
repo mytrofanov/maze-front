@@ -24,7 +24,7 @@ const useSocket = () => {
     const [isConnected, setIsConnected] = React.useState<boolean>(false);
     const [error, setError] = React.useState<SocketError | undefined>(undefined);
     const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
-    const [game, setGame] = React.useState<GamePayload | undefined>(undefined);
+    const [gameState, setGameState] = React.useState<GamePayload | undefined>(undefined);
     const [availableGames, setAvailableGames] = React.useState<AvailableGamesPayload | undefined>(undefined);
     const [gameStatus, setGameStatus] = React.useState<GameStatus>(GameStatus.WELCOME_SCREEN);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
@@ -69,18 +69,17 @@ const useSocket = () => {
     };
 
     const onGameCreated = (payload: GamePayload) => {
-        setGame(payload);
+        setGameState(payload);
         setGameStatus(GameStatus.WAITING_FOR_PLAYER);
     };
 
     const onGameConnected = (payload: GamePayload) => {
         setGameStatus(GameStatus.IN_PROGRESS);
-        setGame(payload);
+        setGameState(payload);
     };
 
     const onGameUpdated = (payload: GamePayload) => {
-        console.log('onGameUpdated: ', payload.maze);
-        setGame(payload);
+        setGameState(payload);
         setGameStatus(payload.game.status);
     };
 
@@ -140,7 +139,7 @@ const useSocket = () => {
         createGame,
         createUser,
         error,
-        game,
+        gameState,
         gameExit,
         gameLogs,
         gameStatus,

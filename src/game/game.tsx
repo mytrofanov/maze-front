@@ -1,11 +1,11 @@
 import React, { ChangeEvent } from 'react';
-import { Direction, MazeCell, PlayerType } from './types.ts';
+import { Direction, PlayerType } from './types.ts';
 import { localStorageUser } from '../variables';
 import { CreateUserFormValues, CurrentUser } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { CreateUserModal, PlayGame, WaitingScreen } from '../components';
 
-import { GameStatus, SocketErrorCodes, SocketSuccessCodes } from '../web-socket';
+import { GameStatus, Row, SocketErrorCodes, SocketSuccessCodes } from '../web-socket';
 import { useNotification } from '../hooks';
 import NewGameScreen from '../components/new-game-screen.tsx';
 import useSocket from '../web-socket/useSocket.tsx';
@@ -18,16 +18,17 @@ const Game = () => {
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
-    const [maze, setMaze] = React.useState<MazeCell[][] | undefined>(undefined);
+    const [maze, setMaze] = React.useState<Row[] | undefined>(undefined);
     const exitEnabled =
         socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || socket.gameStatus === GameStatus.COMPLETED;
 
     React.useEffect(() => {
-        if (!socket.game) return;
-        if (socket.game.maze) setMaze(socket.game.maze);
-        if (socket.game) {
-            setWinner(socket.game.game.winner);
+        if (!socket.gameState) return;
+        if (socket.gameState.maze) {
+            setMaze(socket.gameState.maze.rows);
         }
+        setWinner(socket.gameState.game.winner);
+
         if (currentUser) {
             //get user from Game
             // const playerType =
@@ -36,7 +37,7 @@ const Game = () => {
         }
         console.log('maze:', maze);
         console.log('check type currentUser:', currentUser);
-    }, [socket.game]);
+    }, [socket.gameState]);
 
     React.useEffect(() => {
         if (winner) setOpenWinnerModal(true);
@@ -70,10 +71,10 @@ const Game = () => {
     }, [socket.error]);
 
     const saveLogs = (message: string, currentPlayer?: PlayerType) => {
-        if (!socket.game || !currentUser) return;
+        if (!socket.gameState || !currentUser) return;
         const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         const newLog = {
-            gameId: socket.game.game.id,
+            gameId: socket.gameState.game.id,
             playerType: playerType,
             playerId: currentUser.userId,
             message: `${message} at`,
@@ -82,8 +83,8 @@ const Game = () => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        if (!socket.game || !currentUser) return;
-        const gameId = socket.game.game.id;
+        if (!socket.gameState || !currentUser) return;
+        const gameId = socket.gameState.game.id;
         const playerId = currentUser?.userId;
 
         if (!playerId) return;
@@ -123,17 +124,17 @@ const Game = () => {
     };
 
     React.useEffect(() => {
-        if (!socket.game) return;
+        if (!socket.gameState) return;
         window.addEventListener('keydown', handleGlobalKeyPress);
 
         return () => {
             window.removeEventListener('keydown', handleGlobalKeyPress);
         };
-    }, [socket.game?.game.currentPlayer]);
+    }, [socket.gameState?.game.currentPlayer]);
 
     const onExit = () => {
-        if (!socket.game || !currentUser) return;
-        socket.gameExit({ gameId: socket.game.game.id, playerId: currentUser.userId });
+        if (!socket.gameState || !currentUser) return;
+        socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.userId });
     };
 
     const handleWinnerModalOk = () => {
@@ -165,7 +166,7 @@ const Game = () => {
     };
 
     const onSendMessage = () => {
-        saveLogs(currentMessage, socket.game?.game.currentPlayer);
+        saveLogs(currentMessage, socket.gameState?.game.currentPlayer);
     };
 
     const handleInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -201,14 +202,14 @@ const Game = () => {
     };
 
     const onGiveUP = () => {
-        if (!socket.game || !currentUser) return;
-        socket.giveUP({ gameId: socket.game.game.id, playerId: currentUser.userId });
+        if (!socket.gameState || !currentUser) return;
+        socket.giveUP({ gameId: socket.gameState.game.id, playerId: currentUser.userId });
     };
 
     return (
         <PageLayout
             connected={socket.isConnected}
-            currentPlayer={socket.game?.game.currentPlayer}
+            currentPlayer={socket.gameState?.game.currentPlayer}
             currentMessage={currentMessage}
             currentUser={currentUser}
             exitDisabled={!exitEnabled}
@@ -220,7 +221,7 @@ const Game = () => {
             onKeyPress={handleInputKeyPress}
             onMessageChange={handleTextInput}
             onSendMessage={onSendMessage}
-            player1Id={socket.game?.game.player1Id}
+            player1Id={socket.gameState?.game.player1Id}
             waitingList={socket.availableGames}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />

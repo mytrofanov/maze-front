@@ -128,7 +128,7 @@ export type PayloadCell = {
     updatedAt: string;
 };
 
-export type row = {
+export type Row = {
     cells: PayloadCell[];
     createdAt: string;
     id: number;
@@ -142,7 +142,7 @@ export type SocketMaze = {
     createdAt: string;
     gameId: number;
     id: number;
-    rows: row[];
+    rows: Row[];
 };
 
 export type GamePayload = {

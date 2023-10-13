@@ -1,10 +1,10 @@
-import { MazeCell } from '../game';
 import './maze.css';
 import { chooseClassName, chooseImage } from '../utils';
 import { gameBackground } from '../variables';
+import { Row } from '../web-socket';
 
 interface MazeProps {
-    maze: MazeCell[][];
+    maze: Row[];
 }
 
 const Maze = (props: MazeProps) => {
@@ -12,16 +12,14 @@ const Maze = (props: MazeProps) => {
 
     return (
         <div className="maze" style={{ backgroundImage: `url(${gameBackground})` }}>
-            {maze.map((row, rowIndex) => (
-                <div key={rowIndex + 'row'} className="maze-row">
-                    {row.map((cell, cellIndex) => (
+            {maze.map(row => (
+                <div key={row.id + row.createdAt} className="maze-row">
+                    {row.cells.map(cell => (
                         <div
-                            key={`x:${cell.colX}, y:${cell.rowY}` + cellIndex}
+                            key={cell.id + cell.createdAt}
                             style={chooseImage(cell)}
                             className={chooseClassName(cell)}
-                        >
-                            {/*x:{cell.colX} y:{cell.rowY}*/}
-                        </div>
+                        ></div>
                     ))}
                 </div>
             ))}

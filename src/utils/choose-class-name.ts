@@ -1,6 +1,7 @@
-import { Cell, MazeCell, PlayerType } from '../game';
+import { Cell, PlayerType } from '../game';
+import { PayloadCell } from '../web-socket';
 
-export const chooseClassName = (cell: MazeCell) => {
+export const chooseClassName = (cell: PayloadCell) => {
     let className = 'maze-cell';
     if (cell.type === Cell.WALL) {
         if (cell.revealed) {

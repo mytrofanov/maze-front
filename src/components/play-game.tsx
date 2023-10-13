@@ -1,13 +1,13 @@
-import { MazeCell, PlayerType } from '../game';
+import { PlayerType } from '../game';
 import Maze from './maze.tsx';
 import CustomModal from './modal.tsx';
 import { player1Image, player2Image } from '../variables';
-import { GameStatus } from '../web-socket';
+import { GameStatus, Row } from '../web-socket';
 import { CurrentUser } from '../types';
 
 interface PlayGameProps {
     gameStatus: GameStatus;
-    maze?: MazeCell[][];
+    maze?: Row[];
     openWinnerModal: boolean;
     handleWinnerModalOk: () => void;
     handleWinnerModalCancel: () => void;
