@@ -133,7 +133,8 @@ export type Row = {
     createdAt: string;
     id: number;
     mazeId: number;
-    player: PlayerType;
+    player1onRow: boolean;
+    player2onRow: boolean;
     rowY: number;
     updatedAt: string;
 };
