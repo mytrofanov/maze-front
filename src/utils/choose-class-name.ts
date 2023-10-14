@@ -1,7 +1,7 @@
 import { Cell, PlayerType } from '../game';
 import { PayloadCell } from '../web-socket';
 
-export const chooseClassName = (cell: PayloadCell) => {
+export const chooseClassName = (cell: PayloadCell, currentPlayer: PlayerType) => {
     let className = 'maze-cell';
     if (cell.type === Cell.WALL) {
         if (cell.revealed) {
@@ -18,9 +18,15 @@ export const chooseClassName = (cell: PayloadCell) => {
     }
     if (cell.player === PlayerType.PLAYER1) {
         className = className + ' ' + 'player1';
+        if (currentPlayer === cell.player) {
+            className = className + ' ' + 'active-player';
+        }
     }
     if (cell.player === PlayerType.PLAYER2) {
         className = className + ' ' + 'player2';
+        if (currentPlayer === cell.player) {
+            className = className + ' ' + 'active-player';
+        }
     }
 
     return className;

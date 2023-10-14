@@ -251,6 +251,7 @@ const Game = () => {
                 maze={maze}
                 winner={winner}
                 currentUser={currentUser}
+                currentPlayer={socket.gameState?.game.currentPlayer}
             />
             <CreateUserModal
                 modalOpen={openCreateUserModal}

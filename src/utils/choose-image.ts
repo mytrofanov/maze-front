@@ -2,12 +2,24 @@ import { animalPrints, player1Image, player2Image, wallImage } from '../variable
 import { Cell, Direction, PlayerType } from '../game';
 import { PayloadCell } from '../web-socket';
 
-export const chooseImage = (cell: PayloadCell) => {
+export const chooseImage = (cell: PayloadCell, currentPlayer: PlayerType) => {
     if (cell.player === PlayerType.PLAYER1) {
-        return { backgroundImage: `url(${player1Image})` };
+        if (currentPlayer === cell.player) {
+            return {
+                backgroundImage: `url(${player1Image})`,
+                // filter: 'brightness(200%)',
+                // boxShadow: '0 0 10px 5px #00ff00',
+            };
+        } else return { backgroundImage: `url(${player1Image})` };
     }
     if (cell.player === PlayerType.PLAYER2) {
-        return { backgroundImage: `url(${player2Image})` };
+        if (currentPlayer === cell.player) {
+            return {
+                backgroundImage: `url(${player2Image})`,
+                // filter: 'brightness(200%)',
+                // boxShadow: '0 0 10px 5px #00ff00',
+            };
+        } else return { backgroundImage: `url(${player2Image})` };
     }
     if (cell.type === Cell.WALL && cell.revealed) {
         return { backgroundImage: `url(${wallImage})` };
