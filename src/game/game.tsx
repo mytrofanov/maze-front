@@ -29,7 +29,7 @@ const Game = () => {
         }
         setWinner(socket.gameState.game.winner);
 
-        if (currentUser) {
+        if (currentUser && socket.gameState) {
             //get user from Game
             // const playerType =
             //     socket.gameState?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
