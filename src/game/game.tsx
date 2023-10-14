@@ -47,9 +47,11 @@ const Game = () => {
                 updateUser(socket.gameState?.game.player2);
             }
         }
-        // console.log('maze:', maze);
-        console.log('check type currentUser:', currentUser);
     }, [socket.gameState?.game.player1, socket.gameState?.game.player2]);
+
+    React.useEffect(() => {
+        console.log('check type currentUser:', currentUser);
+    }, [currentUser]);
 
     React.useEffect(() => {
         if (winner) setOpenWinnerModal(true);
@@ -182,13 +184,17 @@ const Game = () => {
         saveLogs(currentMessage, socket.gameState?.game.currentPlayer);
     };
 
+    const checkMessageOrDirection = () => {
+        if (Object.values(Direction).includes(currentMessage as Direction)) {
+            handleDirectionInput(currentMessage as Direction);
+        } else {
+            onSendMessage();
+        }
+    };
+
     const handleInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            if (Object.values(Direction).includes(currentMessage as Direction)) {
-                handleDirectionInput(currentMessage as Direction);
-            } else {
-                onSendMessage();
-            }
+            checkMessageOrDirection();
         }
     };
 
@@ -232,7 +238,7 @@ const Game = () => {
             onExit={onExit}
             onKeyPress={handleInputKeyPress}
             onMessageChange={handleTextInput}
-            onSendMessage={onSendMessage}
+            onSendMessage={checkMessageOrDirection}
             waitingList={socket.availableGames}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />

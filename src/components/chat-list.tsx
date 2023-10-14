@@ -24,9 +24,7 @@ const ChatList = (props: ChatListProps) => {
                             <List.Item.Meta
                                 key={item.createdAt}
                                 avatar={
-                                    <Avatar
-                                        src={item.playerType === PlayerType.PLAYER1 ? player1Image : player2Image}
-                                    />
+                                    <Avatar src={item.playerType == PlayerType.PLAYER1 ? player1Image : player2Image} />
                                 }
                                 title={
                                     <Typography.Text code className="chat-item-title">
