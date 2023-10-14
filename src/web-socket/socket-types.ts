@@ -1,4 +1,5 @@
 import { Cell, Direction, GameLogs, PlayerType } from '../game';
+import { CurrentUser } from '../types';
 
 export enum SocketEvents {
     AVAILABLE_GAMES = 'AVAILABLE_GAMES',
@@ -111,7 +112,7 @@ export type Game = {
 export type availableGame = Omit<Game, 'status'> & {
     status: GameStatus.WAITING_FOR_PLAYER;
     createdAt: string;
-    player1: { userName: string };
+    player1: CurrentUser;
 };
 
 export type AvailableGamesPayload = availableGame[];
