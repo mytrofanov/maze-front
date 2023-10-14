@@ -15,11 +15,9 @@ const Maze = (props: MazeProps) => {
             {maze.map(row => (
                 <div key={row.id + row.createdAt} className="maze-row">
                     {row.cells.map(cell => (
-                        <div
-                            key={cell.id + cell.createdAt}
-                            style={chooseImage(cell)}
-                            className={chooseClassName(cell)}
-                        ></div>
+                        <div key={cell.id + cell.createdAt} style={chooseImage(cell)} className={chooseClassName(cell)}>
+                            y:{row.rowY} x:{cell.colX}
+                        </div>
                     ))}
                 </div>
             ))}
