@@ -27,19 +27,23 @@ const Game = () => {
 
     React.useEffect(() => {
         if (!socket.gameState) return;
-        if (socket.gameState.maze) {
+        if (socket.gameState.maze?.rows) {
             setMaze(socket.gameState.maze.rows);
         }
         setWinner(socket.gameState.game.winner);
     }, [socket.gameState]);
 
     const updateUser = (fetchedUser: SocketUser) => {
+        console.log('current user: ', currentUser);
+        console.log('fetchedUser: ', fetchedUser);
+        // if (currentUser?.id !== fetchedUser.id) return;
         localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
         setCurrentUser(fetchedUser);
     };
 
     //UPDATE USER TYPE FROM GAME
     React.useEffect(() => {
+        if (!socket.gameState?.game.player1 || !socket.gameState?.game.player2) return;
         const isPlayer1 = socket.gameState?.game.player1Id === currentUser?.id;
         const isPlayer2 = socket.gameState?.game.player2Id === currentUser?.id;
         if (currentUser && socket.gameState?.game) {
@@ -50,7 +54,7 @@ const Game = () => {
                 updateUser(socket.gameState?.game.player2);
             }
         }
-    }, [socket.gameState?.game.player1, socket.gameState?.game.player2]);
+    }, [socket.gameState]);
 
     // React.useEffect(() => {
     //     console.log('check type currentUser:', currentUser);
@@ -110,7 +114,7 @@ const Game = () => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        if (!socket.gameState || !currentUser || winner) return;
+        if (!socket.gameState || !currentUser || socket.gameState.game.winner) return;
         const gameId = socket.gameState.game.id;
         const playerId = currentUser?.id;
 
@@ -145,7 +149,7 @@ const Game = () => {
                 return;
         }
 
-        if (direction) {
+        if (direction && !socket.gameState?.game.winner) {
             handleDirectionInput(direction);
         }
     };
@@ -167,13 +171,13 @@ const Game = () => {
     const handleWinnerModalOk = () => {
         console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
-        onExit();
+        // onExit();
     };
 
     const handleWinnerModalCancel = () => {
         console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
-        onExit();
+        // onExit();
     };
 
     const handleCreateUser = (formValues: CreateUserFormValues) => {
@@ -198,6 +202,7 @@ const Game = () => {
 
     const checkMessageOrDirection = () => {
         if (Object.values(Direction).includes(currentMessage as Direction)) {
+            if (socket.gameState?.game.winner) return;
             handleDirectionInput(currentMessage as Direction);
         } else {
             onSendMessage();
