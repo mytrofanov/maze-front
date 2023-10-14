@@ -36,7 +36,7 @@ const Game = () => {
             setCurrentUser(
                 socket.gameState?.game.player1Id === currentUser?.userId
                     ? socket.gameState.game.player1
-                    : socket.gameState.game.player1,
+                    : socket.gameState.game.player2,
             );
         }
         console.log('maze:', maze);
