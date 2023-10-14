@@ -3,11 +3,10 @@ import { PlayerType } from '../game';
 import { player1Image, player2Image } from '../variables';
 import './header.css';
 import { BulbFilled } from '@ant-design/icons';
-import { CurrentUser } from '../types';
-import { GameStatus } from '../web-socket';
+import { GameStatus, SocketUser } from '../web-socket';
 
 interface HeaderProps {
-    currentUser?: CurrentUser;
+    currentUser?: SocketUser;
     gameStatus?: GameStatus;
     connected: boolean;
 }

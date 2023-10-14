@@ -1,11 +1,11 @@
 import React, { ChangeEvent } from 'react';
 import { Direction, PlayerType } from './types.ts';
 import { localStorageUser } from '../variables';
-import { CreateUserFormValues, CurrentUser } from '../types';
+import { CreateUserFormValues } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
 import { CreateUserModal, PlayGame, WaitingScreen } from '../components';
 
-import { GameStatus, Row, SocketErrorCodes, SocketSuccessCodes } from '../web-socket';
+import { GameStatus, Row, SocketErrorCodes, SocketSuccessCodes, SocketUser } from '../web-socket';
 import { useNotification } from '../hooks';
 import NewGameScreen from '../components/new-game-screen.tsx';
 import useSocket from '../web-socket/useSocket.tsx';
@@ -16,7 +16,7 @@ const Game = () => {
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
-    const [currentUser, setCurrentUser] = React.useState<CurrentUser | undefined>(undefined);
+    const [currentUser, setCurrentUser] = React.useState<SocketUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [maze, setMaze] = React.useState<Row[] | undefined>(undefined);
     const exitEnabled =
@@ -28,24 +28,34 @@ const Game = () => {
             setMaze(socket.gameState.maze.rows);
         }
         setWinner(socket.gameState.game.winner);
+    }, [socket.gameState]);
 
-        if (currentUser && socket.gameState.game) {
-            if (!socket.gameState.game.player1 || !socket.gameState.game.player2) return;
-            //UPDATE USER FROM GAME
-            setCurrentUser(
-                socket.gameState?.game.player1Id === currentUser?.userId
-                    ? socket.gameState.game.player1
-                    : socket.gameState.game.player2,
-            );
+    const updateUser = (fetchedUser: SocketUser) => {
+        localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
+        setCurrentUser(fetchedUser);
+    };
+
+    //UPDATE USER TYPE FROM GAME
+    React.useEffect(() => {
+        const isPlayer1 = socket.gameState?.game.player1Id === currentUser?.id;
+        const isPlayer2 = socket.gameState?.game.player2Id === currentUser?.id;
+        if (currentUser && socket.gameState?.game) {
+            if (isPlayer1 && currentUser.type !== socket.gameState?.game.player1.type) {
+                updateUser(socket.gameState?.game.player1);
+            }
+            if (isPlayer2 && currentUser.type !== socket.gameState?.game.player2.type) {
+                updateUser(socket.gameState?.game.player2);
+            }
         }
         // console.log('maze:', maze);
         console.log('check type currentUser:', currentUser);
-    }, [socket.gameState]);
+    }, [socket.gameState?.game.player1, socket.gameState?.game.player2]);
 
     React.useEffect(() => {
         if (winner) setOpenWinnerModal(true);
     }, [winner]);
 
+    //CHECK USER ON START
     React.useEffect(() => {
         const storedUserString = localStorage.getItem(localStorageUser);
         if (storedUserString) {
@@ -56,15 +66,15 @@ const Game = () => {
         }
     }, []);
 
+    //SAVE USER ON CREATE
     React.useEffect(() => {
         if (socket.success?.code === SocketSuccessCodes.USER_CREATED) {
-            localStorage.setItem(localStorageUser, JSON.stringify(socket.success.payload.user));
-            const socketUser = socket.success.payload.user;
-            setCurrentUser({ userName: socketUser.userName, userId: socketUser.id, type: socketUser.type });
+            updateUser(socket.success.payload.user);
             setOpenCreateUserModal(false);
         }
     }, [socket.success]);
 
+    //CLEAR USER DATA ON USER NAME TAKEN
     React.useEffect(() => {
         if (socket.error?.code === SocketErrorCodes.USERNAME_TAKEN) {
             localStorage.removeItem(localStorageUser);
@@ -79,7 +89,7 @@ const Game = () => {
         const newLog = {
             gameId: socket.gameState.game.id,
             playerType: playerType,
-            playerId: currentUser.userId,
+            playerId: currentUser.id,
             message: `${message} at`,
         };
         socket.onSendMessage(newLog);
@@ -88,7 +98,7 @@ const Game = () => {
     const handleDirectionInput = (direction: Direction) => {
         if (!socket.gameState || !currentUser) return;
         const gameId = socket.gameState.game.id;
-        const playerId = currentUser?.userId;
+        const playerId = currentUser?.id;
 
         if (!playerId) return;
 
@@ -137,7 +147,7 @@ const Game = () => {
 
     const onExit = () => {
         if (!socket.gameState || !currentUser) return;
-        socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.userId });
+        socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
     };
 
     const handleWinnerModalOk = () => {
@@ -196,17 +206,17 @@ const Game = () => {
             console.log('User is not registered');
             return;
         }
-        socket.createGame({ player1Id: currentUser.userId });
+        socket.createGame({ player1Id: currentUser.id });
     };
 
     const handleConnectGame = (gameId: string) => {
         if (!currentUser) return;
-        socket.connectGame({ gameId, userId: currentUser.userId });
+        socket.connectGame({ gameId, userId: currentUser.id });
     };
 
     const onGiveUP = () => {
         if (!socket.gameState || !currentUser) return;
-        socket.giveUP({ gameId: socket.gameState.game.id, playerId: currentUser.userId });
+        socket.giveUP({ gameId: socket.gameState.game.id, playerId: currentUser.id });
     };
 
     return (

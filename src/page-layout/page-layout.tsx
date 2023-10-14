@@ -3,15 +3,14 @@ import { Layout } from 'antd';
 import './page-layout.styles.css';
 import { GameLogs } from '../game';
 import { Header, Sider } from '../components';
-import { AvailableGamesPayload, GameStatus } from '../web-socket';
-import { CurrentUser } from '../types';
+import { AvailableGamesPayload, GameStatus, SocketUser } from '../web-socket';
 
 interface PageLayoutProps {
     children: React.ReactNode;
     connected: boolean;
     currentMessage: string;
     // currentPlayer?: PlayerType;
-    currentUser?: CurrentUser;
+    currentUser?: SocketUser;
     exitDisabled: boolean;
     gameLogs?: GameLogs;
     gameStatus?: GameStatus;
