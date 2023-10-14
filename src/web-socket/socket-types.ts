@@ -101,7 +101,9 @@ export enum GameStatus {
 export type Game = {
     id: string;
     player1Id: string;
+    player1: CurrentUser;
     player2Id?: string;
+    player2: CurrentUser;
     currentPlayer: PlayerType;
     winner: PlayerType;
     status: GameStatus;

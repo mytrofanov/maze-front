@@ -31,9 +31,11 @@ const Game = () => {
 
         if (currentUser) {
             //get user from Game
-            // const playerType =
-            //     socket.game?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-            // setCurrentUser({ ...currentUser, type: playerType });
+            const playerType =
+                socket.gameState?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+            setCurrentUser(
+                playerType === PlayerType.PLAYER1 ? socket.gameState.game.player1 : socket.gameState.game.player2,
+            );
         }
         console.log('maze:', maze);
         console.log('check type currentUser:', currentUser);
