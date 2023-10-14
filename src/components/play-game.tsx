@@ -30,7 +30,7 @@ const PlayGame = (props: PlayGameProps) => {
     if (gameStatus === GameStatus.IN_PROGRESS && maze) {
         return (
             <>
-                <Maze maze={maze} currentPlayer={currentPlayer} />
+                <Maze maze={maze} currentPlayer={currentPlayer} currentUser={currentUser} />
                 <CustomModal
                     modalOpen={openWinnerModal}
                     onOk={handleWinnerModalOk}

@@ -1,17 +1,17 @@
 import './maze.css';
 import { chooseClassName, chooseImage } from '../utils';
 import { gameBackground } from '../variables';
-import { Row } from '../web-socket';
+import { Row, SocketUser } from '../web-socket';
 import { PlayerType } from '../game';
 
 interface MazeProps {
     maze: Row[];
-    currentPlayer: PlayerType;
+    currentPlayer?: PlayerType;
+    currentUser?: SocketUser;
 }
 
 const Maze = (props: MazeProps) => {
-    const { maze, currentPlayer } = props;
-    console.log('maze in Maze: ', maze);
+    const { maze, currentPlayer, currentUser } = props;
     return (
         <div className="maze" style={{ backgroundImage: `url(${gameBackground})` }}>
             {maze.map(row => (
@@ -19,8 +19,8 @@ const Maze = (props: MazeProps) => {
                     {row.cells.map(cell => (
                         <div
                             key={cell.id + cell.createdAt}
-                            style={chooseImage(cell, currentPlayer)}
-                            className={chooseClassName(cell, currentPlayer)}
+                            style={chooseImage(cell)}
+                            className={chooseClassName(cell, currentPlayer, currentUser)}
                         ></div>
                     ))}
                 </div>

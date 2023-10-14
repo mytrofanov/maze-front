@@ -49,7 +49,7 @@
         transform: scale(1);
     }
     50% {
-        transform: scale(1.3);
+        transform: scale(1.5);
     }
     100% {
         transform: scale(1);
@@ -57,5 +57,5 @@
 }
 
 .active-player {
-    animation: pulse 1.5s infinite;
+    animation: pulse 1s infinite;
 }

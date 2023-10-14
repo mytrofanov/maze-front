@@ -13,7 +13,6 @@ interface HeaderProps {
 
 const Header = (props: HeaderProps) => {
     const { currentUser, gameStatus, connected } = props;
-    console.log('currentUser in Header: ', currentUser);
     const userAvatar = currentUser?.type === PlayerType.PLAYER1 ? player1Image : player2Image;
     return (
         <Row className="header">
@@ -31,13 +30,6 @@ const Header = (props: HeaderProps) => {
                     <BulbFilled style={connected ? undefined : { color: 'red' }} />
                 </Tooltip>
             </Col>
-            {gameStatus === GameStatus.IN_PROGRESS ? (
-                <Col className="player-info-block">
-                    <Image width={64} src={userAvatar} />
-                    {'  '}
-                    Now its my turn!
-                </Col>
-            ) : null}
         </Row>
     );
 };
