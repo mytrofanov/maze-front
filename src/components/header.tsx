@@ -14,6 +14,7 @@ interface HeaderProps {
 
 const Header = (props: HeaderProps) => {
     const { currentUser, gameStatus, connected } = props;
+    console.log('currentUser in Header: ', currentUser);
     const userAvatar = currentUser?.type === PlayerType.PLAYER1 ? player1Image : player2Image;
     return (
         <Row className="header">

@@ -31,16 +31,14 @@ const Game = () => {
 
         if (currentUser && socket.gameState.game) {
             if (!socket.gameState.game.player1 || !socket.gameState.game.player2) return;
-            //get user from Game
-            // const playerType =
-            //     socket.gameState?.game.player1Id === currentUser?.userId ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+            //UPDATE USER FROM GAME
             setCurrentUser(
                 socket.gameState?.game.player1Id === currentUser?.userId
                     ? socket.gameState.game.player1
                     : socket.gameState.game.player2,
             );
         }
-        console.log('maze:', maze);
+        // console.log('maze:', maze);
         console.log('check type currentUser:', currentUser);
     }, [socket.gameState]);
 
