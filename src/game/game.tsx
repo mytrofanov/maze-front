@@ -34,9 +34,6 @@ const Game = () => {
     }, [socket.gameState]);
 
     const updateUser = (fetchedUser: SocketUser) => {
-        console.log('current user: ', currentUser);
-        console.log('fetchedUser: ', fetchedUser);
-        // if (currentUser?.id !== fetchedUser.id) return;
         localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
         setCurrentUser(fetchedUser);
     };
@@ -259,6 +256,7 @@ const Game = () => {
             exitDisabled={!exitEnabled}
             gameLogs={socket.gameLogs}
             gameStatus={socket.gameStatus}
+            hasWinner={winner !== null}
             onConnectGame={handleConnectGame}
             onGiveUP={onGiveUP}
             onExit={onExit}

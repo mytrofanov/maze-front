@@ -74,13 +74,11 @@ const useSocket = () => {
     };
 
     const onGameConnected = (payload: GamePayload) => {
-        console.log('onGameConnected: ', payload);
         setGameState(payload);
         setGameStatus(payload.game.status);
     };
 
     const onGameUpdated = (payload: GamePayload) => {
-        console.log('onGameUpdated: ', payload);
         setGameState(payload);
         setGameStatus(payload.game.status);
     };

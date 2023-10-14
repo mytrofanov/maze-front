@@ -9,18 +9,17 @@ interface PageLayoutProps {
     children: React.ReactNode;
     connected: boolean;
     currentMessage: string;
-    // currentPlayer?: PlayerType;
     currentUser?: SocketUser;
     exitDisabled: boolean;
     gameLogs?: GameLogs;
     gameStatus?: GameStatus;
+    hasWinner: boolean;
     onConnectGame: (gameId: string) => void;
     onGiveUP: () => void;
     onExit: () => void;
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
-    // player1Id?: string;
     waitingList?: AvailableGamesPayload;
 }
 
@@ -33,6 +32,7 @@ const PageLayout = (props: PageLayoutProps) => {
         exitDisabled,
         gameLogs,
         gameStatus,
+        hasWinner,
         onConnectGame,
         onGiveUP,
         onExit,
@@ -59,6 +59,7 @@ const PageLayout = (props: PageLayoutProps) => {
                         onSendMessage={onSendMessage}
                         onGiveUP={onGiveUP}
                         onExit={onExit}
+                        hasWinner={hasWinner}
                         exitDisabled={exitDisabled}
                     />
                 </Layout.Sider>

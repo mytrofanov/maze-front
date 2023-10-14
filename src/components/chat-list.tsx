@@ -10,10 +10,11 @@ interface ChatListProps {
     onGiveUP: () => void;
     onExit: () => void;
     exitDisabled: boolean;
+    hasWinner: boolean;
 }
 
 const ChatList = (props: ChatListProps) => {
-    const { chat, onGiveUP, exitDisabled, onExit, gameStatus } = props;
+    const { chat, onGiveUP, exitDisabled, onExit, gameStatus, hasWinner } = props;
     return (
         <>
             <List
@@ -40,7 +41,7 @@ const ChatList = (props: ChatListProps) => {
             />
             <Space wrap>
                 {gameStatus === GameStatus.IN_PROGRESS ? (
-                    <Button type="primary" onClick={onGiveUP}>
+                    <Button type="primary" onClick={onGiveUP} disabled={hasWinner}>
                         Give UP
                     </Button>
                 ) : null}

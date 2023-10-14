@@ -17,6 +17,7 @@ interface SiderProps {
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
+    hasWinner: boolean;
     waitingList?: AvailableGamesPayload;
 }
 
@@ -32,6 +33,7 @@ const Sider = (props: SiderProps) => {
         onKeyPress,
         onMessageChange,
         onSendMessage,
+        hasWinner,
         waitingList,
     } = props;
 
@@ -59,6 +61,7 @@ const Sider = (props: SiderProps) => {
                     exitDisabled={exitDisabled}
                     onGiveUP={onGiveUP}
                     onExit={onExit}
+                    hasWinner={hasWinner}
                 />
             ) : null}
             {gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED ? (
