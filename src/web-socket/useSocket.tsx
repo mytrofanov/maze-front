@@ -31,6 +31,7 @@ const useSocket = () => {
 
     const createGame = (payload: CreateGamePayload) => {
         socket.emit(SocketEvents.CREATE_GAME, payload);
+        setGameLogs([]);
     };
 
     const giveUP = (payload: GiveUpPayload) => {
