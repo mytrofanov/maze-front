@@ -9,18 +9,21 @@ import { GameStatus, Row, SocketErrorCodes, SocketSuccessCodes, SocketUser } fro
 import { useNotification } from '../hooks';
 import NewGameScreen from '../components/new-game-screen.tsx';
 import useSocket from '../web-socket/useSocket.tsx';
+import CustomModal from '../components/modal.tsx';
 
 const Game = () => {
     const socket = useSocket();
     const notification = useNotification();
     const [winner, setWinner] = React.useState<PlayerType | null>();
     const [openWinnerModal, setOpenWinnerModal] = React.useState<boolean>(false);
+    const [openGiveUPModal, setOpenGiveUPModal] = React.useState<boolean>(false);
     const [openCreateUserModal, setOpenCreateUserModal] = React.useState<boolean>(false);
     const [currentUser, setCurrentUser] = React.useState<SocketUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [maze, setMaze] = React.useState<Row[] | undefined>(undefined);
-    const exitEnabled =
-        socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || socket.gameStatus === GameStatus.COMPLETED;
+
+    //CAN LEAVE GAME IF NO OTHER PLAYERS OR GAME HAS WINNER
+    const exitEnabled = socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || winner;
 
     React.useEffect(() => {
         if (!socket.gameState) return;
@@ -49,12 +52,21 @@ const Game = () => {
         }
     }, [socket.gameState?.game.player1, socket.gameState?.game.player2]);
 
-    React.useEffect(() => {
-        console.log('check type currentUser:', currentUser);
-    }, [currentUser]);
+    // React.useEffect(() => {
+    //     console.log('check type currentUser:', currentUser);
+    // }, [currentUser]);
 
     React.useEffect(() => {
-        if (winner) setOpenWinnerModal(true);
+        if (winner) {
+            setOpenWinnerModal(true);
+            const isPlayer1Winner = winner == PlayerType.PLAYER1;
+            saveLogs(
+                `Player ${
+                    isPlayer1Winner ? socket.gameState?.game.player1.userName : socket.gameState?.game.player2.userName
+                } won!`,
+                winner,
+            );
+        }
     }, [winner]);
 
     //CHECK USER ON START
@@ -98,7 +110,7 @@ const Game = () => {
     };
 
     const handleDirectionInput = (direction: Direction) => {
-        if (!socket.gameState || !currentUser) return;
+        if (!socket.gameState || !currentUser || winner) return;
         const gameId = socket.gameState.game.id;
         const playerId = currentUser?.id;
 
@@ -221,8 +233,17 @@ const Game = () => {
     };
 
     const onGiveUP = () => {
+        setOpenGiveUPModal(true);
+    };
+
+    const onConfirmGiveUp = () => {
         if (!socket.gameState || !currentUser) return;
         socket.giveUP({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+        setOpenGiveUPModal(false);
+    };
+
+    const onCancelGiveUp = () => {
+        setOpenGiveUPModal(false);
     };
 
     return (
@@ -257,6 +278,14 @@ const Game = () => {
                 modalOpen={openCreateUserModal}
                 onCancel={handleCancelCreateUser}
                 onCreate={handleCreateUser}
+            />
+            <CustomModal
+                modalOpen={openGiveUPModal}
+                onCancel={onCancelGiveUp}
+                onOk={onConfirmGiveUp}
+                title="Do you want to give up?"
+                width={360}
+                content="You will loose if confirm!"
             />
         </PageLayout>
     );

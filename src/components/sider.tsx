@@ -53,7 +53,13 @@ const Sider = (props: SiderProps) => {
                 ) : null}
             </div>
             {gameStatus === GameStatus.IN_PROGRESS || gameStatus === GameStatus.WAITING_FOR_PLAYER ? (
-                <ChatList chat={gameLogs} exitDisabled={exitDisabled} onGiveUP={onGiveUP} onExit={onExit} />
+                <ChatList
+                    chat={gameLogs}
+                    gameStatus={gameStatus}
+                    exitDisabled={exitDisabled}
+                    onGiveUP={onGiveUP}
+                    onExit={onExit}
+                />
             ) : null}
             {gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED ? (
                 <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />
