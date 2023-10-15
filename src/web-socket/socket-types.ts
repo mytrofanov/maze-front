@@ -3,6 +3,7 @@ import { Cell, Direction, GameLogs, PlayerType } from '../game';
 export enum SocketEvents {
     AVAILABLE_GAMES = 'AVAILABLE_GAMES',
     CONNECT = 'CONNECT',
+    RECONNECT = 'RECONNECT',
     CONNECT_GAME = 'CONNECT_GAME',
     CREATE_GAME = 'CREATE_GAME',
     CREATE_USER = 'CREATE_USER',

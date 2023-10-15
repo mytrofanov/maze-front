@@ -34,6 +34,7 @@ const Game = () => {
     }, [socket.gameState]);
 
     const updateUser = (fetchedUser: SocketUser) => {
+        if (currentUser && currentUser.id !== fetchedUser.id) return;
         localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
         setCurrentUser(fetchedUser);
     };

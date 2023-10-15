@@ -55,6 +55,11 @@ const useSocket = () => {
     const createUser = (payload: CreateUserPayload) => {
         socket.emit(SocketEvents.CREATE_USER, payload);
     };
+
+    const onReconnect = () => {
+        console.log('Reconnected!');
+        socket.emit('reconnected', gameState?.game ? { gameId: gameState.game.id } : null);
+    };
     const onDirectionInput = (payload: DirectionPayload) => {
         socket.emit(SocketEvents.DIRECTION, payload);
     };
@@ -113,6 +118,7 @@ const useSocket = () => {
 
         socket.on(SocketEvents.CONNECT, onConnect);
         socket.on(SocketEvents.DISCONNECT, onDisconnect);
+        socket.on(SocketEvents.RECONNECT, onReconnect);
         socket.on(SocketEvents.GAME_CREATED, onGameCreated);
         socket.on(SocketEvents.GAME_UPDATED, onGameUpdated);
         socket.on(SocketEvents.LOG_UPDATED, onLogUpdated);
@@ -135,6 +141,7 @@ const useSocket = () => {
         return () => {
             socket.off(SocketEvents.CONNECT, onConnect);
             socket.off(SocketEvents.DISCONNECT, onDisconnect);
+            socket.off(SocketEvents.RECONNECT);
             socket.off(SocketEvents.GAME_CREATED);
             socket.off(SocketEvents.ERROR);
             socket.off(SocketEvents.SUCCESS);
