@@ -168,13 +168,11 @@ const Game = () => {
     const handleWinnerModalOk = () => {
         console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
-        // onExit();
     };
 
     const handleWinnerModalCancel = () => {
         console.log('Winner is: ', winner);
         setOpenWinnerModal(false);
-        // onExit();
     };
 
     const handleCreateUser = (formValues: CreateUserFormValues) => {
