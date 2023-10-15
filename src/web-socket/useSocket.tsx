@@ -49,6 +49,7 @@ const useSocket = () => {
     }, [socket.connected]);
 
     const connectGame = (payload: ConnectToGamePayload) => {
+        setGameLogs([]);
         setGameStatus(GameStatus.CONNECTING);
         socket.emit(SocketEvents.CONNECT_GAME, payload);
     };
@@ -87,7 +88,7 @@ const useSocket = () => {
         setOpponentDisconnected(false);
     };
 
-    const onGameUpdated = (payload: GamePayload) => {
+    const onGameUpdated = async (payload: GamePayload) => {
         setGameState(payload);
         setGameStatus(payload.game.status);
     };

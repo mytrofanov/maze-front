@@ -2,6 +2,7 @@ import { Cell, Direction, GameLogs, PlayerType } from '../game';
 
 export enum SocketEvents {
     AVAILABLE_GAMES = 'AVAILABLE_GAMES',
+    COMPLETED_GAMES = 'COMPLETED_GAMES',
     CONNECT = 'CONNECT',
     RECONNECT = 'RECONNECT',
     CONNECT_GAME = 'CONNECT_GAME',
@@ -110,6 +111,7 @@ export type Game = {
     status: GameStatus;
     createdAt: string;
     logs: GameLogs;
+    initialMaze: string;
 };
 
 export type availableGame = Omit<Game, 'status'> & {
