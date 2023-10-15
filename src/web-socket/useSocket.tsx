@@ -34,6 +34,7 @@ const useSocket = () => {
         socket.emit(SocketEvents.CREATE_GAME, payload);
         setGameLogs([]);
         setOpponentDisconnected(false);
+        setAvailableGames(undefined);
     };
 
     const giveUP = (payload: GiveUpPayload) => {
@@ -50,6 +51,7 @@ const useSocket = () => {
 
     const connectGame = (payload: ConnectToGamePayload) => {
         setGameLogs([]);
+        setAvailableGames(undefined);
         setGameStatus(GameStatus.CONNECTING);
         socket.emit(SocketEvents.CONNECT_GAME, payload);
     };
