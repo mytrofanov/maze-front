@@ -210,6 +210,7 @@ const Game = () => {
         }
     };
 
+    //NOTIFICATIONS
     React.useEffect(() => {
         if (socket.isConnected) {
             notification.success('Game connected to server');
@@ -218,6 +219,12 @@ const Game = () => {
             notification.error('Connection lost');
         }
     }, [socket.isConnected]);
+
+    React.useEffect(() => {
+        if (socket.opponentDisconnected) {
+            notification.error('Your opponent has lost connection!');
+        }
+    }, [socket.opponentDisconnected]);
 
     const handleCreateNewGame = () => {
         if (!currentUser) {
