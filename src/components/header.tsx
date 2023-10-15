@@ -3,37 +3,33 @@ import { PlayerType } from '../game';
 import { player1Image, player2Image } from '../variables';
 import './header.css';
 import { BulbFilled } from '@ant-design/icons';
-import { CurrentUser } from '../types';
-import { GameStatus } from '../web-socket';
+import { GameStatus, SocketUser } from '../web-socket';
 
 interface HeaderProps {
-    player1Id?: string;
-    currentUser?: CurrentUser;
+    currentUser?: SocketUser;
     gameStatus?: GameStatus;
-    currentPlayer?: PlayerType;
     connected: boolean;
 }
 
 const Header = (props: HeaderProps) => {
-    const { currentUser, gameStatus, currentPlayer, connected, player1Id } = props;
+    const { currentUser, gameStatus, connected } = props;
+    const userAvatar = currentUser?.type === PlayerType.PLAYER1 ? player1Image : player2Image;
     return (
         <Row className="header">
             <Col>
-                Hello {currentUser && currentUser.userName ? currentUser.userName : 'handsome!'}! Your avatar is:
-                <Image width={64} src={currentUser?.userId === player1Id ? player1Image : player2Image} />
+                Hello {currentUser && currentUser.userName ? currentUser.userName : 'handsome!'}!
+                {gameStatus === GameStatus.IN_PROGRESS ? (
+                    <>
+                        Your avatar is:
+                        <Image width={64} src={userAvatar} />
+                    </>
+                ) : null}
             </Col>
             <Col>
                 <Tooltip title={connected ? 'connected' : 'disconnected'}>
                     <BulbFilled style={connected ? undefined : { color: 'red' }} />
                 </Tooltip>
             </Col>
-            {gameStatus === GameStatus.IN_PROGRESS ? (
-                <Col className="player-info-block">
-                    <Image width={64} src={currentPlayer === PlayerType.PLAYER1 ? player1Image : player2Image} />
-                    {'  '}
-                    Now its my turn!
-                </Col>
-            ) : null}
         </Row>
     );
 };

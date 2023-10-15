@@ -2,16 +2,19 @@ import { Avatar, Button, List, Space, Typography } from 'antd';
 import { GameLogs, PlayerType } from '../game';
 import './chat-list.css';
 import { player1Image, player2Image } from '../variables';
+import { GameStatus } from '../web-socket';
 
 interface ChatListProps {
     chat?: GameLogs;
+    gameStatus: GameStatus;
     onGiveUP: () => void;
     onExit: () => void;
     exitDisabled: boolean;
+    hasWinner: boolean;
 }
 
 const ChatList = (props: ChatListProps) => {
-    const { chat, onGiveUP, exitDisabled, onExit } = props;
+    const { chat, onGiveUP, exitDisabled, onExit, gameStatus, hasWinner } = props;
     return (
         <>
             <List
@@ -24,9 +27,7 @@ const ChatList = (props: ChatListProps) => {
                             <List.Item.Meta
                                 key={item.createdAt}
                                 avatar={
-                                    <Avatar
-                                        src={item.playerType === PlayerType.PLAYER1 ? player1Image : player2Image}
-                                    />
+                                    <Avatar src={item.playerType == PlayerType.PLAYER1 ? player1Image : player2Image} />
                                 }
                                 title={
                                     <Typography.Text code className="chat-item-title">
@@ -39,9 +40,11 @@ const ChatList = (props: ChatListProps) => {
                 }}
             />
             <Space wrap>
-                <Button type="primary" onClick={onGiveUP}>
-                    Give UP
-                </Button>
+                {gameStatus === GameStatus.IN_PROGRESS ? (
+                    <Button type="primary" onClick={onGiveUP} disabled={hasWinner}>
+                        Give UP
+                    </Button>
+                ) : null}
                 <Button type="primary" onClick={onExit} disabled={exitDisabled}>
                     Exit
                 </Button>

@@ -1,7 +1,8 @@
 import { animalPrints, player1Image, player2Image, wallImage } from '../variables';
-import { Cell, Direction, MazeCell, PlayerType } from '../game';
+import { Cell, Direction, PlayerType } from '../game';
+import { PayloadCell } from '../web-socket';
 
-export const chooseImage = (cell: MazeCell) => {
+export const chooseImage = (cell: PayloadCell) => {
     if (cell.player === PlayerType.PLAYER1) {
         return { backgroundImage: `url(${player1Image})` };
     }
