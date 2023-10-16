@@ -30,12 +30,11 @@ const useSocket = () => {
     const [gameStatus, setGameStatus] = React.useState<GameStatus>(GameStatus.WELCOME_SCREEN);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     const [opponentDisconnected, setOpponentDisconnected] = React.useState<boolean>(false);
-    const [hasHistory, setHasHistory] = React.useState<boolean>(false);
 
     const clearGameState = () => {
         setGameState(undefined);
         setGameLogs([]);
-        setHasHistory(false);
+        setHistoryGameList(undefined);
         setGameStatus(GameStatus.WELCOME_SCREEN);
         setOpponentDisconnected(false);
         setAvailableGames(undefined);
@@ -184,7 +183,7 @@ const useSocket = () => {
         gameLogs,
         gameStatus,
         giveUP,
-        hasHistory,
+        hasHistory: historyGameList && historyGameList.length > 0,
         historyGameList,
         isConnected,
         onDirectionInput,
