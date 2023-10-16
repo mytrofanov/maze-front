@@ -58,7 +58,7 @@ const Sider = (props: SiderProps) => {
                     </>
                 ) : null}
             </div>
-            {gameStatus === GameStatus.IN_PROGRESS ? (
+            {gameStatus === GameStatus.IN_PROGRESS || (gameStatus === GameStatus.REPLAY_MODE && !historyList) ? (
                 <LogAndChatList chat={gameLogs} onSelectLogItem={onSelectLogItem} />
             ) : null}
             {

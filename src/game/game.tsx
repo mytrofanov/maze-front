@@ -39,7 +39,9 @@ const Game = () => {
     //RE-PLAY BY POINTING ON A LOG  - loze array on new game
     React.useEffect(() => {
         if (!selectedLog) return;
-        setMaze(JSON.parse(selectedLog.mazeState));
+        if (selectedLog.mazeState) {
+            setMaze(JSON.parse(selectedLog.mazeState));
+        }
     }, [selectedLog]);
 
     //REPLAY GAME INITIAL STATE SET
@@ -47,7 +49,6 @@ const Game = () => {
         if (!socket.gameState || socket.gameStatus !== GameStatus.REPLAY_MODE || !socket.gameState.game.initialMaze)
             return;
         const initialMaze = JSON.parse(socket.gameState.game.initialMaze);
-        console.log('initialMaze: ', initialMaze);
         if (!initialMaze) return;
         setMaze(initialMaze.rows);
     }, [socket.gameStatus]);
@@ -61,6 +62,7 @@ const Game = () => {
         setWinner(socket.gameState.game.winner);
     }, [socket.gameState]);
 
+    console.log('socket.gameStatus: ', socket.gameStatus);
     const updateUser = (fetchedUser: SocketUser) => {
         if (currentUser && currentUser.id !== fetchedUser.id) return;
         localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));

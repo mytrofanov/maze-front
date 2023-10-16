@@ -116,6 +116,7 @@ const useSocket = () => {
         clearGameState();
         setGameState(payload);
         onReplayMode();
+        setHistoryGameList(undefined); //HIDE LIST AND SHOW LOGS
         console.log('onReplayGame: ', payload);
     };
 

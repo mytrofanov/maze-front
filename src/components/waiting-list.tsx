@@ -12,7 +12,6 @@ interface ChatListProps {
 const WaitingList = (props: ChatListProps) => {
     const { waitingList, onConnectGame, gameStatus } = props;
     if (!waitingList) return null;
-    console.log('gameStatus: ', gameStatus);
     return (
         <>
             <Typography.Title level={5} color="undefined">
