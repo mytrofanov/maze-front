@@ -45,6 +45,10 @@ const useSocket = () => {
         socket.emit(SocketEvents.CREATE_GAME, payload);
     };
 
+    const getAvailableGames = (payload: { userId: string }) => {
+        socket.emit(SocketEvents.GET_AVAILABLE_GAMES, payload);
+    };
+
     const giveUP = (payload: GiveUpPayload) => {
         socket.emit(SocketEvents.GIVE_UP, payload);
     };
@@ -76,6 +80,12 @@ const useSocket = () => {
         setGameStatus(GameStatus.REPLAY_MODE);
     };
 
+    const onExitReplayMode = (payload: { userId: string }) => {
+        clearGameState();
+        setGameStatus(GameStatus.WELCOME_SCREEN);
+        getAvailableGames(payload);
+    };
+
     // const onReconnect = () => {
     //     console.log('Reconnected!');
     //     socket.emit('reconnected', gameState?.game ? { gameId: gameState.game.id } : null);
@@ -100,6 +110,13 @@ const useSocket = () => {
         clearGameState();
         setGameState(payload);
         setGameStatus(GameStatus.WAITING_FOR_PLAYER);
+    };
+
+    const onReplayGame = (payload: GamePayload) => {
+        clearGameState();
+        setGameState(payload);
+        onReplayMode();
+        console.log('onReplayGame: ', payload);
     };
 
     const onGameConnected = (payload: GamePayload) => {
@@ -149,6 +166,7 @@ const useSocket = () => {
         // socket.on(SocketEvents.RECONNECT, onReconnect);
         socket.on(SocketEvents.GAME_CREATED, onGameCreated);
         socket.on(SocketEvents.GAME_UPDATED, onGameUpdated);
+        socket.on(SocketEvents.GAME_TO_REPLAY, onReplayGame);
         socket.on(SocketEvents.LOG_UPDATED, onLogUpdated);
         socket.on(SocketEvents.GAME_CONNECTED, onGameConnected);
         socket.on(SocketEvents.AVAILABLE_GAMES, onAvailableGames);
@@ -186,6 +204,7 @@ const useSocket = () => {
         error,
         gameState,
         gameExit,
+        onExitReplayMode,
         gameLogs,
         gameStatus,
         giveUP,

@@ -76,10 +76,10 @@ const Sider = (props: SiderProps) => {
                 </Space>
             }
             {gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED ? (
-                <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />
+                <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} gameStatus={gameStatus} />
             ) : null}
             {gameStatus === GameStatus.REPLAY_MODE ? (
-                <WaitingList onConnectGame={onConnectGame} waitingList={historyList} />
+                <WaitingList onConnectGame={onConnectGame} waitingList={historyList} gameStatus={gameStatus} />
             ) : null}
         </div>
     );

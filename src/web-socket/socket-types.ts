@@ -2,6 +2,7 @@ import { Cell, Direction, GameLogs, PlayerType } from '../game';
 
 export enum SocketEvents {
     AVAILABLE_GAMES = 'AVAILABLE_GAMES',
+    GET_AVAILABLE_GAMES = 'GET_AVAILABLE_GAMES',
     COMPLETED_GAMES = 'COMPLETED_GAMES',
     CONNECT = 'CONNECT',
     RECONNECT = 'RECONNECT',
@@ -19,6 +20,7 @@ export enum SocketEvents {
     LOG_UPDATED = 'LOG_UPDATED',
     OPPONENT_DISCONNECTED = 'OPPONENT_DISCONNECTED',
     REPLAY_GAME = 'REPLAY_GAME',
+    GAME_TO_REPLAY = 'GAME_TO_REPLAY',
     SEND_MESSAGE = 'SEND_MESSAGE',
     SUCCESS = 'SUCCESS',
 }

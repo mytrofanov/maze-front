@@ -22,9 +22,10 @@ const Game = () => {
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [maze, setMaze] = React.useState<Row[] | undefined>(undefined);
     const [selectedLog, setSelectedLog] = React.useState<GameLog | null>(null);
-
+    console.log('socket.gameStatus', socket.gameStatus);
     //CAN LEAVE GAME IF NO OTHER PLAYERS OR GAME HAS WINNER
-    const exitEnabled = socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || winner;
+    const exitEnabled =
+        socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || winner || socket.gameStatus === GameStatus.REPLAY_MODE;
 
     const clearCurrentGameState = () => {
         setSelectedLog(null);
@@ -41,9 +42,19 @@ const Game = () => {
         setMaze(JSON.parse(selectedLog.mazeState));
     }, [selectedLog]);
 
+    //REPLAY GAME INITIAL STATE SET
+    React.useEffect(() => {
+        if (!socket.gameState || socket.gameStatus !== GameStatus.REPLAY_MODE || !socket.gameState.game.initialMaze)
+            return;
+        const initialMaze = JSON.parse(socket.gameState.game.initialMaze);
+        console.log('initialMaze: ', initialMaze);
+        if (!initialMaze) return;
+        setMaze(initialMaze.rows);
+    }, [socket.gameStatus]);
+
     //SET WINNER
     React.useEffect(() => {
-        if (!socket.gameState) return;
+        if (!socket.gameState || socket.gameStatus === GameStatus.REPLAY_MODE) return;
         if (socket.gameState.maze?.rows) {
             setMaze(socket.gameState.maze.rows);
         }
@@ -75,7 +86,7 @@ const Game = () => {
     //     console.log('check type currentUser:', currentUser);
     // }, [currentUser]);
     const saveLogs = (message: string, currentPlayer?: PlayerType) => {
-        if (!socket.gameState || !currentUser) return;
+        if (!socket.gameState || !currentUser || socket.gameStatus === GameStatus.REPLAY_MODE) return;
         const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
         const newLog = {
             gameId: socket.gameState.game.id,
@@ -87,7 +98,7 @@ const Game = () => {
     };
 
     React.useEffect(() => {
-        if (winner) {
+        if (winner && socket.gameStatus !== GameStatus.REPLAY_MODE) {
             setOpenWinnerModal(true);
             const isPlayer1Winner = winner == PlayerType.PLAYER1;
             saveLogs(
@@ -124,11 +135,18 @@ const Game = () => {
             localStorage.removeItem(localStorageUser);
             setCurrentUser(undefined);
             setOpenCreateUserModal(true);
+            notification.error('This name is already taken!');
         }
     }, [socket.error]);
 
     const handleDirectionInput = (direction: Direction) => {
-        if (!socket.gameState || !currentUser || socket.gameState.game.winner) return;
+        if (
+            !socket.gameState ||
+            !currentUser ||
+            socket.gameState.game.winner ||
+            socket.gameStatus === GameStatus.REPLAY_MODE
+        )
+            return;
         const gameId = socket.gameState.game.id;
         const playerId = currentUser?.id;
 
@@ -139,7 +157,7 @@ const Game = () => {
 
     const handleGlobalKeyPress = (event: KeyboardEvent) => {
         const targetElement = event.target as HTMLElement;
-        if (targetElement.tagName === 'INPUT') {
+        if (targetElement.tagName === 'INPUT' || socket.gameStatus === GameStatus.REPLAY_MODE) {
             return;
         }
         event.preventDefault();
@@ -169,7 +187,7 @@ const Game = () => {
     };
 
     React.useEffect(() => {
-        if (!socket.gameState) return;
+        if (!socket.gameState || socket.gameStatus === GameStatus.REPLAY_MODE) return;
         window.addEventListener('keydown', handleGlobalKeyPress);
 
         return () => {
@@ -180,7 +198,11 @@ const Game = () => {
     const onExit = () => {
         if (!socket.gameState || !currentUser) return;
         clearCurrentGameState();
-        socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+        if (socket.gameStatus === GameStatus.REPLAY_MODE) {
+            socket.onExitReplayMode({ userId: currentUser.id });
+        } else {
+            socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+        }
     };
 
     const handleWinnerModalOk = () => {
@@ -260,6 +282,7 @@ const Game = () => {
     };
 
     const onGiveUP = () => {
+        if (socket.gameStatus === GameStatus.REPLAY_MODE) return;
         setOpenGiveUPModal(true);
     };
 
