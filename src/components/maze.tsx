@@ -12,7 +12,6 @@ interface MazeProps {
 
 const Maze = (props: MazeProps) => {
     const { maze, currentPlayer, currentUser } = props;
-    console.log('maze: ', maze);
     return (
         <div className="maze" style={{ backgroundImage: `url(${gameBackground})` }}>
             {maze.map(row => (

@@ -31,6 +31,7 @@ const Game = () => {
         setSelectedLog(null);
         setCurrentMessage('');
         setWinner(null);
+        setMaze(undefined);
         setOpenWinnerModal(false);
         setOpenGiveUPModal(false);
     };
@@ -254,6 +255,7 @@ const Game = () => {
 
     //NOTIFICATIONS
     React.useEffect(() => {
+        if (!currentUser) return;
         if (socket.isConnected) {
             notification.success('Game connected to server');
         }
@@ -303,6 +305,11 @@ const Game = () => {
         setSelectedLog(log);
     };
 
+    const onReplayMode = () => {
+        clearCurrentGameState();
+        socket.onReplayMode();
+    };
+
     return (
         <PageLayout
             connected={socket.isConnected}
@@ -327,7 +334,7 @@ const Game = () => {
                 gameStatus={socket.gameStatus}
                 onCreateNewGame={handleCreateNewGame}
                 hasHistory={socket.hasHistory}
-                onReplayMode={socket.onReplayMode}
+                onReplayMode={onReplayMode}
             />
             <PlayGame
                 gameStatus={socket.gameStatus}

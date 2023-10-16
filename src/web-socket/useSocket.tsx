@@ -60,8 +60,12 @@ const useSocket = () => {
     };
 
     React.useEffect(() => {
-        setIsConnected(socket.connected);
-    }, [socket.connected]);
+        if (socket.disconnected) setIsConnected(false);
+        if (socket.connected) setIsConnected(true);
+        // setIsConnected(socket.connected);
+        console.log('socket.disconnected: ', socket.disconnected);
+        console.log('socket.connected: ', socket.connected);
+    }, [socket.connected, socket.disconnected]);
 
     const connectGame = (payload: ConnectToGamePayload) => {
         clearGameState();
@@ -118,7 +122,7 @@ const useSocket = () => {
         setGameState(payload);
         setGameLogs(payload.game.logs);
         setGameStatus(payload.game.status);
-        setHistoryGameList(undefined); //HIDE LIST AND SHOW LOGS
+        setHistoryGameList(undefined); //HIDE LIST TO SHOW LOGS
     };
 
     const onGameConnected = (payload: GamePayload) => {
