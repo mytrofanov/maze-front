@@ -3,7 +3,7 @@ import { Layout } from 'antd';
 import './page-layout.styles.css';
 import { GameLogs } from '../game';
 import { Header, Sider } from '../components';
-import { AvailableGamesPayload, GameStatus, SocketUser } from '../web-socket';
+import { AvailableGamesPayload, GameStatus, HistoryGamesPayload, SocketUser } from '../web-socket';
 
 interface PageLayoutProps {
     children: React.ReactNode;
@@ -21,6 +21,7 @@ interface PageLayoutProps {
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
     waitingList?: AvailableGamesPayload;
+    historyList?: HistoryGamesPayload;
 }
 
 const PageLayout = (props: PageLayoutProps) => {
@@ -39,6 +40,7 @@ const PageLayout = (props: PageLayoutProps) => {
         onKeyPress,
         onMessageChange,
         onSendMessage,
+        historyList,
         waitingList,
     } = props;
     return (
@@ -53,6 +55,7 @@ const PageLayout = (props: PageLayoutProps) => {
                         currentMessage={currentMessage}
                         onMessageChange={onMessageChange}
                         gameStatus={gameStatus}
+                        historyList={historyList}
                         waitingList={waitingList}
                         onKeyPress={onKeyPress}
                         onConnectGame={onConnectGame}

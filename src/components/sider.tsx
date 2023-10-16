@@ -4,7 +4,7 @@ import { GameLogs } from '../game';
 import { ChatList } from './index.ts';
 import WaitingList from './waiting-list.tsx';
 import './sider.css';
-import { AvailableGamesPayload, GameStatus } from '../web-socket';
+import { AvailableGamesPayload, GameStatus, HistoryGamesPayload } from '../web-socket';
 
 interface SiderProps {
     currentMessage: string;
@@ -19,6 +19,7 @@ interface SiderProps {
     onSendMessage: () => void;
     hasWinner: boolean;
     waitingList?: AvailableGamesPayload;
+    historyList?: HistoryGamesPayload;
 }
 
 const Sider = (props: SiderProps) => {
@@ -34,6 +35,7 @@ const Sider = (props: SiderProps) => {
         onMessageChange,
         onSendMessage,
         hasWinner,
+        historyList,
         waitingList,
     } = props;
 
@@ -66,6 +68,9 @@ const Sider = (props: SiderProps) => {
             ) : null}
             {gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED ? (
                 <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />
+            ) : null}
+            {gameStatus === GameStatus.REPLAY_MODE ? (
+                <WaitingList onConnectGame={onConnectGame} waitingList={historyList} />
             ) : null}
         </div>
     );

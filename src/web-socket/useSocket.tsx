@@ -26,6 +26,7 @@ const useSocket = () => {
     const [success, setSuccess] = React.useState<SocketSuccess | undefined>(undefined);
     const [gameState, setGameState] = React.useState<GamePayload | undefined>(undefined);
     const [availableGames, setAvailableGames] = React.useState<AvailableGamesPayload | undefined>(undefined);
+    const [historyGameList, setHistoryGameList] = React.useState<AvailableGamesPayload | undefined>(undefined);
     const [gameStatus, setGameStatus] = React.useState<GameStatus>(GameStatus.WELCOME_SCREEN);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     const [opponentDisconnected, setOpponentDisconnected] = React.useState<boolean>(false);
@@ -173,6 +174,7 @@ const useSocket = () => {
         gameStatus,
         giveUP,
         hasHistory,
+        historyGameList,
         isConnected,
         onDirectionInput,
         onSendMessage,

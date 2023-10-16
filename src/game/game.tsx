@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Direction, PlayerType } from './types.ts';
+import { Direction, GameLog, PlayerType } from './types.ts';
 import { localStorageUser } from '../variables';
 import { CreateUserFormValues } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
@@ -21,6 +21,7 @@ const Game = () => {
     const [currentUser, setCurrentUser] = React.useState<SocketUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [maze, setMaze] = React.useState<Row[] | undefined>(undefined);
+    const [selectedLog, setSelectedLog] = React.useState<GameLog | null>(null);
 
     //CAN LEAVE GAME IF NO OTHER PLAYERS OR GAME HAS WINNER
     const exitEnabled = socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || winner;
@@ -270,6 +271,7 @@ const Game = () => {
             onMessageChange={handleTextInput}
             onSendMessage={checkMessageOrDirection}
             waitingList={socket.availableGames}
+            historyList={socket.historyGameList}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />
             <NewGameScreen
