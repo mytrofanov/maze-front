@@ -123,6 +123,11 @@ const useSocket = () => {
         setAvailableGames(payload);
     };
 
+    const onCompletedGames = (payload: AvailableGamesPayload) => {
+        console.log('onCompletedGames: ', payload);
+        setHistoryGameList(payload);
+    };
+
     const onOpponentDisconnected = () => {
         setOpponentDisconnected(true);
     };
@@ -147,6 +152,7 @@ const useSocket = () => {
         socket.on(SocketEvents.LOG_UPDATED, onLogUpdated);
         socket.on(SocketEvents.GAME_CONNECTED, onGameConnected);
         socket.on(SocketEvents.AVAILABLE_GAMES, onAvailableGames);
+        socket.on(SocketEvents.COMPLETED_GAMES, onCompletedGames);
         socket.on(SocketEvents.OPPONENT_DISCONNECTED, onOpponentDisconnected);
         socket.on(SocketEvents.ERROR, error => {
             if (!Object.values(SocketErrorCodes).includes(error.code)) {
