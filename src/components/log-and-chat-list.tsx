@@ -1,56 +1,38 @@
-import { Avatar, Button, List, Space, Typography } from 'antd';
+import { Avatar, List, Typography } from 'antd';
 import { GameLog, GameLogs, PlayerType } from '../game';
 import './chat-list.css';
 import { player1Image, player2Image } from '../variables';
-import { GameStatus } from '../web-socket';
 
 interface ChatListProps {
     chat?: GameLogs;
-    gameStatus: GameStatus;
-    onGiveUP: () => void;
-    onExit: () => void;
     onSelectLogItem: (log: GameLog) => void;
-    exitDisabled: boolean;
-    hasWinner: boolean;
 }
 
 const LogAndChatList = (props: ChatListProps) => {
-    const { chat, onGiveUP, exitDisabled, onExit, onSelectLogItem, gameStatus, hasWinner } = props;
+    const { chat, onSelectLogItem } = props;
     return (
-        <>
-            <List
-                className="chat-list"
-                itemLayout="horizontal"
-                dataSource={chat}
-                renderItem={item => {
-                    return (
-                        <List.Item onClick={() => onSelectLogItem(item)}>
-                            <List.Item.Meta
-                                key={item.createdAt}
-                                avatar={
-                                    <Avatar src={item.playerType == PlayerType.PLAYER1 ? player1Image : player2Image} />
-                                }
-                                title={
-                                    <Typography.Text code className="chat-item-title">
-                                        {item.message} {item.createdAt.toString()}
-                                    </Typography.Text>
-                                }
-                            />
-                        </List.Item>
-                    );
-                }}
-            />
-            <Space wrap>
-                {gameStatus === GameStatus.IN_PROGRESS ? (
-                    <Button type="primary" onClick={onGiveUP} disabled={hasWinner}>
-                        Give UP
-                    </Button>
-                ) : null}
-                <Button type="primary" onClick={onExit} disabled={exitDisabled}>
-                    Exit
-                </Button>
-            </Space>
-        </>
+        <List
+            className="chat-list"
+            itemLayout="horizontal"
+            dataSource={chat}
+            renderItem={item => {
+                return (
+                    <List.Item onClick={() => onSelectLogItem(item)}>
+                        <List.Item.Meta
+                            key={item.createdAt}
+                            avatar={
+                                <Avatar src={item.playerType == PlayerType.PLAYER1 ? player1Image : player2Image} />
+                            }
+                            title={
+                                <Typography.Text code className="chat-item-title">
+                                    {item.message} {item.createdAt.toString()}
+                                </Typography.Text>
+                            }
+                        />
+                    </List.Item>
+                );
+            }}
+        />
     );
 };
 

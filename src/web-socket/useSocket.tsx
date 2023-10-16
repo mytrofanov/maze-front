@@ -33,8 +33,10 @@ const useSocket = () => {
     const [hasHistory, setHasHistory] = React.useState<boolean>(false);
 
     const clearGameState = () => {
+        setGameState(undefined);
         setGameLogs([]);
         setHasHistory(false);
+        setGameStatus(GameStatus.WELCOME_SCREEN);
         setOpponentDisconnected(false);
         setAvailableGames(undefined);
     };
@@ -96,17 +98,20 @@ const useSocket = () => {
     };
 
     const onGameCreated = (payload: GamePayload) => {
+        clearGameState();
         setGameState(payload);
         setGameStatus(GameStatus.WAITING_FOR_PLAYER);
     };
 
     const onGameConnected = (payload: GamePayload) => {
+        clearGameState();
         setGameState(payload);
         setGameStatus(payload.game.status);
         setOpponentDisconnected(false);
     };
 
     const onGameUpdated = async (payload: GamePayload) => {
+        console.log('onGameUpdated payload: ', payload);
         setGameState(payload);
         setGameStatus(payload.game.status);
     };

@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Button, Input } from 'antd';
+import { Button, Input, Space } from 'antd';
 import { GameLog, GameLogs } from '../game';
 import { LogAndChatList } from './index.ts';
 import WaitingList from './waiting-list.tsx';
@@ -59,16 +59,22 @@ const Sider = (props: SiderProps) => {
                 ) : null}
             </div>
             {gameStatus === GameStatus.IN_PROGRESS ? (
-                <LogAndChatList
-                    chat={gameLogs}
-                    gameStatus={gameStatus}
-                    exitDisabled={exitDisabled}
-                    onGiveUP={onGiveUP}
-                    onSelectLogItem={onSelectLogItem}
-                    onExit={onExit}
-                    hasWinner={hasWinner}
-                />
+                <LogAndChatList chat={gameLogs} onSelectLogItem={onSelectLogItem} />
             ) : null}
+            {
+                <Space wrap>
+                    {gameStatus === GameStatus.IN_PROGRESS ? (
+                        <Button type="primary" onClick={onGiveUP} disabled={hasWinner}>
+                            Give UP
+                        </Button>
+                    ) : null}
+                    {gameStatus === GameStatus.IN_PROGRESS || gameStatus === GameStatus.WAITING_FOR_PLAYER ? (
+                        <Button type="primary" onClick={onExit} disabled={exitDisabled}>
+                            Exit
+                        </Button>
+                    ) : null}
+                </Space>
+            }
             {gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED ? (
                 <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />
             ) : null}

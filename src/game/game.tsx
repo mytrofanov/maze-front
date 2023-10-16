@@ -34,12 +34,12 @@ const Game = () => {
         setOpenGiveUPModal(false);
     };
 
+    console.log('socket.gameState: ', socket.gameState);
     //RE-PLAY BY POINTING ON A LOG  - loze array on new game
-    // React.useEffect(() => {
-    //     if (selectedLog) {
-    //         setMaze(JSON.parse(selectedLog.mazeState));
-    //     }
-    // }, [selectedLog]);
+    React.useEffect(() => {
+        if (!selectedLog) return;
+        setMaze(JSON.parse(selectedLog.mazeState));
+    }, [selectedLog]);
 
     //SET WINNER
     React.useEffect(() => {
