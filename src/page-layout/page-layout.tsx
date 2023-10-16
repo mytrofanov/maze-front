@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { Layout } from 'antd';
 import './page-layout.styles.css';
-import { GameLogs } from '../game';
+import { GameLog, GameLogs } from '../game';
 import { Header, Sider } from '../components';
 import { AvailableGamesPayload, GameStatus, SocketUser } from '../web-socket';
 
@@ -20,6 +20,7 @@ interface PageLayoutProps {
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
+    onSelectLogItem: (log: GameLog) => void;
     waitingList?: AvailableGamesPayload;
     historyList?: AvailableGamesPayload;
 }
@@ -40,6 +41,7 @@ const PageLayout = (props: PageLayoutProps) => {
         onKeyPress,
         onMessageChange,
         onSendMessage,
+        onSelectLogItem,
         historyList,
         waitingList,
     } = props;
@@ -59,6 +61,7 @@ const PageLayout = (props: PageLayoutProps) => {
                         waitingList={waitingList}
                         onKeyPress={onKeyPress}
                         onConnectGame={onConnectGame}
+                        onSelectLogItem={onSelectLogItem}
                         onSendMessage={onSendMessage}
                         onGiveUP={onGiveUP}
                         onExit={onExit}

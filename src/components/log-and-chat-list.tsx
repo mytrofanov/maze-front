@@ -1,5 +1,5 @@
 import { Avatar, Button, List, Space, Typography } from 'antd';
-import { GameLogs, PlayerType } from '../game';
+import { GameLog, GameLogs, PlayerType } from '../game';
 import './chat-list.css';
 import { player1Image, player2Image } from '../variables';
 import { GameStatus } from '../web-socket';
@@ -9,12 +9,13 @@ interface ChatListProps {
     gameStatus: GameStatus;
     onGiveUP: () => void;
     onExit: () => void;
+    onSelectLogItem: (log: GameLog) => void;
     exitDisabled: boolean;
     hasWinner: boolean;
 }
 
-const ChatList = (props: ChatListProps) => {
-    const { chat, onGiveUP, exitDisabled, onExit, gameStatus, hasWinner } = props;
+const LogAndChatList = (props: ChatListProps) => {
+    const { chat, onGiveUP, exitDisabled, onExit, onSelectLogItem, gameStatus, hasWinner } = props;
     return (
         <>
             <List
@@ -23,7 +24,7 @@ const ChatList = (props: ChatListProps) => {
                 dataSource={chat}
                 renderItem={item => {
                     return (
-                        <List.Item>
+                        <List.Item onClick={() => onSelectLogItem(item)}>
                             <List.Item.Meta
                                 key={item.createdAt}
                                 avatar={
@@ -53,4 +54,4 @@ const ChatList = (props: ChatListProps) => {
     );
 };
 
-export default ChatList;
+export default LogAndChatList;

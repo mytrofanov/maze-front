@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { Button, Input } from 'antd';
-import { GameLogs } from '../game';
-import { ChatList } from './index.ts';
+import { GameLog, GameLogs } from '../game';
+import { LogAndChatList } from './index.ts';
 import WaitingList from './waiting-list.tsx';
 import './sider.css';
 import { AvailableGamesPayload, GameStatus } from '../web-socket';
@@ -17,6 +17,7 @@ interface SiderProps {
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
+    onSelectLogItem: (log: GameLog) => void;
     hasWinner: boolean;
     waitingList?: AvailableGamesPayload;
     historyList?: AvailableGamesPayload;
@@ -33,6 +34,7 @@ const Sider = (props: SiderProps) => {
         onGiveUP,
         onKeyPress,
         onMessageChange,
+        onSelectLogItem,
         onSendMessage,
         hasWinner,
         historyList,
@@ -57,11 +59,12 @@ const Sider = (props: SiderProps) => {
                 ) : null}
             </div>
             {gameStatus === GameStatus.IN_PROGRESS ? (
-                <ChatList
+                <LogAndChatList
                     chat={gameLogs}
                     gameStatus={gameStatus}
                     exitDisabled={exitDisabled}
                     onGiveUP={onGiveUP}
+                    onSelectLogItem={onSelectLogItem}
                     onExit={onExit}
                     hasWinner={hasWinner}
                 />

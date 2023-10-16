@@ -26,6 +26,20 @@ const Game = () => {
     //CAN LEAVE GAME IF NO OTHER PLAYERS OR GAME HAS WINNER
     const exitEnabled = socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || winner;
 
+    const clearCurrentGameState = () => {
+        setSelectedLog(null);
+        setCurrentMessage('');
+        setWinner(null);
+    };
+
+    //RE-PLAY BY POINTING ON A LOG
+    React.useEffect(() => {
+        if (selectedLog) {
+            setMaze(JSON.parse(selectedLog.mazeState));
+        }
+    }, [selectedLog]);
+
+    //SET WINNER
     React.useEffect(() => {
         if (!socket.gameState) return;
         if (socket.gameState.maze?.rows) {
@@ -34,43 +48,71 @@ const Game = () => {
         setWinner(socket.gameState.game.winner);
     }, [socket.gameState]);
 
-    const updateUser = (fetchedUser: SocketUser) => {
-        if (currentUser && currentUser.id !== fetchedUser.id) return;
-        localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
-        setCurrentUser(fetchedUser);
-    };
+    const updateUser = React.useCallback(
+        (fetchedUser: SocketUser) => {
+            if (currentUser && currentUser.id !== fetchedUser.id) return;
+            localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
+            setCurrentUser(fetchedUser);
+        },
+        [currentUser],
+    );
+
+    const player1 = React.useMemo(() => {
+        return socket.gameState?.game.player1;
+    }, [socket.gameState]);
+
+    const player2 = React.useMemo(() => {
+        return socket.gameState?.game.player2;
+    }, [socket.gameState]);
+
+    const isPlayer1 = React.useMemo(() => {
+        return socket.gameState?.game.player1Id === currentUser?.id;
+    }, [socket.gameState, currentUser]);
+
+    const isPlayer2 = React.useMemo(() => {
+        return socket.gameState?.game.player2Id === currentUser?.id;
+    }, [socket.gameState, currentUser]);
 
     //UPDATE USER TYPE FROM GAME
     React.useEffect(() => {
-        if (!socket.gameState?.game.player1 || !socket.gameState?.game.player2) return;
-        const isPlayer1 = socket.gameState?.game.player1Id === currentUser?.id;
-        const isPlayer2 = socket.gameState?.game.player2Id === currentUser?.id;
-        if (currentUser && socket.gameState?.game) {
-            if (isPlayer1 && currentUser.type !== socket.gameState?.game.player1.type) {
-                updateUser(socket.gameState?.game.player1);
+        if (!player1 || !player2 || !currentUser || !socket.gameState) return;
+        //const isPlayer1 = socket.gameState?.game.player1Id === currentUser?.id;
+        //const isPlayer2 = socket.gameState?.game.player2Id === currentUser?.id;
+        if (currentUser && socket.gameState.game) {
+            if (isPlayer1 && currentUser.type !== socket.gameState.game.player1.type) {
+                updateUser(socket.gameState.game.player1);
             }
-            if (isPlayer2 && currentUser.type !== socket.gameState?.game.player2.type) {
-                updateUser(socket.gameState?.game.player2);
+            if (isPlayer2 && currentUser.type !== socket.gameState.game.player2.type) {
+                updateUser(socket.gameState.game.player2);
             }
         }
-    }, [socket.gameState]);
+    }, [socket.gameState, currentUser, isPlayer1, isPlayer2, player1, player2, updateUser]);
 
     // React.useEffect(() => {
     //     console.log('check type currentUser:', currentUser);
     // }, [currentUser]);
+    const saveLogs = React.useCallback(
+        (message: string, currentPlayer?: PlayerType) => {
+            if (!socket.gameState || !currentUser) return;
+            const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+            const newLog = {
+                gameId: socket.gameState.game.id,
+                playerType: playerType,
+                playerId: currentUser.id,
+                message: `${message} at`,
+            };
+            socket.onSendMessage(newLog);
+        },
+        [socket, currentUser],
+    );
 
     React.useEffect(() => {
         if (winner) {
             setOpenWinnerModal(true);
             const isPlayer1Winner = winner == PlayerType.PLAYER1;
-            saveLogs(
-                `Player ${
-                    isPlayer1Winner ? socket.gameState?.game.player1.userName : socket.gameState?.game.player2.userName
-                } won!`,
-                winner,
-            );
+            saveLogs(`Player ${isPlayer1Winner ? player1?.userName : player2?.userName} won!`, winner);
         }
-    }, [winner]);
+    }, [winner, player1, player2, saveLogs]);
 
     //CHECK USER ON START
     React.useEffect(() => {
@@ -99,18 +141,6 @@ const Game = () => {
             setOpenCreateUserModal(true);
         }
     }, [socket.error]);
-
-    const saveLogs = (message: string, currentPlayer?: PlayerType) => {
-        if (!socket.gameState || !currentUser) return;
-        const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-        const newLog = {
-            gameId: socket.gameState.game.id,
-            playerType: playerType,
-            playerId: currentUser.id,
-            message: `${message} at`,
-        };
-        socket.onSendMessage(newLog);
-    };
 
     const handleDirectionInput = (direction: Direction) => {
         if (!socket.gameState || !currentUser || socket.gameState.game.winner) return;
@@ -164,6 +194,7 @@ const Game = () => {
 
     const onExit = () => {
         if (!socket.gameState || !currentUser) return;
+        clearCurrentGameState();
         socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
     };
 
@@ -233,11 +264,13 @@ const Game = () => {
             console.log('User is not registered');
             return;
         }
+        clearCurrentGameState();
         socket.createGame({ player1Id: currentUser.id });
     };
 
     const handleConnectGame = (gameId: string) => {
         if (!currentUser) return;
+        clearCurrentGameState();
         socket.connectGame({ gameId, userId: currentUser.id });
     };
 
@@ -269,6 +302,7 @@ const Game = () => {
             onExit={onExit}
             onKeyPress={handleInputKeyPress}
             onMessageChange={handleTextInput}
+            onSelectLogItem={setSelectedLog}
             onSendMessage={checkMessageOrDirection}
             waitingList={socket.availableGames}
             historyList={socket.historyGameList}
