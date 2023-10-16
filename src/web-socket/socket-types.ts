@@ -118,16 +118,7 @@ export type Game = {
     initialMaze: string;
 };
 
-// export type AvailableGame = Omit<Game, 'status'> & {
-//     status: GameStatus.WAITING_FOR_PLAYER;
-// };
-//
-// export type HistoryGame = Omit<Game, 'status'> & {
-//     status: GameStatus.COMPLETED;
-// };
-
 export type AvailableGamesPayload = Game[];
-// export type HistoryGamesPayload = Game[];
 
 export type PayloadCell = {
     colX: number;
@@ -166,7 +157,6 @@ export type GamePayload = {
 
 export type ReplayGamePayload = {
     game: Game;
-    // logs: GameLogs;
 };
 
 export type GiveUpPayload = {

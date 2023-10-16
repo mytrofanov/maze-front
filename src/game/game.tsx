@@ -197,13 +197,18 @@ const Game = () => {
     }, [socket.gameState?.game.currentPlayer]);
 
     const onExit = () => {
-        if (!socket.gameState || !currentUser) return;
-        clearCurrentGameState();
+        console.log('onExit');
+        console.log('socket.gameStatus', socket.gameState);
+        console.log('currentUser', currentUser);
+        if (!socket.gameStatus || !currentUser) return;
         if (socket.gameStatus === GameStatus.REPLAY_MODE) {
             socket.onExitReplayMode({ userId: currentUser.id });
         } else {
-            socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+            if (socket.gameState) {
+                socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+            }
         }
+        clearCurrentGameState();
     };
 
     const handleWinnerModalOk = () => {
