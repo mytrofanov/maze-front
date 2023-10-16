@@ -2,6 +2,8 @@ import { Cell, Direction, GameLogs, PlayerType } from '../game';
 
 export enum SocketEvents {
     AVAILABLE_GAMES = 'AVAILABLE_GAMES',
+    GET_AVAILABLE_GAMES = 'GET_AVAILABLE_GAMES',
+    COMPLETED_GAMES = 'COMPLETED_GAMES',
     CONNECT = 'CONNECT',
     RECONNECT = 'RECONNECT',
     CONNECT_GAME = 'CONNECT_GAME',
@@ -17,6 +19,8 @@ export enum SocketEvents {
     GIVE_UP = 'GIVE_UP',
     LOG_UPDATED = 'LOG_UPDATED',
     OPPONENT_DISCONNECTED = 'OPPONENT_DISCONNECTED',
+    REPLAY_GAME = 'REPLAY_GAME',
+    GAME_TO_REPLAY = 'GAME_TO_REPLAY',
     SEND_MESSAGE = 'SEND_MESSAGE',
     SUCCESS = 'SUCCESS',
 }
@@ -96,6 +100,7 @@ export enum GameStatus {
     CONNECTION_ERROR = 'CONNECTION_ERROR',
     CONNECTING = 'CONNECTING',
     CONNECTED = 'CONNECTED',
+    REPLAY_MODE = 'REPLAY_MODE',
     WELCOME_SCREEN = 'WELCOME_SCREEN',
 }
 
@@ -110,15 +115,10 @@ export type Game = {
     status: GameStatus;
     createdAt: string;
     logs: GameLogs;
+    initialMaze: string;
 };
 
-export type availableGame = Omit<Game, 'status'> & {
-    status: GameStatus.WAITING_FOR_PLAYER;
-    createdAt: string;
-    player1: SocketUser;
-};
-
-export type AvailableGamesPayload = availableGame[];
+export type AvailableGamesPayload = Game[];
 
 export type PayloadCell = {
     colX: number;
@@ -153,6 +153,10 @@ export type SocketMaze = {
 export type GamePayload = {
     game: Game;
     maze?: SocketMaze;
+};
+
+export type ReplayGamePayload = {
+    game: Game;
 };
 
 export type GiveUpPayload = {

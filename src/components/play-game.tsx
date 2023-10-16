@@ -27,7 +27,7 @@ const PlayGame = (props: PlayGameProps) => {
         currentPlayer,
     } = props;
     if (!maze) return null;
-    if (gameStatus === GameStatus.IN_PROGRESS && maze) {
+    if (gameStatus === GameStatus.IN_PROGRESS || gameStatus === GameStatus.REPLAY_MODE) {
         return (
             <>
                 <Maze maze={maze} currentPlayer={currentPlayer} currentUser={currentUser} />

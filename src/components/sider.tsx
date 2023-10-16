@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
-import { Button, Input } from 'antd';
-import { GameLogs } from '../game';
-import { ChatList } from './index.ts';
+import { Button, Input, Space } from 'antd';
+import { GameLog, GameLogs } from '../game';
+import { LogAndChatList } from './index.ts';
 import WaitingList from './waiting-list.tsx';
 import './sider.css';
 import { AvailableGamesPayload, GameStatus } from '../web-socket';
@@ -17,8 +17,10 @@ interface SiderProps {
     onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     onMessageChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void;
+    onSelectLogItem: (log: GameLog) => void;
     hasWinner: boolean;
     waitingList?: AvailableGamesPayload;
+    historyList?: AvailableGamesPayload;
 }
 
 const Sider = (props: SiderProps) => {
@@ -32,8 +34,10 @@ const Sider = (props: SiderProps) => {
         onGiveUP,
         onKeyPress,
         onMessageChange,
+        onSelectLogItem,
         onSendMessage,
         hasWinner,
+        historyList,
         waitingList,
     } = props;
 
@@ -54,19 +58,31 @@ const Sider = (props: SiderProps) => {
                     </>
                 ) : null}
             </div>
-            {gameStatus === GameStatus.IN_PROGRESS ? (
-                <ChatList
-                    chat={gameLogs}
-                    gameStatus={gameStatus}
-                    exitDisabled={exitDisabled}
-                    onGiveUP={onGiveUP}
-                    onExit={onExit}
-                    hasWinner={hasWinner}
-                />
+            {gameStatus === GameStatus.IN_PROGRESS || (gameStatus === GameStatus.REPLAY_MODE && !historyList) ? (
+                <LogAndChatList chat={gameLogs} onSelectLogItem={onSelectLogItem} />
             ) : null}
             {gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED ? (
-                <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} />
+                <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} gameStatus={gameStatus} />
             ) : null}
+            {gameStatus === GameStatus.REPLAY_MODE ? (
+                <WaitingList onConnectGame={onConnectGame} waitingList={historyList} gameStatus={gameStatus} />
+            ) : null}
+            {
+                <Space wrap>
+                    {gameStatus === GameStatus.IN_PROGRESS ? (
+                        <Button type="primary" onClick={onGiveUP} disabled={hasWinner}>
+                            Give UP
+                        </Button>
+                    ) : null}
+                    {gameStatus === GameStatus.IN_PROGRESS ||
+                    gameStatus === GameStatus.WAITING_FOR_PLAYER ||
+                    gameStatus === GameStatus.REPLAY_MODE ? (
+                        <Button type="primary" onClick={onExit} disabled={exitDisabled}>
+                            Exit
+                        </Button>
+                    ) : null}
+                </Space>
+            }
         </div>
     );
 };

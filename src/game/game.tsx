@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Direction, PlayerType } from './types.ts';
+import { Direction, GameLog, PlayerType } from './types.ts';
 import { localStorageUser } from '../variables';
 import { CreateUserFormValues } from '../types';
 import PageLayout from '../page-layout/page-layout.tsx';
@@ -21,12 +21,41 @@ const Game = () => {
     const [currentUser, setCurrentUser] = React.useState<SocketUser | undefined>(undefined);
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [maze, setMaze] = React.useState<Row[] | undefined>(undefined);
+    const [selectedLog, setSelectedLog] = React.useState<GameLog | null>(null);
 
     //CAN LEAVE GAME IF NO OTHER PLAYERS OR GAME HAS WINNER
-    const exitEnabled = socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || winner;
+    const exitEnabled =
+        socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || winner || socket.gameStatus === GameStatus.REPLAY_MODE;
 
+    const clearCurrentGameState = () => {
+        setSelectedLog(null);
+        setCurrentMessage('');
+        setWinner(null);
+        setMaze(undefined);
+        setOpenWinnerModal(false);
+        setOpenGiveUPModal(false);
+    };
+
+    //RE-PLAY BY POINTING ON A LOG  - loze array on new game
     React.useEffect(() => {
-        if (!socket.gameState) return;
+        if (!selectedLog) return;
+        if (selectedLog.mazeSnapShot) {
+            setMaze(JSON.parse(selectedLog.mazeSnapShot));
+        }
+    }, [selectedLog]);
+
+    //REPLAY GAME INITIAL STATE SET
+    React.useEffect(() => {
+        if (!socket.gameState || socket.gameStatus !== GameStatus.REPLAY_MODE || !socket.gameState.game.initialMaze)
+            return;
+        const initialMaze = JSON.parse(socket.gameState.game.initialMaze);
+        if (!initialMaze) return;
+        setMaze(initialMaze.rows);
+    }, [socket.gameStatus]);
+
+    //SET WINNER
+    React.useEffect(() => {
+        if (!socket.gameState || socket.gameStatus === GameStatus.REPLAY_MODE) return;
         if (socket.gameState.maze?.rows) {
             setMaze(socket.gameState.maze.rows);
         }
@@ -44,22 +73,30 @@ const Game = () => {
         if (!socket.gameState?.game.player1 || !socket.gameState?.game.player2) return;
         const isPlayer1 = socket.gameState?.game.player1Id === currentUser?.id;
         const isPlayer2 = socket.gameState?.game.player2Id === currentUser?.id;
-        if (currentUser && socket.gameState?.game) {
-            if (isPlayer1 && currentUser.type !== socket.gameState?.game.player1.type) {
-                updateUser(socket.gameState?.game.player1);
+        if (currentUser && socket.gameState.game) {
+            if (isPlayer1 && currentUser.type !== socket.gameState.game.player1.type) {
+                updateUser(socket.gameState.game.player1);
             }
-            if (isPlayer2 && currentUser.type !== socket.gameState?.game.player2.type) {
-                updateUser(socket.gameState?.game.player2);
+            if (isPlayer2 && currentUser.type !== socket.gameState.game.player2.type) {
+                updateUser(socket.gameState.game.player2);
             }
         }
-    }, [socket.gameState]);
+    }, [socket.gameState, currentUser]);
 
-    // React.useEffect(() => {
-    //     console.log('check type currentUser:', currentUser);
-    // }, [currentUser]);
+    const saveLogs = (message: string, currentPlayer?: PlayerType) => {
+        if (!socket.gameState || !currentUser || socket.gameStatus === GameStatus.REPLAY_MODE) return;
+        const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+        const newLog = {
+            gameId: socket.gameState.game.id,
+            playerType: playerType,
+            playerId: currentUser.id,
+            message: `${message} at`,
+        };
+        socket.onSendMessage(newLog);
+    };
 
     React.useEffect(() => {
-        if (winner) {
+        if (winner && socket.gameStatus !== GameStatus.REPLAY_MODE) {
             setOpenWinnerModal(true);
             const isPlayer1Winner = winner == PlayerType.PLAYER1;
             saveLogs(
@@ -96,23 +133,18 @@ const Game = () => {
             localStorage.removeItem(localStorageUser);
             setCurrentUser(undefined);
             setOpenCreateUserModal(true);
+            notification.error('This name is already taken!');
         }
     }, [socket.error]);
 
-    const saveLogs = (message: string, currentPlayer?: PlayerType) => {
-        if (!socket.gameState || !currentUser) return;
-        const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-        const newLog = {
-            gameId: socket.gameState.game.id,
-            playerType: playerType,
-            playerId: currentUser.id,
-            message: `${message} at`,
-        };
-        socket.onSendMessage(newLog);
-    };
-
     const handleDirectionInput = (direction: Direction) => {
-        if (!socket.gameState || !currentUser || socket.gameState.game.winner) return;
+        if (
+            !socket.gameState ||
+            !currentUser ||
+            socket.gameState.game.winner ||
+            socket.gameStatus === GameStatus.REPLAY_MODE
+        )
+            return;
         const gameId = socket.gameState.game.id;
         const playerId = currentUser?.id;
 
@@ -123,7 +155,7 @@ const Game = () => {
 
     const handleGlobalKeyPress = (event: KeyboardEvent) => {
         const targetElement = event.target as HTMLElement;
-        if (targetElement.tagName === 'INPUT') {
+        if (targetElement.tagName === 'INPUT' || socket.gameStatus === GameStatus.REPLAY_MODE) {
             return;
         }
         event.preventDefault();
@@ -153,7 +185,7 @@ const Game = () => {
     };
 
     React.useEffect(() => {
-        if (!socket.gameState) return;
+        if (!socket.gameState || socket.gameStatus === GameStatus.REPLAY_MODE) return;
         window.addEventListener('keydown', handleGlobalKeyPress);
 
         return () => {
@@ -162,8 +194,15 @@ const Game = () => {
     }, [socket.gameState?.game.currentPlayer]);
 
     const onExit = () => {
-        if (!socket.gameState || !currentUser) return;
-        socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+        if (!socket.gameStatus || !currentUser) return;
+        if (socket.gameStatus === GameStatus.REPLAY_MODE) {
+            socket.onExitReplayMode({ userId: currentUser.id });
+        } else {
+            if (socket.gameState) {
+                socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+            }
+        }
+        clearCurrentGameState();
     };
 
     const handleWinnerModalOk = () => {
@@ -213,6 +252,7 @@ const Game = () => {
 
     //NOTIFICATIONS
     React.useEffect(() => {
+        if (!currentUser) return;
         if (socket.isConnected) {
             notification.success('Game connected to server');
         }
@@ -232,15 +272,18 @@ const Game = () => {
             console.log('User is not registered');
             return;
         }
+        clearCurrentGameState();
         socket.createGame({ player1Id: currentUser.id });
     };
 
     const handleConnectGame = (gameId: string) => {
         if (!currentUser) return;
+        clearCurrentGameState();
         socket.connectGame({ gameId, userId: currentUser.id });
     };
 
     const onGiveUP = () => {
+        if (socket.gameStatus === GameStatus.REPLAY_MODE) return;
         setOpenGiveUPModal(true);
     };
 
@@ -254,11 +297,22 @@ const Game = () => {
         setOpenGiveUPModal(false);
     };
 
+    const onSelectLogItem = (log: GameLog) => {
+        if (socket.gameStatus !== GameStatus.REPLAY_MODE) return;
+        setSelectedLog(log);
+    };
+
+    const onReplayMode = () => {
+        clearCurrentGameState();
+        socket.onReplayMode();
+    };
+
     return (
         <PageLayout
             connected={socket.isConnected}
             currentMessage={currentMessage}
             currentUser={currentUser}
+            currentPlayer={socket.gameState?.game.currentPlayer}
             exitDisabled={!exitEnabled}
             gameLogs={socket.gameLogs}
             gameStatus={socket.gameStatus}
@@ -268,11 +322,18 @@ const Game = () => {
             onExit={onExit}
             onKeyPress={handleInputKeyPress}
             onMessageChange={handleTextInput}
+            onSelectLogItem={onSelectLogItem}
             onSendMessage={checkMessageOrDirection}
             waitingList={socket.availableGames}
+            historyList={socket.historyGameList}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />
-            <NewGameScreen gameStatus={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />
+            <NewGameScreen
+                gameStatus={socket.gameStatus}
+                onCreateNewGame={handleCreateNewGame}
+                hasHistory={socket.hasHistory}
+                onReplayMode={onReplayMode}
+            />
             <PlayGame
                 gameStatus={socket.gameStatus}
                 handleWinnerModalCancel={handleWinnerModalCancel}

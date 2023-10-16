@@ -1,20 +1,21 @@
 import { Avatar, List, Typography } from 'antd';
 import './waiting-list.css';
 import { player1Image } from '../variables';
-import { AvailableGamesPayload } from '../web-socket';
+import { AvailableGamesPayload, GameStatus } from '../web-socket';
 
 interface ChatListProps {
     waitingList?: AvailableGamesPayload;
     onConnectGame: (gameId: string) => void;
+    gameStatus: GameStatus;
 }
 
 const WaitingList = (props: ChatListProps) => {
-    const { waitingList, onConnectGame } = props;
+    const { waitingList, onConnectGame, gameStatus } = props;
     if (!waitingList) return null;
     return (
         <>
             <Typography.Title level={5} color="undefined">
-                Available Games
+                {gameStatus === GameStatus.REPLAY_MODE ? 'GAMES TO REPLAY ' : 'AVAILABLE GAMES'}
             </Typography.Title>
             <List
                 className="waiting-list"
