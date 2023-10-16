@@ -49,6 +49,7 @@ const useSocket = () => {
     };
 
     const gameExit = (payload: GameExitPayload) => {
+        clearGameState();
         socket.emit(SocketEvents.EXIT, payload);
     };
 

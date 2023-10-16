@@ -30,14 +30,16 @@ const Game = () => {
         setSelectedLog(null);
         setCurrentMessage('');
         setWinner(null);
+        setOpenWinnerModal(false);
+        setOpenGiveUPModal(false);
     };
 
-    //RE-PLAY BY POINTING ON A LOG
-    React.useEffect(() => {
-        if (selectedLog) {
-            setMaze(JSON.parse(selectedLog.mazeState));
-        }
-    }, [selectedLog]);
+    //RE-PLAY BY POINTING ON A LOG  - loze array on new game
+    // React.useEffect(() => {
+    //     if (selectedLog) {
+    //         setMaze(JSON.parse(selectedLog.mazeState));
+    //     }
+    // }, [selectedLog]);
 
     //SET WINNER
     React.useEffect(() => {
@@ -48,36 +50,17 @@ const Game = () => {
         setWinner(socket.gameState.game.winner);
     }, [socket.gameState]);
 
-    const updateUser = React.useCallback(
-        (fetchedUser: SocketUser) => {
-            if (currentUser && currentUser.id !== fetchedUser.id) return;
-            localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
-            setCurrentUser(fetchedUser);
-        },
-        [currentUser],
-    );
-
-    const player1 = React.useMemo(() => {
-        return socket.gameState?.game.player1;
-    }, [socket.gameState]);
-
-    const player2 = React.useMemo(() => {
-        return socket.gameState?.game.player2;
-    }, [socket.gameState]);
-
-    const isPlayer1 = React.useMemo(() => {
-        return socket.gameState?.game.player1Id === currentUser?.id;
-    }, [socket.gameState, currentUser]);
-
-    const isPlayer2 = React.useMemo(() => {
-        return socket.gameState?.game.player2Id === currentUser?.id;
-    }, [socket.gameState, currentUser]);
+    const updateUser = (fetchedUser: SocketUser) => {
+        if (currentUser && currentUser.id !== fetchedUser.id) return;
+        localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
+        setCurrentUser(fetchedUser);
+    };
 
     //UPDATE USER TYPE FROM GAME
     React.useEffect(() => {
-        if (!player1 || !player2 || !currentUser || !socket.gameState) return;
-        //const isPlayer1 = socket.gameState?.game.player1Id === currentUser?.id;
-        //const isPlayer2 = socket.gameState?.game.player2Id === currentUser?.id;
+        if (!socket.gameState?.game.player1 || !socket.gameState?.game.player2) return;
+        const isPlayer1 = socket.gameState?.game.player1Id === currentUser?.id;
+        const isPlayer2 = socket.gameState?.game.player2Id === currentUser?.id;
         if (currentUser && socket.gameState.game) {
             if (isPlayer1 && currentUser.type !== socket.gameState.game.player1.type) {
                 updateUser(socket.gameState.game.player1);
@@ -86,33 +69,35 @@ const Game = () => {
                 updateUser(socket.gameState.game.player2);
             }
         }
-    }, [socket.gameState, currentUser, isPlayer1, isPlayer2, player1, player2, updateUser]);
+    }, [socket.gameState, currentUser]);
 
     // React.useEffect(() => {
     //     console.log('check type currentUser:', currentUser);
     // }, [currentUser]);
-    const saveLogs = React.useCallback(
-        (message: string, currentPlayer?: PlayerType) => {
-            if (!socket.gameState || !currentUser) return;
-            const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
-            const newLog = {
-                gameId: socket.gameState.game.id,
-                playerType: playerType,
-                playerId: currentUser.id,
-                message: `${message} at`,
-            };
-            socket.onSendMessage(newLog);
-        },
-        [socket, currentUser],
-    );
+    const saveLogs = (message: string, currentPlayer?: PlayerType) => {
+        if (!socket.gameState || !currentUser) return;
+        const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
+        const newLog = {
+            gameId: socket.gameState.game.id,
+            playerType: playerType,
+            playerId: currentUser.id,
+            message: `${message} at`,
+        };
+        socket.onSendMessage(newLog);
+    };
 
     React.useEffect(() => {
         if (winner) {
             setOpenWinnerModal(true);
             const isPlayer1Winner = winner == PlayerType.PLAYER1;
-            saveLogs(`Player ${isPlayer1Winner ? player1?.userName : player2?.userName} won!`, winner);
+            saveLogs(
+                `Player ${
+                    isPlayer1Winner ? socket.gameState?.game.player1.userName : socket.gameState?.game.player2.userName
+                } won!`,
+                winner,
+            );
         }
-    }, [winner, player1, player2, saveLogs]);
+    }, [winner]);
 
     //CHECK USER ON START
     React.useEffect(() => {
