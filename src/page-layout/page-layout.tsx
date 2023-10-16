@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { Layout } from 'antd';
 import './page-layout.styles.css';
-import { GameLog, GameLogs } from '../game';
+import { GameLog, GameLogs, PlayerType } from '../game';
 import { Header, Sider } from '../components';
 import { AvailableGamesPayload, GameStatus, SocketUser } from '../web-socket';
 
@@ -10,6 +10,7 @@ interface PageLayoutProps {
     connected: boolean;
     currentMessage: string;
     currentUser?: SocketUser;
+    currentPlayer?: PlayerType;
     exitDisabled: boolean;
     gameLogs?: GameLogs;
     gameStatus?: GameStatus;
@@ -31,6 +32,7 @@ const PageLayout = (props: PageLayoutProps) => {
         connected,
         currentMessage,
         currentUser,
+        currentPlayer,
         exitDisabled,
         gameLogs,
         gameStatus,
@@ -48,7 +50,12 @@ const PageLayout = (props: PageLayoutProps) => {
     return (
         <Layout className="page-layout">
             <Layout.Header>
-                <Header gameStatus={gameStatus} currentUser={currentUser} connected={connected} />
+                <Header
+                    gameStatus={gameStatus}
+                    currentUser={currentUser}
+                    connected={connected}
+                    currentPlayer={currentPlayer}
+                />
             </Layout.Header>
             <Layout hasSider>
                 <Layout.Sider className="sider" width={360}>

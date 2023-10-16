@@ -31,7 +31,7 @@ const useSocket = () => {
     const [gameStatus, setGameStatus] = React.useState<GameStatus>(GameStatus.WELCOME_SCREEN);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     const [opponentDisconnected, setOpponentDisconnected] = React.useState<boolean>(false);
-
+    console.log('gameState: ', gameState);
     const clearGameState = () => {
         setGameState(undefined);
         setGameLogs([]);
@@ -62,9 +62,6 @@ const useSocket = () => {
     React.useEffect(() => {
         if (socket.disconnected) setIsConnected(false);
         if (socket.connected) setIsConnected(true);
-        // setIsConnected(socket.connected);
-        console.log('socket.disconnected: ', socket.disconnected);
-        console.log('socket.connected: ', socket.connected);
     }, [socket.connected, socket.disconnected]);
 
     const connectGame = (payload: ConnectToGamePayload) => {
@@ -134,6 +131,7 @@ const useSocket = () => {
 
     const onGameUpdated = async (payload: GamePayload) => {
         console.log('onGameUpdated payload: ', payload);
+        if (gameStatus === GameStatus.REPLAY_MODE) return;
         setGameState(payload);
         setGameStatus(payload.game.status);
     };
@@ -148,6 +146,7 @@ const useSocket = () => {
 
     const onCompletedGames = (payload: AvailableGamesPayload) => {
         console.log('onCompletedGames: ', payload);
+        if (gameStatus === GameStatus.REPLAY_MODE) return;
         setHistoryGameList(payload);
     };
 
