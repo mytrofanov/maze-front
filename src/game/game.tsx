@@ -83,9 +83,6 @@ const Game = () => {
         }
     }, [socket.gameState, currentUser]);
 
-    // React.useEffect(() => {
-    //     console.log('check type currentUser:', currentUser);
-    // }, [currentUser]);
     const saveLogs = (message: string, currentPlayer?: PlayerType) => {
         if (!socket.gameState || !currentUser || socket.gameStatus === GameStatus.REPLAY_MODE) return;
         const playerType = currentPlayer === PlayerType.PLAYER1 ? PlayerType.PLAYER1 : PlayerType.PLAYER2;
@@ -197,9 +194,6 @@ const Game = () => {
     }, [socket.gameState?.game.currentPlayer]);
 
     const onExit = () => {
-        console.log('onExit');
-        console.log('socket.gameStatus', socket.gameState);
-        console.log('currentUser', currentUser);
         if (!socket.gameStatus || !currentUser) return;
         if (socket.gameStatus === GameStatus.REPLAY_MODE) {
             socket.onExitReplayMode({ userId: currentUser.id });
