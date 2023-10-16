@@ -58,11 +58,20 @@ const useSocket = () => {
 
     const connectGame = (payload: ConnectToGamePayload) => {
         clearGameState();
-        setGameStatus(GameStatus.CONNECTING);
-        socket.emit(SocketEvents.CONNECT_GAME, payload);
+        if (gameStatus !== GameStatus.REPLAY_MODE) {
+            setGameStatus(GameStatus.CONNECTING);
+            socket.emit(SocketEvents.CONNECT_GAME, payload);
+        }
+        if (gameStatus === GameStatus.REPLAY_MODE) {
+            socket.emit(SocketEvents.REPLAY_GAME, payload);
+        }
     };
     const createUser = (payload: CreateUserPayload) => {
         socket.emit(SocketEvents.CREATE_USER, payload);
+    };
+
+    const onReplayMode = () => {
+        setGameStatus(GameStatus.REPLAY_MODE);
     };
 
     // const onReconnect = () => {
@@ -111,10 +120,6 @@ const useSocket = () => {
 
     const onOpponentDisconnected = () => {
         setOpponentDisconnected(true);
-    };
-
-    const onReplayMode = () => {
-        setGameStatus(GameStatus.REPLAY_MODE);
     };
 
     React.useEffect(() => {

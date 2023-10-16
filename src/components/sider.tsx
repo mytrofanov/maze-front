@@ -4,7 +4,7 @@ import { GameLogs } from '../game';
 import { ChatList } from './index.ts';
 import WaitingList from './waiting-list.tsx';
 import './sider.css';
-import { AvailableGamesPayload, GameStatus, HistoryGamesPayload } from '../web-socket';
+import { AvailableGamesPayload, GameStatus } from '../web-socket';
 
 interface SiderProps {
     currentMessage: string;
@@ -19,7 +19,7 @@ interface SiderProps {
     onSendMessage: () => void;
     hasWinner: boolean;
     waitingList?: AvailableGamesPayload;
-    historyList?: HistoryGamesPayload;
+    historyList?: AvailableGamesPayload;
 }
 
 const Sider = (props: SiderProps) => {
