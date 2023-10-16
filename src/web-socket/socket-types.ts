@@ -164,6 +164,11 @@ export type GamePayload = {
     maze?: SocketMaze;
 };
 
+export type ReplayGamePayload = {
+    game: Game;
+    // logs: GameLogs;
+};
+
 export type GiveUpPayload = {
     gameId: string;
     playerId: string;

@@ -40,7 +40,7 @@ export interface GameLog {
     id: number;
     updatedAt: string;
     createdAt: string;
-    mazeState: string;
+    mazeSnapShot: string;
 }
 
 export type GameLogs = GameLog[];

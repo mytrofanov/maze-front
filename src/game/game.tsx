@@ -39,8 +39,8 @@ const Game = () => {
     //RE-PLAY BY POINTING ON A LOG  - loze array on new game
     React.useEffect(() => {
         if (!selectedLog) return;
-        if (selectedLog.mazeState) {
-            setMaze(JSON.parse(selectedLog.mazeState));
+        if (selectedLog.mazeSnapShot) {
+            setMaze(JSON.parse(selectedLog.mazeSnapShot));
         }
     }, [selectedLog]);
 

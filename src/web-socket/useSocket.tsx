@@ -12,6 +12,7 @@ import {
     GameStatus,
     GiveUpPayload,
     MessagePayload,
+    ReplayGamePayload,
     SocketError,
     SocketErrorCodes,
     SocketEvents,
@@ -112,12 +113,12 @@ const useSocket = () => {
         setGameStatus(GameStatus.WAITING_FOR_PLAYER);
     };
 
-    const onReplayGame = (payload: GamePayload) => {
+    const onReplayGame = (payload: ReplayGamePayload) => {
         clearGameState();
         setGameState(payload);
-        onReplayMode();
+        setGameLogs(payload.game.logs);
+        setGameStatus(payload.game.status);
         setHistoryGameList(undefined); //HIDE LIST AND SHOW LOGS
-        console.log('onReplayGame: ', payload);
     };
 
     const onGameConnected = (payload: GamePayload) => {
