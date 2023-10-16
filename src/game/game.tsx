@@ -273,6 +273,11 @@ const Game = () => {
         setOpenGiveUPModal(false);
     };
 
+    const onSelectLogItem = (log: GameLog) => {
+        if (socket.gameStatus !== GameStatus.REPLAY_MODE) return;
+        setSelectedLog(log);
+    };
+
     return (
         <PageLayout
             connected={socket.isConnected}
@@ -287,7 +292,7 @@ const Game = () => {
             onExit={onExit}
             onKeyPress={handleInputKeyPress}
             onMessageChange={handleTextInput}
-            onSelectLogItem={setSelectedLog}
+            onSelectLogItem={onSelectLogItem}
             onSendMessage={checkMessageOrDirection}
             waitingList={socket.availableGames}
             historyList={socket.historyGameList}
