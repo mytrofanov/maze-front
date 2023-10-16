@@ -272,7 +272,12 @@ const Game = () => {
             waitingList={socket.availableGames}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />
-            <NewGameScreen gameStatus={socket.gameStatus} onCreateNewGame={handleCreateNewGame} />
+            <NewGameScreen
+                gameStatus={socket.gameStatus}
+                onCreateNewGame={handleCreateNewGame}
+                hasHistory={socket.hasHistory}
+                onReplayMode={socket.onReplayMode}
+            />
             <PlayGame
                 gameStatus={socket.gameStatus}
                 handleWinnerModalCancel={handleWinnerModalCancel}

@@ -29,12 +29,18 @@ const useSocket = () => {
     const [gameStatus, setGameStatus] = React.useState<GameStatus>(GameStatus.WELCOME_SCREEN);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     const [opponentDisconnected, setOpponentDisconnected] = React.useState<boolean>(false);
+    const [hasHistory, setHasHistory] = React.useState<boolean>(false);
 
-    const createGame = (payload: CreateGamePayload) => {
-        socket.emit(SocketEvents.CREATE_GAME, payload);
+    const clearGameState = () => {
         setGameLogs([]);
+        setHasHistory(false);
         setOpponentDisconnected(false);
         setAvailableGames(undefined);
+    };
+
+    const createGame = (payload: CreateGamePayload) => {
+        clearGameState();
+        socket.emit(SocketEvents.CREATE_GAME, payload);
     };
 
     const giveUP = (payload: GiveUpPayload) => {
@@ -50,8 +56,7 @@ const useSocket = () => {
     }, [socket.connected]);
 
     const connectGame = (payload: ConnectToGamePayload) => {
-        setGameLogs([]);
-        setAvailableGames(undefined);
+        clearGameState();
         setGameStatus(GameStatus.CONNECTING);
         socket.emit(SocketEvents.CONNECT_GAME, payload);
     };
@@ -59,10 +64,10 @@ const useSocket = () => {
         socket.emit(SocketEvents.CREATE_USER, payload);
     };
 
-    const onReconnect = () => {
-        console.log('Reconnected!');
-        socket.emit('reconnected', gameState?.game ? { gameId: gameState.game.id } : null);
-    };
+    // const onReconnect = () => {
+    //     console.log('Reconnected!');
+    //     socket.emit('reconnected', gameState?.game ? { gameId: gameState.game.id } : null);
+    // };
     const onDirectionInput = (payload: DirectionPayload) => {
         socket.emit(SocketEvents.DIRECTION, payload);
     };
@@ -107,6 +112,10 @@ const useSocket = () => {
         setOpponentDisconnected(true);
     };
 
+    const onReplayMode = () => {
+        setGameStatus(GameStatus.REPLAY_MODE);
+    };
+
     React.useEffect(() => {
         function onConnect() {
             console.log('Connected to server, on URL: ', myNetwork);
@@ -121,7 +130,7 @@ const useSocket = () => {
 
         socket.on(SocketEvents.CONNECT, onConnect);
         socket.on(SocketEvents.DISCONNECT, onDisconnect);
-        socket.on(SocketEvents.RECONNECT, onReconnect);
+        // socket.on(SocketEvents.RECONNECT, onReconnect);
         socket.on(SocketEvents.GAME_CREATED, onGameCreated);
         socket.on(SocketEvents.GAME_UPDATED, onGameUpdated);
         socket.on(SocketEvents.LOG_UPDATED, onLogUpdated);
@@ -163,10 +172,12 @@ const useSocket = () => {
         gameLogs,
         gameStatus,
         giveUP,
+        hasHistory,
         isConnected,
         onDirectionInput,
         onSendMessage,
         opponentDisconnected,
+        onReplayMode,
         success,
     };
 };
