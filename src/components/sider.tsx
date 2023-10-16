@@ -61,6 +61,12 @@ const Sider = (props: SiderProps) => {
             {gameStatus === GameStatus.IN_PROGRESS || (gameStatus === GameStatus.REPLAY_MODE && !historyList) ? (
                 <LogAndChatList chat={gameLogs} onSelectLogItem={onSelectLogItem} />
             ) : null}
+            {gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED ? (
+                <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} gameStatus={gameStatus} />
+            ) : null}
+            {gameStatus === GameStatus.REPLAY_MODE ? (
+                <WaitingList onConnectGame={onConnectGame} waitingList={historyList} gameStatus={gameStatus} />
+            ) : null}
             {
                 <Space wrap>
                     {gameStatus === GameStatus.IN_PROGRESS ? (
@@ -68,19 +74,15 @@ const Sider = (props: SiderProps) => {
                             Give UP
                         </Button>
                     ) : null}
-                    {gameStatus === GameStatus.IN_PROGRESS || gameStatus === GameStatus.WAITING_FOR_PLAYER ? (
+                    {gameStatus === GameStatus.IN_PROGRESS ||
+                    gameStatus === GameStatus.WAITING_FOR_PLAYER ||
+                    gameStatus === GameStatus.REPLAY_MODE ? (
                         <Button type="primary" onClick={onExit} disabled={exitDisabled}>
                             Exit
                         </Button>
                     ) : null}
                 </Space>
             }
-            {gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED ? (
-                <WaitingList waitingList={waitingList} onConnectGame={onConnectGame} gameStatus={gameStatus} />
-            ) : null}
-            {gameStatus === GameStatus.REPLAY_MODE ? (
-                <WaitingList onConnectGame={onConnectGame} waitingList={historyList} gameStatus={gameStatus} />
-            ) : null}
         </div>
     );
 };

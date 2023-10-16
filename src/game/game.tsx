@@ -22,7 +22,7 @@ const Game = () => {
     const [currentMessage, setCurrentMessage] = React.useState<string>('');
     const [maze, setMaze] = React.useState<Row[] | undefined>(undefined);
     const [selectedLog, setSelectedLog] = React.useState<GameLog | null>(null);
-    console.log('socket.gameStatus', socket.gameStatus);
+
     //CAN LEAVE GAME IF NO OTHER PLAYERS OR GAME HAS WINNER
     const exitEnabled =
         socket.gameStatus === GameStatus.WAITING_FOR_PLAYER || winner || socket.gameStatus === GameStatus.REPLAY_MODE;
@@ -36,7 +36,6 @@ const Game = () => {
         setOpenGiveUPModal(false);
     };
 
-    console.log('socket.gameState: ', socket.gameState);
     //RE-PLAY BY POINTING ON A LOG  - loze array on new game
     React.useEffect(() => {
         if (!selectedLog) return;
@@ -63,7 +62,6 @@ const Game = () => {
         setWinner(socket.gameState.game.winner);
     }, [socket.gameState]);
 
-    console.log('socket.gameStatus: ', socket.gameStatus);
     const updateUser = (fetchedUser: SocketUser) => {
         if (currentUser && currentUser.id !== fetchedUser.id) return;
         localStorage.setItem(localStorageUser, JSON.stringify(fetchedUser));
@@ -199,13 +197,18 @@ const Game = () => {
     }, [socket.gameState?.game.currentPlayer]);
 
     const onExit = () => {
-        if (!socket.gameState || !currentUser) return;
-        clearCurrentGameState();
+        console.log('onExit');
+        console.log('socket.gameStatus', socket.gameState);
+        console.log('currentUser', currentUser);
+        if (!socket.gameStatus || !currentUser) return;
         if (socket.gameStatus === GameStatus.REPLAY_MODE) {
             socket.onExitReplayMode({ userId: currentUser.id });
         } else {
-            socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+            if (socket.gameState) {
+                socket.gameExit({ gameId: socket.gameState.game.id, playerId: currentUser.id });
+            }
         }
+        clearCurrentGameState();
     };
 
     const handleWinnerModalOk = () => {
@@ -315,6 +318,7 @@ const Game = () => {
             connected={socket.isConnected}
             currentMessage={currentMessage}
             currentUser={currentUser}
+            currentPlayer={socket.gameState?.game.currentPlayer}
             exitDisabled={!exitEnabled}
             gameLogs={socket.gameLogs}
             gameStatus={socket.gameStatus}

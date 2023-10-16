@@ -31,7 +31,7 @@ const useSocket = () => {
     const [gameStatus, setGameStatus] = React.useState<GameStatus>(GameStatus.WELCOME_SCREEN);
     const [gameLogs, setGameLogs] = React.useState<GameLogs>([]);
     const [opponentDisconnected, setOpponentDisconnected] = React.useState<boolean>(false);
-
+    console.log('gameState: ', gameState);
     const clearGameState = () => {
         setGameState(undefined);
         setGameLogs([]);
@@ -42,15 +42,18 @@ const useSocket = () => {
     };
 
     const createGame = (payload: CreateGamePayload) => {
+        console.log('createGame payload: ', payload);
         clearGameState();
         socket.emit(SocketEvents.CREATE_GAME, payload);
     };
 
     const getAvailableGames = (payload: { userId: string }) => {
+        console.log('getAvailableGames payload: ', payload);
         socket.emit(SocketEvents.GET_AVAILABLE_GAMES, payload);
     };
 
     const giveUP = (payload: GiveUpPayload) => {
+        console.log('giveUP payload: ', payload);
         socket.emit(SocketEvents.GIVE_UP, payload);
     };
 
@@ -62,12 +65,10 @@ const useSocket = () => {
     React.useEffect(() => {
         if (socket.disconnected) setIsConnected(false);
         if (socket.connected) setIsConnected(true);
-        // setIsConnected(socket.connected);
-        console.log('socket.disconnected: ', socket.disconnected);
-        console.log('socket.connected: ', socket.connected);
     }, [socket.connected, socket.disconnected]);
 
     const connectGame = (payload: ConnectToGamePayload) => {
+        console.log('connectGame payload: ', payload);
         clearGameState();
         if (gameStatus !== GameStatus.REPLAY_MODE) {
             setGameStatus(GameStatus.CONNECTING);
@@ -86,6 +87,7 @@ const useSocket = () => {
     };
 
     const onExitReplayMode = (payload: { userId: string }) => {
+        console.log('onExitReplayMode', payload);
         clearGameState();
         setGameStatus(GameStatus.WELCOME_SCREEN);
         getAvailableGames(payload);
@@ -112,12 +114,14 @@ const useSocket = () => {
     };
 
     const onGameCreated = (payload: GamePayload) => {
+        console.log('onGameCreated payload: ', payload);
         clearGameState();
         setGameState(payload);
         setGameStatus(GameStatus.WAITING_FOR_PLAYER);
     };
 
     const onReplayGame = (payload: ReplayGamePayload) => {
+        console.log('onReplayGame payload: ', payload);
         clearGameState();
         setGameState(payload);
         setGameLogs(payload.game.logs);
@@ -126,15 +130,18 @@ const useSocket = () => {
     };
 
     const onGameConnected = (payload: GamePayload) => {
+        console.log('onGameConnected payload: ', payload);
         clearGameState();
         setGameState(payload);
         setGameStatus(payload.game.status);
         setOpponentDisconnected(false);
     };
 
-    const onGameUpdated = async (payload: GamePayload) => {
+    const onGameUpdated = async (payload?: GamePayload) => {
         console.log('onGameUpdated payload: ', payload);
+        if (gameStatus === GameStatus.REPLAY_MODE) return;
         setGameState(payload);
+        if (!payload) return;
         setGameStatus(payload.game.status);
     };
 
@@ -148,6 +155,7 @@ const useSocket = () => {
 
     const onCompletedGames = (payload: AvailableGamesPayload) => {
         console.log('onCompletedGames: ', payload);
+        if (gameStatus === GameStatus.REPLAY_MODE) return;
         setHistoryGameList(payload);
     };
 
@@ -200,7 +208,7 @@ const useSocket = () => {
             socket.off(SocketEvents.SUCCESS);
         };
     }, []);
-
+    console.log('historyGameList: ', historyGameList);
     return {
         availableGames,
         connectGame,
