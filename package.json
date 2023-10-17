@@ -1,7 +1,12 @@
 {
   "name": "vite-project",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "author": {
+    "name": "Max Mytrofanov",
+    "email": "mytrofanovmaxym@gmail.com",
+    "url": "http://max.kyiv.ua"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +15,7 @@
     "preview": "vite preview"
   },
   "engines": {
-    "node": "^20.7.0"
+    "node": "20.8.0"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
