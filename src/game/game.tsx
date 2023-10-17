@@ -36,7 +36,7 @@ const Game = () => {
         setOpenGiveUPModal(false);
     };
 
-    //RE-PLAY BY POINTING ON A LOG  - loze array on new game
+    //RE-PLAY BY POINTING ON A LOG
     React.useEffect(() => {
         if (!selectedLog) return;
         if (selectedLog.mazeSnapShot) {
