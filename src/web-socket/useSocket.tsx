@@ -107,7 +107,11 @@ const useSocket = () => {
     const onGameCreated = (payload: GamePayload) => {
         clearGameState();
         setGameState(payload);
-        setGameStatus(GameStatus.WAITING_FOR_PLAYER);
+        if (payload.game.singlePlayerGame) {
+            setGameStatus(GameStatus.IN_PROGRESS);
+        } else {
+            setGameStatus(GameStatus.WAITING_FOR_PLAYER);
+        }
     };
 
     const onReplayGame = (payload: ReplayGamePayload) => {

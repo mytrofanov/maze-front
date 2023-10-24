@@ -118,6 +118,7 @@ export type Game = {
     createdAt: string;
     logs: GameLogs;
     initialMaze: string;
+    singlePlayerGame: boolean;
 };
 
 export type AvailableGamesPayload = Game[];

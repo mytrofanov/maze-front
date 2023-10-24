@@ -326,6 +326,7 @@ const Game = () => {
             onSendMessage={checkMessageOrDirection}
             waitingList={socket.availableGames}
             historyList={socket.historyGameList}
+            singlePlayerGame={socket.gameState?.game.singlePlayerGame || false}
         >
             <WaitingScreen gameStatus={socket.gameStatus} />
             <NewGameScreen

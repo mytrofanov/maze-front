@@ -10,14 +10,15 @@ interface HeaderProps {
     currentPlayer?: PlayerType;
     gameStatus?: GameStatus;
     connected: boolean;
+    singlePlayerGame: boolean;
 }
 
 const Header = (props: HeaderProps) => {
-    const { currentUser, gameStatus, connected, currentPlayer } = props;
+    const { currentUser, gameStatus, connected, currentPlayer, singlePlayerGame } = props;
     const userAvatar = currentUser?.type === PlayerType.PLAYER1 ? player1Image : player2Image;
 
     const PlayerIndication = () => {
-        if (gameStatus !== GameStatus.IN_PROGRESS) return null;
+        if (gameStatus !== GameStatus.IN_PROGRESS || singlePlayerGame) return null;
         return (
             <>
                 {currentUser && currentUser.type == currentPlayer ? (

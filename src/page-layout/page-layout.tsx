@@ -24,6 +24,7 @@ interface PageLayoutProps {
     onSelectLogItem: (log: GameLog) => void;
     waitingList?: AvailableGamesPayload;
     historyList?: AvailableGamesPayload;
+    singlePlayerGame: boolean;
 }
 
 const PageLayout = (props: PageLayoutProps) => {
@@ -46,6 +47,7 @@ const PageLayout = (props: PageLayoutProps) => {
         onSelectLogItem,
         historyList,
         waitingList,
+        singlePlayerGame,
     } = props;
     return (
         <Layout className="page-layout">
@@ -55,6 +57,7 @@ const PageLayout = (props: PageLayoutProps) => {
                     currentUser={currentUser}
                     connected={connected}
                     currentPlayer={currentPlayer}
+                    singlePlayerGame={singlePlayerGame}
                 />
             </Layout.Header>
             <Layout hasSider>
