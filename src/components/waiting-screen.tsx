@@ -3,7 +3,7 @@ import { Space, Spin, Typography } from 'antd';
 import './waiting-screen.css';
 import { GameStatus } from '../web-socket';
 import { Timer } from 'easytimer.js';
-import { readableTime } from '../utils';
+import { getHumanReadableTime } from '../utils';
 
 interface WaitingProps {
     gameStatus: GameStatus;
@@ -43,7 +43,7 @@ const WaitingScreen = (props: WaitingProps) => {
         };
     }, [gameStatus]);
 
-    const time = readableTime(timeInSeconds, timeInMinutes);
+    const time = getHumanReadableTime(timeInSeconds, timeInMinutes);
 
     if (gameStatus !== GameStatus.WAITING_FOR_PLAYER) return;
     return (

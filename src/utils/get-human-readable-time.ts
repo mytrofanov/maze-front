@@ -1,4 +1,4 @@
-export const readableTime = (seconds: number, minutes: number): string => {
+export const getHumanReadableTime = (seconds: number, minutes: number): string => {
     let result = '';
 
     if (minutes > 0) {
