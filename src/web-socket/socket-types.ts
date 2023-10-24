@@ -27,7 +27,7 @@ export enum SocketEvents {
 
 export type CreateGamePayload = {
     player1Id: string;
-    singlePlayer: boolean;
+    singlePlayerGame: boolean;
 };
 
 export type ConnectToServerPayload = {

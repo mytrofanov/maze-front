@@ -267,13 +267,13 @@ const Game = () => {
         }
     }, [socket.opponentDisconnected]);
 
-    const handleCreateNewGame = (singlePlayer?: boolean) => {
+    const handleCreateNewGame = (singlePlayerGame?: boolean) => {
         if (!currentUser) {
             console.log('User is not registered');
             return;
         }
         clearCurrentGameState();
-        socket.createGame({ player1Id: currentUser.id, singlePlayer: singlePlayer ? singlePlayer : false });
+        socket.createGame({ player1Id: currentUser.id, singlePlayerGame: singlePlayerGame ? singlePlayerGame : false });
     };
 
     const handleConnectGame = (gameId: string) => {
