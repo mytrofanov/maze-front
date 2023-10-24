@@ -267,13 +267,13 @@ const Game = () => {
         }
     }, [socket.opponentDisconnected]);
 
-    const handleCreateNewGame = () => {
+    const handleCreateNewGame = (singlePlayer?: boolean) => {
         if (!currentUser) {
             console.log('User is not registered');
             return;
         }
         clearCurrentGameState();
-        socket.createGame({ player1Id: currentUser.id });
+        socket.createGame({ player1Id: currentUser.id, singlePlayer: singlePlayer ? singlePlayer : false });
     };
 
     const handleConnectGame = (gameId: string) => {
@@ -331,6 +331,7 @@ const Game = () => {
             <NewGameScreen
                 gameStatus={socket.gameStatus}
                 onCreateNewGame={handleCreateNewGame}
+                onCreateSinglePlayerGame={handleCreateNewGame}
                 hasHistory={socket.hasHistory}
                 onReplayMode={onReplayMode}
             />

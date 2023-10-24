@@ -27,6 +27,7 @@ export enum SocketEvents {
 
 export type CreateGamePayload = {
     player1Id: string;
+    singlePlayer: boolean;
 };
 
 export type ConnectToServerPayload = {
@@ -95,6 +96,7 @@ export type SocketError = {
 
 export enum GameStatus {
     WAITING_FOR_PLAYER = 'WAITING_FOR_PLAYER',
+    SINGLE_PLAYER_GAME = 'SINGLE_PLAYER_GAME',
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
     CONNECTION_ERROR = 'CONNECTION_ERROR',
