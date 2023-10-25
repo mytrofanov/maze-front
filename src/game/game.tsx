@@ -99,12 +99,24 @@ const Game = () => {
         if (winner && socket.gameStatus !== GameStatus.REPLAY_MODE) {
             setOpenWinnerModal(true);
             const isPlayer1Winner = winner == PlayerType.PLAYER1;
-            saveLogs(
-                `Player ${
-                    isPlayer1Winner ? socket.gameState?.game.player1.userName : socket.gameState?.game.player2.userName
-                } won!`,
-                winner,
-            );
+            if (!socket.gameState?.game.singlePlayerGame) {
+                //MULTI PLAYER MODE
+                saveLogs(
+                    `Player ${
+                        isPlayer1Winner
+                            ? socket.gameState?.game.player1.userName
+                            : socket.gameState?.game.player2.userName
+                    } won!`,
+                    winner,
+                );
+            } else {
+                //SINGLE PLAYER MODE
+                if (!isPlayer1Winner) {
+                    saveLogs(`Player ${socket.gameState?.game.player1.userName} lost!`, winner);
+                } else {
+                    saveLogs(`Player ${socket.gameState?.game.player1.userName} won!`, winner);
+                }
+            }
         }
     }, [winner]);
 
@@ -267,13 +279,13 @@ const Game = () => {
         }
     }, [socket.opponentDisconnected]);
 
-    const handleCreateNewGame = (singlePlayerGame?: boolean) => {
+    const handleCreateNewGame = (singlePlayerGame: boolean) => {
         if (!currentUser) {
             console.log('User is not registered');
             return;
         }
         clearCurrentGameState();
-        socket.createGame({ player1Id: currentUser.id, singlePlayerGame: singlePlayerGame ? singlePlayerGame : false });
+        socket.createGame({ player1Id: currentUser.id, singlePlayerGame });
     };
 
     const handleConnectGame = (gameId: string) => {
@@ -332,7 +344,6 @@ const Game = () => {
             <NewGameScreen
                 gameStatus={socket.gameStatus}
                 onCreateNewGame={handleCreateNewGame}
-                onCreateSinglePlayerGame={handleCreateNewGame}
                 hasHistory={socket.hasHistory}
                 onReplayMode={onReplayMode}
             />

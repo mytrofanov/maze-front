@@ -4,24 +4,27 @@ import { GameStatus } from '../web-socket';
 
 interface NewGameProps {
     gameStatus: GameStatus;
-    onCreateNewGame: () => void;
-    onCreateSinglePlayerGame: (singlePlayer: boolean) => void;
+    onCreateNewGame: (singlePlayer: boolean) => void;
     onReplayMode: () => void;
     hasHistory?: boolean;
 }
 
 const NewGameScreen = (props: NewGameProps) => {
-    const { gameStatus, onCreateNewGame, onCreateSinglePlayerGame, hasHistory, onReplayMode } = props;
+    const { gameStatus, onCreateNewGame, hasHistory, onReplayMode } = props;
 
     const handleCreateSinglePlayerGame = () => {
-        onCreateSinglePlayerGame(true);
+        onCreateNewGame(true);
+    };
+
+    const handleCreateMultiPlayerGame = () => {
+        onCreateNewGame(false);
     };
 
     if (gameStatus === GameStatus.WELCOME_SCREEN || gameStatus === GameStatus.COMPLETED) {
         return (
             <div className="new-game-screen">
                 <Space wrap>
-                    <Button type="primary" onClick={onCreateNewGame}>
+                    <Button type="primary" onClick={handleCreateMultiPlayerGame}>
                         New Game
                     </Button>
                     <Button type="primary" onClick={handleCreateSinglePlayerGame}>
